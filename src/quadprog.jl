@@ -1,3 +1,5 @@
+export quadprog
+
 """
     quadprog(Q, g, A, b)
 Minimize the quadratic problem gᵀ x + ½ xᵀ Q x subject to A*x ≤ b.

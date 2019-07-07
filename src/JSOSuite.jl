@@ -1,7 +1,7 @@
 module JSOSuite
 
 # JSO
-using NLPModels, NLPModelsIpopt
+using LinearOperators, NLPModels, NLPModelsIpopt
 
 # stdlib
 using LinearAlgebra

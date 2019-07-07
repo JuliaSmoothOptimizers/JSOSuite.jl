@@ -6,6 +6,11 @@ function linprog_tests()
   output = linprog(c, A, b)
   @test output.dual_feas < 1e-6
   @test norm(output.solution - sol) < 1e-6
+
+  opA = LinearOperator(A)
+  output = linprog(c, opA, b)
+  @test output.dual_feas < 1e-6
+  @test norm(output.solution - sol) < 1e-6
 end
 
 linprog_tests()

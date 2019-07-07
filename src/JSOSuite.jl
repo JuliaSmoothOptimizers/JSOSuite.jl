@@ -2,11 +2,6 @@ module JSOSuite
 
 using NLPModels, NLPModelsIpopt
 
-export minimize
-
-function minimize(nlp :: AbstractNLPModel; kwargs...)
-  output = ipopt(nlp)
-  return output
-end
+include("minimize.jl")
 
 end # module

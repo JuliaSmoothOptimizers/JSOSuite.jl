@@ -9,3 +9,4 @@ using LinearAlgebra, Test
 
 include("minimize.jl")
 include("linprog.jl")
+include("quadprog.jl")

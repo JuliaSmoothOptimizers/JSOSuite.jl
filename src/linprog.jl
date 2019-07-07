@@ -3,7 +3,7 @@ export linprog
 """
     linprog(c, A, b)
 
-Minimize the linear problem c'*x with constraints A*x ≤ b.
+Minimize the linear problem cᵀ x with constraints A x ≤ b.
 """
 function linprog(c, A, b)
   f(x) = dot(c, x)

@@ -5,8 +5,8 @@ os:
   #- osx # enable when project is more stable
 
 julia:
+  - 1.0
   - 1.1
-  #- 1.0 # enable when project is more stable
   #- nightly # enable when project is more stable
 
 # matrix:

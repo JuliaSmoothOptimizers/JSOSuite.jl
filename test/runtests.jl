@@ -7,5 +7,6 @@ using NLPModels
 # stdlib
 using LinearAlgebra, Test
 
-include("minimize.jl")
+include("fminunc.jl")
 include("linprog.jl")
+include("minimize.jl")

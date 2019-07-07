@@ -10,3 +10,4 @@ using LinearAlgebra, Test
 end
 
 include("minimize.jl")
+include("linprog.jl")

@@ -14,5 +14,7 @@ include("quadprog.jl")
 
 include("minimize.jl")
 include("fminunc.jl")
+include("fminbnd.jl")
+include("fmincon.jl")
 
 end # module

@@ -26,6 +26,18 @@ function linprog_tests()
     output = linprog(c, opA, b, opAeq, beq)
     @test output.dual_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
+
+    lvar = [-1.; -1/2]
+    uvar = [3/2; 5/4]
+    sol = [3/16; 5/4]
+
+    output = linprog(c, A, b, Aeq, beq, lvar, uvar)
+    @test output.dual_feas < 1e-6
+    @test norm(output.solution - sol) < 1e-6
+
+    output = linprog(c, opA, b, opAeq, beq, lvar, uvar)
+    @test output.dual_feas < 1e-6
+    @test norm(output.solution - sol) < 1e-6
   end
 end
 

@@ -8,6 +8,6 @@ function quadprog(Q, g, A, b)
   f(x) = dot(x, Q*x)/2 + dot(g,x)
   con(x) = A*x
   nlp = ADNLPModel(f, zeros(length(g)), c = con, ucon = b)
-  output = ipopt(nlp)
+  output = ipopt(nlp, print_level=0)
   return output
 end

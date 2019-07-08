@@ -3,7 +3,15 @@ uuid = "ed6ae0be-a024-11e9-2788-05dbf8cd15d9"
 authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>"]
 version = "0.1.0"
 
+[compat]
+julia = "1"
+JSOSolvers = "≥ 0.1"
+LinearOperators = "≥ 0.5"
+NLPModels = "≥ 0.8"
+NLPModelsIpopt = "≥ 0.1"
+
 [deps]
+JSOSolvers = "10dff2fc-5484-5881-a0e0-c90441020f8a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LinearOperators = "5c8ed15e-5a4c-59e4-a42b-c7e8811fb125"
 NLPModels = "a4795742-8479-5a88-8948-cc11e1c8c1a6"

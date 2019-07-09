@@ -7,12 +7,11 @@ const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
 
 Minimize cᵀ x subject to any combination of the optional constraints
 blow ≤ Aineq x ≤ bupp, Aeq x = beq and lvar ≤ x ≤ uvar.
-Initial solution is optional and set to zeros by default.
-One sided inequalities like Aineq x ≤ bupp are equivalent to [-∞,…,-∞] ≤ Aineq x ≤ bupp.
+Initial solution is optional in all methods and set to zeros by default.
 
 """
 function linprog(c::AbstractVector; x0::AbstractVector = zeros(length(c)), Aineq::MatrixOrOperator = zeros(0, length(c)),
-         blow::AbstractVector = eltype(x0)[], bupp::AbstractVector = eltype(x0)[],
+         blow::AbstractVector = fill(-Inf, size(Aineq, 1)), bupp::AbstractVector = fill(Inf, size(Aineq, 1)),
          lvar::AbstractVector = fill(-Inf, length(c)), uvar::AbstractVector = fill(Inf, length(c)),
          Aeq::MatrixOrOperator = zeros(0, length(c)), beq::AbstractVector = eltype(x0)[])
   nvar = length(c)
@@ -39,30 +38,50 @@ function linprog(c::AbstractVector; x0::AbstractVector = zeros(length(c)), Aineq
 end
 
 """
+    linprog(c, A, b; x0)
+
+Minimize cᵀ x subject to A x ≤ b.
+"""
+function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector; x0::AbstractVector = zeros(length(c)))
+  return linprog(c, Aineq = A, bupp = b, x0 = x0)
+end
+
+"""
+    linprog(c, A, b, Aeq, beq; x0)
+
+Minimize cᵀ x subject to A x ≤ b and Aeq x = beq.
+"""
+function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator, beq::AbstractVector;
+         x0::AbstractVector = zeros(length(c)))
+  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0)
+end
+
+"""
+    linprog(c, A, b, lvar, uvar; x0)
+
+Minimize cᵀ x subject to A x ≤ b and lvar ≤ x ≤ uvar.
+"""
+function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector,
+         lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)))
+  return linprog(c, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0)
+end
+
+"""
+    linprog(c, A, b, Aeq, beq, lvar, uvar; x0)
+
+Minimize cᵀ x subject to A x ≤ b, Aeq x = beq and lvar ≤ x ≤ uvar.
+"""
+function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator,
+         beq::AbstractVector, lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)))
+  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0)
+end
+
+"""
     linprog(c, Aineq, blow, bupp; x0)
 
-Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp, with optional initial solution x0.
+Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp.
 """
-function linprog(c, Aineq, blow, bupp; x0 = zeros(length(c)))
+function linprog(c::AbstractVector, Aineq::MatrixOrOperator, blow::AbstractVector, bupp::AbstractVector;
+         x0::AbstractVector = zeros(length(c)))
   return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0)
-end
-
-"""
-    linprog(c, Aineq, blow, bupp, Aeq, beq; x0)
-
-Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp and lvar ≤ x ≤ uvar,
-with optional initial solution x0.
-"""
-function linprog(c, Aineq, blow, bupp, Aeq, beq; x0 = zeros(length(c)))
-  return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, Aeq = Aeq, beq = beq, x0 = x0)
-end
-
-"""
-    linprog(c, Aineq, blow, bupp, Aeq, beq, lvar, uvar; x0)
-
-Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp, lvar ≤ x ≤ uvar, and lvar ≤ x ≤ uvar,
-with optional initial solution x0.
-"""
-function linprog(c, Aineq, blow, bupp, Aeq, beq, lvar, uvar; x0 = zeros(length(c)))
-  return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0)
 end

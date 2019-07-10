@@ -8,31 +8,20 @@ const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
 Minimize cᵀ x subject to any combination of the optional constraints
 blow ≤ Aineq x ≤ bupp, Aeq x = beq and lvar ≤ x ≤ uvar.
 Initial solution is optional in all methods and set to zeros by default.
-
 """
 function linprog(c::AbstractVector; x0::AbstractVector = zeros(length(c)), Aineq::MatrixOrOperator = zeros(0, length(c)),
-         blow::AbstractVector = fill(-Inf, size(Aineq, 1)), bupp::AbstractVector = fill(Inf, size(Aineq, 1)),
-         lvar::AbstractVector = fill(-Inf, length(c)), uvar::AbstractVector = fill(Inf, length(c)),
-         Aeq::MatrixOrOperator = zeros(0, length(c)), beq::AbstractVector = eltype(x0)[])
+                 blow::AbstractVector = fill(-Inf, size(Aineq, 1)), bupp::AbstractVector = fill(Inf, size(Aineq, 1)),
+                 lvar::AbstractVector = fill(-Inf, length(c)), uvar::AbstractVector = fill(Inf, length(c)),
+                 Aeq::MatrixOrOperator = zeros(0, length(c)), beq::AbstractVector = eltype(x0)[])
   nvar = length(c)
-  @assert length(lvar) == nvar && length(uvar) == nvar
-  @assert size(Aineq, 2) == nvar && size(Aeq, 2) == nvar
+  @assert length(lvar) == length(uvar) == nvar
+  @assert size(Aineq, 2) == size(Aeq, 2) == nvar
   @assert size(Aineq, 1) == length(blow) && size(Aineq, 1) == length(bupp)
   @assert size(Aeq, 1) == length(beq)
 
   f(x) = dot(c, x)
-
-  if size(Aineq)[1] == 0
-    if size(Aeq)[1] == 0
-      nlp = ADNLPModel(f, x0, lvar = lvar, uvar = uvar)
-    else
-      con = x -> Aeq * x
-      nlp = ADNLPModel(f, x0, c = con, lcon = beq, ucon = beq, lvar = lvar, uvar = uvar)
-    end
-  else
-    con = x -> [Aineq * x; Aeq * x]
-    nlp = ADNLPModel(f, x0, c = con, lcon = [blow; beq], ucon = [bupp; beq], lvar = lvar, uvar = uvar)
-  end
+  con = x -> [Aineq * x; Aeq * x]
+  nlp = ADNLPModel(f, x0, c = con, lcon = [blow; beq], ucon = [bupp; beq], lvar = lvar, uvar = uvar)
   output = ipopt(nlp, print_level = 0)
   return output
 end
@@ -52,7 +41,7 @@ end
 Minimize cᵀ x subject to A x ≤ b and Aeq x = beq.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator, beq::AbstractVector;
-         x0::AbstractVector = zeros(length(c)))
+				         x0::AbstractVector = zeros(length(c)))
   return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0)
 end
 
@@ -62,7 +51,7 @@ end
 Minimize cᵀ x subject to A x ≤ b and lvar ≤ x ≤ uvar.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector,
-         lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)))
+				         lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)))
   return linprog(c, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0)
 end
 
@@ -72,7 +61,7 @@ end
 Minimize cᵀ x subject to A x ≤ b, Aeq x = beq and lvar ≤ x ≤ uvar.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator,
-         beq::AbstractVector, lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)))
+				         beq::AbstractVector, lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)))
   return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0)
 end
 
@@ -82,6 +71,6 @@ end
 Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp.
 """
 function linprog(c::AbstractVector, Aineq::MatrixOrOperator, blow::AbstractVector, bupp::AbstractVector;
-         x0::AbstractVector = zeros(length(c)))
+				         x0::AbstractVector = zeros(length(c)))
   return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0)
 end

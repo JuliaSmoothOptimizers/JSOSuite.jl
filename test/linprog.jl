@@ -1,8 +1,5 @@
 function linprog_tests()
   @testset "linprog" begin
-
-    # testing with Aineq
-
     c = [-1.; -1/3]
     Aineq = [1. 1; 1 1/4; 1 -1; -1/4 -1; -1 -1; -1 1]
     opAineq = LinearOperator(Aineq)
@@ -12,10 +9,12 @@ function linprog_tests()
 
     output = linprog(c, Aineq, bupp)
     @test output.dual_feas < 1e-6
+    @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
 
     output = linprog(c, Aineq, blow, bupp)
     @test output.dual_feas < 1e-6
+    @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
 
     Aeq = [1 1/4]
@@ -25,6 +24,7 @@ function linprog_tests()
 
     output = linprog(c, Aineq, bupp, Aeq, beq)
     @test output.dual_feas < 1e-6
+    @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
 
     lvar = [-1.; -1/2]
@@ -33,18 +33,21 @@ function linprog_tests()
 
     output = linprog(c, Aineq, bupp, lvar, uvar)
     @test output.dual_feas < 1e-6
+    @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
 
     sol = [3/16; 5/4]
 
     output = linprog(c, Aineq, bupp, Aeq, beq, lvar, uvar)
     @test output.dual_feas < 1e-6
+    @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
 
     x0 = [1.; -2.]
 
     output = linprog(c, Aineq = opAineq, blow = blow, bupp = bupp, Aeq = opAeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0)
     @test output.dual_feas < 1e-6
+    @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
   end
 end

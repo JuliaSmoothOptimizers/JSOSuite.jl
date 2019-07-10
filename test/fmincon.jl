@@ -19,7 +19,7 @@ function fmincon_tests()
     @test output.status == :max_eval
     =#
 
-    output = fmincon(f, x₀, c, 1, max_time=0.001)
+    output = fmincon(x -> begin sleep(0.005); f(x) end, x₀, c, 1, max_time=0.001)
     @test output.status == :max_time
 
     output = fmincon(f, x₀, c, [-1.0], [1.0])

@@ -3,7 +3,7 @@ export quadprog
 const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
 
 """
-    quadprog(Q, c; x0, Aineq, blow, bupp, Aeq, beq, lvar, uvar)
+    quadprog(Q, g; x0, Aineq, blow, bupp, Aeq, beq, lvar, uvar)
 Minimize the quadratic problem gᵀ x + ½ xᵀ Q x subject to A*x ≤ b.
 """
 function quadprog(Q::AbstractMatrix, g::AbstractVector;

@@ -24,8 +24,9 @@ end
 
 """
     quadprog(Q, g, A, b; x0)
+    quadprog(Q, g; Aeq = A, beq = b, x0 = x0)
 
-Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b.
+Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b, or Aeq x = beq using the corresponding keywords.
 """
 function quadprog(Q::AbstractMatrix, g::AbstractVector, A::MatrixOrOperator, b::AbstractVector; x0::AbstractVector = zeros(length(g)))
   return quadprog(Q, g, Aineq = A, bupp = b, x0 = x0)

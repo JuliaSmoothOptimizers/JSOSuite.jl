@@ -1,7 +1,5 @@
 export linprog
 
-const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
-
 """
     linprog(c; x0, Aineq, blow, bupp, Aeq, beq, lvar, uvar)
 
@@ -20,7 +18,7 @@ function linprog(c::AbstractVector; x0::AbstractVector = zeros(length(c)), Aineq
   @assert size(Aeq, 1) == length(beq)
 
   f(x) = dot(c, x)
-  con = x -> [Aineq * x; Aeq * x]
+  con(x) = [Aineq * x; Aeq * x]
   nlp = ADNLPModel(f, x0, c = con, lcon = [blow; beq], ucon = [bupp; beq], lvar = lvar, uvar = uvar)
   output = ipopt(nlp, print_level = 0)
   return output

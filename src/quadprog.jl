@@ -1,7 +1,5 @@
 export quadprog
 
-const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
-
 """
     quadprog(Q, g; x0, Aineq, blow, bupp, Aeq, beq, lvar, uvar)
 Minimize the quadratic problem gᵀ x + ½ xᵀ Q x subject to A*x ≤ b.
@@ -18,7 +16,7 @@ function quadprog(Q::AbstractMatrix, g::AbstractVector;
   @assert size(Aineq, 1) == length(blow) && size(Aineq, 1) == length(bupp)
   @assert size(Aeq, 1) == length(beq)
   f(x) = dot(x, Q*x)/2 + dot(g,x)
-  con = x -> [Aineq * x; Aeq * x]
+  con(x) = [Aineq * x; Aeq * x]
   nlp = ADNLPModel(f, x0, c = con, lcon = [blow; beq], ucon = [bupp; beq], lvar = lvar, uvar = uvar)
   output = ipopt(nlp, print_level=0)
   return output

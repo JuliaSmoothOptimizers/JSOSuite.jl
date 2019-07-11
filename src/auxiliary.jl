@@ -5,6 +5,7 @@ const solver_list = Dict{Symbol,Function}(
           :trunk => JSOSolvers.trunk,
          )
 
+const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
 const OPTIONS_STRING = raw"""
 Options:
 - `solver::Symbol=:lbfgs`: check ... for complete list

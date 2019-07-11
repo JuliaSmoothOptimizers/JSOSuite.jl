@@ -25,15 +25,6 @@ function quadprog(Q::AbstractMatrix, g::AbstractVector;
 end
 
 """
-    quadprog(Q, g; x0)
-
-Minimize gᵀ x + ½ xᵀ Q x without any constraints.
-"""
-function quadprog(Q::AbstractMatrix, g::AbstractVector, A::MatrixOrOperator, b::AbstractVector; x0::AbstractVector = zeros(length(g)))
-  return quadprog(Q, g, x0 = x0)
-end
-
-"""
     quadprog(Q, g, A, b; x0)
 
 Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b.

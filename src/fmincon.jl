@@ -27,7 +27,7 @@ end
 
 Minimize the function f subject to c(x) = 0 starting from the point x₀.
 """
-function fmincon(f :: Function, x :: AbstractVector, c :: Function, ncon :: Int; kwargs...)
+function fmincon(f, x :: AbstractVector, c :: Function, ncon :: Int; kwargs...)
   nlp = ADNLPModel(f, x, c=c, lcon=zeros(ncon), ucon=zeros(ncon))
   return fmincon(nlp; kwargs...)
 end
@@ -55,9 +55,9 @@ end
 """
     fmincon(f, x₀, ℓ, u, c, lcon, ucon)
 
-Minimize the function f subject to ℓ ≤ x ≤ u, lcon ≤ c(x) ≤ ucon starting from the point x₀.
+Minimize f subject to ℓ ≤ x ≤ u, lcon ≤ c(x) ≤ ucon starting from the point x₀.
 """
-function fmincon(f :: Function, x :: AbstractVector, ℓ :: AbstractVector, u :: AbstractVector, c :: Function, lcon :: AbstractVector, ucon :: AbstractVector; kwargs...)
+function fmincon(f, x :: AbstractVector, ℓ :: AbstractVector, u :: AbstractVector, c :: Function, lcon :: AbstractVector, ucon :: AbstractVector; kwargs...)
   nlp = ADNLPModel(f, x, lvar=ℓ, uvar=u, c=c, lcon=lcon, ucon=ucon)
   return fmincon(nlp; kwargs...)
 end

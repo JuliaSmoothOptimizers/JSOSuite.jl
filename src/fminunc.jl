@@ -3,11 +3,11 @@ export fminunc
 """
     fminunc(f, x₀)
 
-Minimize the function f starting from the point x₀.
+Minimize f starting from the point x₀.
 
 $OPTIONS_STRING
 """
-function fminunc(f :: Function, x :: AbstractVector;
+function fminunc(f, x :: AbstractVector;
                  solver :: Symbol = :lbfgs,
                  atol :: Real = 1e-8,
                  rtol :: Real = 1e-8,

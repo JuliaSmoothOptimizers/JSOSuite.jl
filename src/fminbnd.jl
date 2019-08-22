@@ -3,11 +3,11 @@ export fminbnd
 """
     fminbnd(f, x₀, ℓ, u)
 
-Minimize the function f subject to bounds ℓ ≤ x ≤ u, starting from the point x₀.
+Minimize f subject to bounds ℓ ≤ x ≤ u, starting from the point x₀.
 
 $OPTIONS_STRING
 """
-function fminbnd(f :: Function, x :: AbstractVector, ℓ :: AbstractVector, u :: AbstractVector;
+function fminbnd(f, x :: AbstractVector, ℓ :: AbstractVector, u :: AbstractVector;
                  solver :: Symbol = :tron,
                  atol :: Real = 1e-8,
                  rtol :: Real = 1e-8,

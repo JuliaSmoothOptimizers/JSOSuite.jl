@@ -17,8 +17,8 @@ Minimize the function f starting from the point x₀.
 
     minimize(f, x₀, ℓ, u)
 
-Minimize the function f with bounds ℓ ≤ x ≤ u starting from the point x₀.
+Minimize f with bounds ℓ ≤ x ≤ u starting from the point x₀.
 """
-function minimize(f :: Function, x :: AbstractVector, ℓ :: AbstractVector = fill(-Inf, length(x)), u :: AbstractVector = fill(Inf, length(x)); kwargs...)
+function minimize(f, x :: AbstractVector, ℓ :: AbstractVector = fill(-Inf, length(x)), u :: AbstractVector = fill(Inf, length(x)); kwargs...)
   minimize(ADNLPModel(f, x, lvar=ℓ, uvar=u); kwargs...)
 end

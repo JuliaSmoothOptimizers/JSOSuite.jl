@@ -9,9 +9,7 @@ function fmincon_tests()
     @test output.dual_feas < 1e-6
     @test output.primal_feas < 1e-6
 
-    kwargs = (x0 = [-3.0; 1.0],)
-
-    output = fmincon(f, x₀, c, 1; solver = :ipopt, kwargs...)
+    output = fmincon(f, x₀, c, 1; solver = :ipopt, nlp_scaling_method="none")
     @test norm(output.solution .- [-0.783930; 0.620849]) < 1e-6
     @test output.dual_feas < 1e-6
     @test output.primal_feas < 1e-6

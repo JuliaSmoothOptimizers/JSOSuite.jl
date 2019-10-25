@@ -14,7 +14,8 @@ function fminunc(f, x :: AbstractVector;
                  max_eval :: Int = -1,
                  max_time :: Float64 = 30.0,
                  verbose :: Bool = false,
-                 logger = verbose ? ConsoleLogger() : NullLogger(), kwargs...
+                 logger = verbose ? ConsoleLogger() : NullLogger(),
+                 kwargs...
                 )
   with_logger(logger) do
     solver_list[solver](ADNLPModel(f, x); atol=atol, rtol=rtol, max_eval=max_eval, max_time=max_time, kwargs...)

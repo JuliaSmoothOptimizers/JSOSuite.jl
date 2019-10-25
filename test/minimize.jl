@@ -30,10 +30,7 @@ function minimize_tests()
     @test norm(output.solution .- [1.1; 1.21]) < 1e-6
     @test output.dual_feas < 1e-6
 
-    kwargs = (x0 = [-3.0; 1.0],)
-
-    nlp = ADNLPModel(f, x₀)
-    output = minimize(nlp, print_level=0; kwargs...)
+    output = minimize(nlp, print_level=0; nlp_scaling_method = "none")
     @test norm(output.solution .- 1) < 1e-6
     @test output.dual_feas < 1e-6
 

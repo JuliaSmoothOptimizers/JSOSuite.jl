@@ -43,10 +43,10 @@ function linprog_tests()
     @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6
 
-    kwargs = (x0 = [1.; -2.],)
+    x0 = [1.; -2.]
 
     output = linprog(c, Aineq = opAineq, blow = blow, bupp = bupp, Aeq = opAeq, beq = beq,
-                     lvar = lvar, uvar = uvar; kwargs...)
+                     lvar = lvar, uvar = uvar; x0 = x0, nlp_scaling_method = "none")
     @test output.dual_feas < 1e-6
     @test output.primal_feas < 1e-6
     @test norm(output.solution - sol) < 1e-6

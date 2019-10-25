@@ -7,6 +7,12 @@ function fminunc_tests()
     @test norm(output.solution .- 1) < 1e-6
     @test output.dual_feas < 1e-6
 
+    kwargs = (x0 = [-3.0; 1.0],)
+
+    output = fminunc(f, x₀; solver = :ipopt, kwargs...)
+    @test norm(output.solution .- 1) < 1e-6
+    @test output.dual_feas < 1e-6
+
     output = fminunc(f, x₀, atol=1e-12, rtol=1e-12)
     @test norm(output.solution .- 1) < 1e-10
     @test output.dual_feas < 1e-9

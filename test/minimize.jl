@@ -9,7 +9,7 @@ function (regr::LinearRegression)(beta)
 end
 
 function minimize_tests()
-  @testset "linprog" begin
+  @testset "minimize" begin
     f(x) = (x[1] - 1)^2 + 100 * (x[2] - x[1]^2)^2
     x₀ = [-1.2; 1.0]
 

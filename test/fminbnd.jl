@@ -8,9 +8,7 @@ function fminbnd_tests()
     @test norm(output.solution .- [0.5; 0.25]) < 1e-6
     @test output.dual_feas < 1e-6
 
-    kwargs = (x0 = [-3.0; 1.0],)
-
-    output = fminbnd(f, x₀, ℓ, u; solver = :ipopt, kwargs...)
+    output = fminbnd(f, x₀, ℓ, u; solver = :tron, max_eval = Int(1e6))
     @test norm(output.solution .- [0.5; 0.25]) < 1e-6
     @test output.dual_feas < 1e-6
 

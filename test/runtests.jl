@@ -1,5 +1,5 @@
 # this package
-using Main.JSOSuite
+using JSOSuite
 
 # JSO
 using LinearOperators, NLPModels

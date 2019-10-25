@@ -9,6 +9,6 @@ function suiteipopt(nlp :: AbstractNLPModel;
                    )
   tol = rtol
   max_cpu_time = max_time
-  ipopt(nlp, tol=tol, max_cpu_time=max_cpu_time, print_level=0, kwargs...)
+  ipopt(nlp, tol=tol, max_cpu_time=max_cpu_time, print_level=0; kwargs...)
 end
 

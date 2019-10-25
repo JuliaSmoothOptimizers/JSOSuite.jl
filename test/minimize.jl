@@ -29,6 +29,13 @@ function minimize_tests()
   @test norm(output.solution .- [1.1; 1.21]) < 1e-6
   @test output.dual_feas < 1e-6
 
+  kwargs = (x0 = [-3.0; 1.0],)
+
+  nlp = ADNLPModel(f, x₀)
+  output = minimize(nlp, print_level=0; kwargs...)
+  @test norm(output.solution .- 1) < 1e-6
+  @test output.dual_feas < 1e-6
+
   x = range(-1, 1, length=100)
   y = 2x .+ 3 + randn(100) * 0.1
   regr = LinearRegression(x, y)

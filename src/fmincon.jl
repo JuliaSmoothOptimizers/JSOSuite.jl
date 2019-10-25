@@ -49,7 +49,7 @@ end
 Minimize the function f subject to ceq(x) = 0 and cineq(x) ≥ 0 starting from the point x₀.
 """
 function fmincon(f :: Function, x :: AbstractVector, ceq :: Function, neq :: Int, cgeq :: Function, ngeq :: Int; kwargs...)
-  nlp = ADNLPModel(f, x, c=x -> [ceq(x); cgeq(x)], lcon=zeros(neq+ngeq), ucon=[zeros(neq);fill(Inf,ngeq)]; kwargs...)
+  nlp = ADNLPModel(f, x, c=x -> [ceq(x); cgeq(x)], lcon=zeros(neq+ngeq), ucon=[zeros(neq);fill(Inf,ngeq)])
   return fmincon(nlp; kwargs...)
 end
 

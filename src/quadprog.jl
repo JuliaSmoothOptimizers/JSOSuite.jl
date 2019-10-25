@@ -30,7 +30,7 @@ end
 Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b, or Aeq x = beq using the corresponding keywords.
 """
 function quadprog(Q::AbstractMatrix, g::AbstractVector, A::MatrixOrOperator, b::AbstractVector; x0::AbstractVector = zeros(length(g)), kwargs...)
-  return quadprog(Q, g, Aineq = A, bupp = b, x0 = x0, kwargs...)
+  return quadprog(Q, g, Aineq = A, bupp = b, x0 = x0; kwargs...)
 end
 
 """
@@ -40,7 +40,7 @@ Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b and Aeq x = beq.
 """
 function quadprog(Q::AbstractMatrix, g::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator, beq::AbstractVector;
                   x0::AbstractVector = zeros(length(g)), kwargs...)
-  return quadprog(Q, g, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0, kwargs...)
+  return quadprog(Q, g, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0; kwargs...)
 end
 
 """
@@ -51,7 +51,7 @@ Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b and lvar ≤ x ≤ uvar.
 function quadprog(Q::AbstractMatrix, g::AbstractVector, A::MatrixOrOperator, b::AbstractVector,
                  lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(g)),
                  kwargs...)
-  return quadprog(Q, g, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0, kwargs...)
+  return quadprog(Q, g, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0; kwargs...)
 end
 
 """
@@ -62,7 +62,7 @@ Minimize gᵀ x + ½ xᵀ Q x subject to A x ≤ b, Aeq x = beq and lvar ≤ x �
 function quadprog(Q::AbstractMatrix, g::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator,
                   beq::AbstractVector, lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(g)),
                   kwargs...)
-  return quadprog(Q, g, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0, kwargs...)
+  return quadprog(Q, g, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0; kwargs...)
 end
 
 """
@@ -72,5 +72,5 @@ Minimize gᵀ x + ½ xᵀ Q x subject to blow ≤ Aineq x ≤ bupp.
 """
 function quadprog(Q::AbstractMatrix, g::AbstractVector, Aineq::MatrixOrOperator, blow::AbstractVector, bupp::AbstractVector;
                   x0::AbstractVector = zeros(length(g)), kwargs...)
-  return quadprog(Q, g, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0, kwargs...)
+  return quadprog(Q, g, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0; kwargs...)
 end

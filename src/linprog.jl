@@ -30,7 +30,7 @@ end
 Minimize cᵀ x subject to A x ≤ b.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector; x0::AbstractVector = zeros(length(c)), kwargs...)
-  return linprog(c, Aineq = A, bupp = b, x0 = x0, kwargs...)
+  return linprog(c, Aineq = A, bupp = b, x0 = x0; kwargs...)
 end
 
 """
@@ -40,7 +40,7 @@ Minimize cᵀ x subject to A x ≤ b and Aeq x = beq.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator, beq::AbstractVector;
                  x0::AbstractVector = zeros(length(c)), kwargs...)
-  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0, kwargs...)
+  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0; kwargs...)
 end
 
 """
@@ -50,7 +50,7 @@ Minimize cᵀ x subject to A x ≤ b and lvar ≤ x ≤ uvar.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector,
                  lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)), kwargs...)
-  return linprog(c, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0, kwargs...)
+  return linprog(c, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0; kwargs...)
 end
 
 """
@@ -60,7 +60,7 @@ Minimize cᵀ x subject to A x ≤ b, Aeq x = beq and lvar ≤ x ≤ uvar.
 """
 function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator,
                  beq::AbstractVector, lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)), kwargs...)
-  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0, kwargs...)
+  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0; kwargs...)
 end
 
 """
@@ -70,5 +70,5 @@ Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp.
 """
 function linprog(c::AbstractVector, Aineq::MatrixOrOperator, blow::AbstractVector, bupp::AbstractVector;
                  x0::AbstractVector = zeros(length(c)), kwargs...)
-  return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0, kwargs...)
+  return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0; kwargs...)
 end

@@ -7,7 +7,7 @@ function fminunc_tests()
     @test norm(output.solution .- 1) < 1e-6
     @test output.dual_feas < 1e-6
 
-    output = fminunc(f, x₀; solver = :lbfgs, max_eval = Int(1e6))
+    output = fminunc(f, x₀; solver = :lbfgs, mem = 5)
     @test norm(output.solution .- 1) < 1e-6
     @test output.dual_feas < 1e-6
 

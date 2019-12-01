@@ -6,7 +6,7 @@ function fmincon_tests()
     c(x) = [x[1]^2 + x[2]^2 - 1]
     tol = 1e-6
 
-    # given x with f(x) == 0, return Δx = [Δx₁; Δx₂] s.t. f(x + Δx) ≈ 0
+    # given x with f(x) == 0, return Δx = [Δx₁; Δx₂] s.t. f(x + Δx) ≈ 0 and f(x - Δx) ≈ 0
     getΔx(x, Δx₁ = 1e-3) = [Δx₁; (1 / 2) * ( - 2 * x[2] + sqrt( 4 * x[2]^2 - 4 * (2 * x[1] * Δx₁ + Δx₁^2) ) )]
 
     # checks the objective value around a given solution to see if it's a local minima

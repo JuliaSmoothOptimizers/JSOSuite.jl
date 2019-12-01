@@ -12,9 +12,9 @@ function fmincon_tests()
     # checks the objective value around a given solution to see if it's a local minima
     function forced_check_min(sol, Δx, tol = 1e-5, f = f, c = c)
       @test c(output.solution + Δx)[1] < tol
-      @test f(output.solution) <= f(output.solution + Δx)
+      @test output.objective <= f(output.solution + Δx)
       @test c(output.solution - Δx)[1] < tol
-      @test f(output.solution) <= f(output.solution - Δx)
+      @test output.objective <= f(output.solution - Δx)
     end
 
     output = fmincon(f, x₀, c, 1)

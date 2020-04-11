@@ -2,12 +2,13 @@ language: julia
 
 os:
   - linux
-  #- osx # enable when project is more stable
+  - osx
+  - windows
+  - freebsd
 
 julia:
   - 1.0
-  - 1.1
-  - 1.2
+  - 1
   #- nightly # enable when project is more stable
 
 # matrix:

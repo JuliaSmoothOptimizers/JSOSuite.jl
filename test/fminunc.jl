@@ -11,14 +11,14 @@ function fminunc_tests()
     @test norm(output.solution .- 1) < 1e-6
     @test output.dual_feas < 1e-6
 
-    output = fminunc(f, x₀, atol=1e-12, rtol=1e-12)
+    output = fminunc(f, x₀, atol = 1e-12, rtol = 1e-12)
     @test norm(output.solution .- 1) < 1e-10
     @test output.dual_feas < 1e-9
 
-    output = fminunc(f, x₀, max_eval=10)
+    output = fminunc(f, x₀, max_eval = 10)
     @test output.status == :max_eval
 
-    output = fminunc(f, x₀, max_time=0.0001)
+    output = fminunc(f, x₀, max_time = 0.0001)
     @test output.status == :max_time
   end
 end

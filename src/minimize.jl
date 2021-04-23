@@ -5,7 +5,7 @@ export minimize
 
 Minimize the problem given by `nlp` (an NLPModel).
 """
-function minimize(nlp :: AbstractNLPModel; kwargs...)
+function minimize(nlp::AbstractNLPModel; kwargs...)
   output = ipopt(nlp; kwargs...)
   return output
 end
@@ -19,6 +19,12 @@ Minimize the function f starting from the point x₀.
 
 Minimize f with bounds ℓ ≤ x ≤ u starting from the point x₀.
 """
-function minimize(f, x :: AbstractVector, ℓ :: AbstractVector = fill(-Inf, length(x)), u :: AbstractVector = fill(Inf, length(x)); kwargs...)
-  minimize(ADNLPModel(f, x, lvar=ℓ, uvar=u); kwargs...)
+function minimize(
+  f,
+  x::AbstractVector,
+  ℓ::AbstractVector = fill(-Inf, length(x)),
+  u::AbstractVector = fill(Inf, length(x));
+  kwargs...,
+)
+  minimize(ADNLPModel(f, x, lvar = ℓ, uvar = u); kwargs...)
 end

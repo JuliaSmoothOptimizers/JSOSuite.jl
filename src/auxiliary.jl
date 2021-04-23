@@ -1,9 +1,9 @@
-const solver_list = Dict{Symbol,Function}(
-          :ipopt => suiteipopt,
-          :lbfgs => JSOSolvers.lbfgs,
-          :tron  => JSOSolvers.tron,
-          :trunk => JSOSolvers.trunk,
-         )
+const solver_list = Dict{Symbol, Function}(
+  :ipopt => suiteipopt,
+  :lbfgs => JSOSolvers.lbfgs,
+  :tron => JSOSolvers.tron,
+  :trunk => JSOSolvers.trunk,
+)
 
 const MatrixOrOperator = Union{AbstractMatrix, AbstractLinearOperator}
 const OPTIONS_STRING = raw"""

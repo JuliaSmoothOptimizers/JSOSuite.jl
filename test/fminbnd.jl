@@ -12,14 +12,14 @@ function fminbnd_tests()
     @test norm(output.solution .- [0.5; 0.25]) < 1e-6
     @test output.dual_feas < 1e-6
 
-    output = fminbnd(f, x₀, ℓ, u, atol=1e-12, rtol=1e-12)
+    output = fminbnd(f, x₀, ℓ, u, atol = 1e-12, rtol = 1e-12)
     @test norm(output.solution .- [0.5; 0.25]) < 1e-10
     @test output.dual_feas < 1e-9
 
-    output = fminbnd(f, x₀, ℓ, u, max_eval=2)
+    output = fminbnd(f, x₀, ℓ, u, max_eval = 2)
     @test output.status == :max_eval
 
-    output = fminbnd(f, x₀, -ones(2), ones(2), max_time=0.0001)
+    output = fminbnd(f, x₀, -ones(2), ones(2), max_time = 0.0001)
     @test output.status == :max_time
   end
 end

@@ -7,10 +7,18 @@ Minimize cᵀ x subject to any combination of the optional constraints
 blow ≤ Aineq x ≤ bupp, Aeq x = beq and lvar ≤ x ≤ uvar.
 Initial solution is optional in all methods and set to zeros by default.
 """
-function linprog(c::AbstractVector; x0::AbstractVector = zeros(length(c)), Aineq::MatrixOrOperator = zeros(0, length(c)),
-                 blow::AbstractVector = fill(-Inf, size(Aineq, 1)), bupp::AbstractVector = fill(Inf, size(Aineq, 1)),
-                 lvar::AbstractVector = fill(-Inf, length(c)), uvar::AbstractVector = fill(Inf, length(c)),
-                 Aeq::MatrixOrOperator = zeros(0, length(c)), beq::AbstractVector = eltype(x0)[], kwargs...)
+function linprog(
+  c::AbstractVector;
+  x0::AbstractVector = zeros(length(c)),
+  Aineq::MatrixOrOperator = zeros(0, length(c)),
+  blow::AbstractVector = fill(-Inf, size(Aineq, 1)),
+  bupp::AbstractVector = fill(Inf, size(Aineq, 1)),
+  lvar::AbstractVector = fill(-Inf, length(c)),
+  uvar::AbstractVector = fill(Inf, length(c)),
+  Aeq::MatrixOrOperator = zeros(0, length(c)),
+  beq::AbstractVector = eltype(x0)[],
+  kwargs...,
+)
   nvar = length(c)
   @assert length(lvar) == length(uvar) == nvar
   @assert size(Aineq, 2) == size(Aeq, 2) == nvar
@@ -29,7 +37,13 @@ end
 
 Minimize cᵀ x subject to A x ≤ b.
 """
-function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector; x0::AbstractVector = zeros(length(c)), kwargs...)
+function linprog(
+  c::AbstractVector,
+  A::MatrixOrOperator,
+  b::AbstractVector;
+  x0::AbstractVector = zeros(length(c)),
+  kwargs...,
+)
   return linprog(c, Aineq = A, bupp = b, x0 = x0; kwargs...)
 end
 
@@ -38,8 +52,15 @@ end
 
 Minimize cᵀ x subject to A x ≤ b and Aeq x = beq.
 """
-function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator, beq::AbstractVector;
-                 x0::AbstractVector = zeros(length(c)), kwargs...)
+function linprog(
+  c::AbstractVector,
+  A::MatrixOrOperator,
+  b::AbstractVector,
+  Aeq::MatrixOrOperator,
+  beq::AbstractVector;
+  x0::AbstractVector = zeros(length(c)),
+  kwargs...,
+)
   return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, x0 = x0; kwargs...)
 end
 
@@ -48,8 +69,15 @@ end
 
 Minimize cᵀ x subject to A x ≤ b and lvar ≤ x ≤ uvar.
 """
-function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector,
-                 lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)), kwargs...)
+function linprog(
+  c::AbstractVector,
+  A::MatrixOrOperator,
+  b::AbstractVector,
+  lvar::AbstractVector,
+  uvar::AbstractVector;
+  x0::AbstractVector = zeros(length(c)),
+  kwargs...,
+)
   return linprog(c, Aineq = A, bupp = b, lvar = lvar, uvar = uvar, x0 = x0; kwargs...)
 end
 
@@ -58,9 +86,28 @@ end
 
 Minimize cᵀ x subject to A x ≤ b, Aeq x = beq and lvar ≤ x ≤ uvar.
 """
-function linprog(c::AbstractVector, A::MatrixOrOperator, b::AbstractVector, Aeq::MatrixOrOperator,
-                 beq::AbstractVector, lvar::AbstractVector, uvar::AbstractVector; x0::AbstractVector = zeros(length(c)), kwargs...)
-  return linprog(c, Aineq = A, bupp = b, Aeq = Aeq, beq = beq, lvar = lvar, uvar = uvar, x0 = x0; kwargs...)
+function linprog(
+  c::AbstractVector,
+  A::MatrixOrOperator,
+  b::AbstractVector,
+  Aeq::MatrixOrOperator,
+  beq::AbstractVector,
+  lvar::AbstractVector,
+  uvar::AbstractVector;
+  x0::AbstractVector = zeros(length(c)),
+  kwargs...,
+)
+  return linprog(
+    c,
+    Aineq = A,
+    bupp = b,
+    Aeq = Aeq,
+    beq = beq,
+    lvar = lvar,
+    uvar = uvar,
+    x0 = x0;
+    kwargs...,
+  )
 end
 
 """
@@ -68,7 +115,13 @@ end
 
 Minimize cᵀ x subject to blow ≤ Aineq x ≤ bupp.
 """
-function linprog(c::AbstractVector, Aineq::MatrixOrOperator, blow::AbstractVector, bupp::AbstractVector;
-                 x0::AbstractVector = zeros(length(c)), kwargs...)
+function linprog(
+  c::AbstractVector,
+  Aineq::MatrixOrOperator,
+  blow::AbstractVector,
+  bupp::AbstractVector;
+  x0::AbstractVector = zeros(length(c)),
+  kwargs...,
+)
   return linprog(c, Aineq = Aineq, blow = blow, bupp = bupp, x0 = x0; kwargs...)
 end

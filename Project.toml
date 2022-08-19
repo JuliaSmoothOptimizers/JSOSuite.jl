@@ -3,24 +3,26 @@ uuid = "ed6ae0be-a024-11e9-2788-05dbf8cd15d9"
 authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>"]
 version = "0.1.0"
 
-[compat]
-julia = "1"
-JSOSolvers = "≥ 0.1"
-LinearOperators = "≥ 0.5"
-NLPModels = "≥ 0.8"
-NLPModelsIpopt = "≥ 0.1"
-
 [deps]
+CaNNOLeS = "5a1c9e79-9c58-5ec0-afc4-3298fdea2875"
+DCISolver = "bee2e536-65f6-11e9-3844-e5bb4c9c55c9"
 JSOSolvers = "10dff2fc-5484-5881-a0e0-c90441020f8a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LinearOperators = "5c8ed15e-5a4c-59e4-a42b-c7e8811fb125"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 NLPModels = "a4795742-8479-5a88-8948-cc11e1c8c1a6"
 NLPModelsIpopt = "f4238b75-b362-5c4c-b852-0801c9a21d71"
-Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb"
+NLPModelsModifiers = "e01155f1-5c6f-4375-a9d8-616dd036575f"
+Percival = "01435c0c-c90d-11e9-3788-63660f8fbccc"
+RipQP = "1e40b3f8-35eb-4cd8-8edd-3e515bb9de08"
+SolverCore = "ff4d7338-4cf1-434d-91df-b86cb86fb843"
 
 [extras]
+ADNLPModels = "54578032-b7ea-4c30-94aa-7cbd1cce6c9a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+OptimizationProblems = "5049e819-d29b-5fba-b941-0eee7e64c1c6"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["LinearAlgebra", "Test"]
+test = ["ADNLPModels", "LinearAlgebra", "OptimizationProblems", "Test"]

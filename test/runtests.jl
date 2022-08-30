@@ -2,7 +2,7 @@
 using JSOSuite
 
 # JSO
-using LinearOperators, NLPModels
+using ADNLPModels, NLPModels, OptimizationProblems
 
 # stdlib
 using LinearAlgebra, Test

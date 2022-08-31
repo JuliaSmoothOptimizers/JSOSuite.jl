@@ -69,7 +69,7 @@ JSOSuite main function solves an AbstractNLPModel, see [NLPModels.jl](https://gi
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite
 nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-stats = solve(nlp)
+stats = solve(nlp, verbose = false)
 stats
 
 # output

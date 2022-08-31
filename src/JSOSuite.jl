@@ -37,7 +37,7 @@ function select_solvers(nlp::AbstractNLPModel, verbose = true)
   select = solvers[solvers.is_available, :]
   (verbose ≥ 1) && println("Problem $(nlp.meta.name) with $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints")
   (verbose ≥ 1) && println("Select algorithm:")
-  if unconstrained(nlp) > 0
+  if !unconstrained(nlp)
     if has_equalities(nlp)
       (verbose ≥ 1) && println("equalities: true")
       select = select[select.equalities, :]

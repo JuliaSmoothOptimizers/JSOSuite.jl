@@ -28,9 +28,9 @@ push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true))
 push!(solvers, ("TRON", :tron, true, true, false, false, true, true))
 push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true))
 push!(solvers, ("CaNNOLeS", :cannoles, true, false, true, false, true, false)) # cannot solve nlp
+push!(solvers, ("IPOPT", :ipopt, true, true, true, true, false, true))
 push!(solvers, ("Percival", :percival, true, true, true, true, false, true))
 push!(solvers, ("DCISolver", :dci, true, false, true, false, false, true))
-push!(solvers, ("IPOPT", :ipopt, true, true, true, true, false, true))
 # push!(solvers, ("RipQP", :ripqp, true, true, missing, missing, false, true)) # need to check linear constraints and quadratic constraints
 
 function select_solvers(nlp::AbstractNLPModel, verbose = true)

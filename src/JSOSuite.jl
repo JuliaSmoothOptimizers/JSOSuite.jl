@@ -14,14 +14,14 @@ end
 
 # DataFrame with the solver and their properties
 solvers = DataFrame(
-    name = String[],
-    solve_function = Symbol[],
-    is_available = Bool[],
-    bounds = Bool[],
-    equalities = Bool[],
-    inequalities = Bool[],
-    specialized_nls = Bool[],
-    can_solve_nlp = Bool[],
+  name = String[],
+  solve_function = Symbol[],
+  is_available = Bool[],
+  bounds = Bool[],
+  equalities = Bool[],
+  inequalities = Bool[],
+  specialized_nls = Bool[],
+  can_solve_nlp = Bool[],
 )
 push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true)) # set-up factorization_free option
 push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true))
@@ -35,7 +35,9 @@ push!(solvers, ("DCISolver", :dci, true, false, true, false, false, true))
 
 function select_solvers(nlp::AbstractNLPModel, verbose = true)
   select = solvers[solvers.is_available, :]
-  (verbose ≥ 1) && println("Problem $(nlp.meta.name) with $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints")
+  (verbose ≥ 1) && println(
+    "Problem $(nlp.meta.name) with $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints",
+  )
   (verbose ≥ 1) && println("Select algorithm:")
   if !unconstrained(nlp)
     if has_equalities(nlp)

@@ -1,11 +1,11 @@
 module JSOSuite
 
 # other dependencies
-using DataFrames, KNITRO
+using DataFrames, JuMP, KNITRO
 # stdlib
 using LinearAlgebra, Logging
 # JSO
-using NLPModels, NLPModelsModifiers, SolverCore
+using NLPModels, NLPModelsJuMP, NLPModelsModifiers, SolverCore
 # JSO solvers
 using CaNNOLeS, DCISolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
 if KNITRO.has_knitro()
@@ -93,6 +93,11 @@ stats
 ```
 """
 function solve end
+
+function solve(model::JuMP.Model, args...; kwargs...)
+  nlp = MathOptNLPModel(model)
+  return solve(nlp, args...; kwargs...)
+end
 
 include("solve.jl")
 

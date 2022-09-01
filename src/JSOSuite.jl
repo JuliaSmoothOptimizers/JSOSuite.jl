@@ -63,7 +63,7 @@ export solve
 
 """
     stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
-    stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::Symbol; kwargs...)
+    stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::String; kwargs...)
 
 Compute a local minimum of the optimization problem `nlp`.
 
@@ -87,6 +87,19 @@ Further possible options are documented in each solver's documentation.
 using ADNLPModels, JSOSuite
 nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
 stats = solve(nlp, verbose = false)
+stats
+
+# output
+
+"Execution stats: first-order stationary"
+```
+
+The list of available solver can be obtained using `JSOSuite.solvers[!, :name]`.
+
+```jldoctest; output = false
+using ADNLPModels, JSOSuite
+nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
+stats = solve(nlp, "DCISolver", verbose = false)
 stats
 
 # output

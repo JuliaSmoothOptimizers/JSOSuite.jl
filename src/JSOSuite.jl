@@ -62,10 +62,12 @@ end
 export solve
 
 """
-    stats = solve(nlp::AbstractNLPModel; kwargs...)
-    stats = solve(nlp::AbstractNLPModel, solver_name::Symbol; kwargs...)
+    stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
+    stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::Symbol; kwargs...)
 
 Compute a local minimum of the optimization problem `nlp`.
+
+`JuMP.Model` are converted in NLPModels via NLPModelsJuMP.jl.
 
 # Keyword Arguments
 

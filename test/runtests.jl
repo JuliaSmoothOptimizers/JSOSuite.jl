@@ -13,6 +13,9 @@ meta = OptimizationProblems.meta
     nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
     solve(nlp)
     @test true
+    model = OptimizationProblems.PureJuMP.eval(Meta.parse(name))()
+    solve(model)
+    @test true
   end
 end
 

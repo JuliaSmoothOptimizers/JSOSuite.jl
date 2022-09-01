@@ -23,7 +23,7 @@ solvers = DataFrame(
   specialized_nls = Bool[],
   can_solve_nlp = Bool[],
 )
-push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true)) # set-up factorization_free option
+push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true))
 push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true))
 push!(solvers, ("TRON", :tron, true, true, false, false, true, true))
 push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true))
@@ -65,7 +65,20 @@ export solve
     stats = solve(nlp::AbstractNLPModel; kwargs...)
     stats = solve(nlp::AbstractNLPModel, solver_name::Symbol; kwargs...)
 
-JSOSuite main function solves an AbstractNLPModel, see [NLPModels.jl](https://github.com/JuliaSmoothOptimizers/NLPModels.jl).
+Compute a local minimum of the optimization problem `nlp`.
+
+# Keyword Arguments
+
+All the keyword arguments are passed to the selected solver.
+Keywords available for all the solvers are given below:
+
+- `atol`: absolute tolerance;
+- `rtol`: relative tolerance;
+- `max_time`: maximum number of seconds;
+- `max_eval`: maximum number of cons + obj evaluations;
+- `verbose::Int = 0`: if > 0, display iteration details every `verbose` iteration.
+
+Further possible options are documented in each solver's documentation.
 
 # Examples
 ```jldoctest; output = false
@@ -79,32 +92,8 @@ stats
 "Execution stats: first-order stationary"
 ```
 """
-function solve(nlp::AbstractNLPModel; verbose = true, kwargs...)
-  select = select_solvers(nlp, verbose)
-  select = select[select.can_solve_nlp, :]
-  (verbose ≥ 1) && println("Solve using $(first(select).name):")
-  return eval(first(select).solve_function)(nlp; kwargs...)
-end
+function solve end
 
-function solve(nlp::AbstractNLSModel; kwargs...)
-  select = select_solvers(nlp, verbose)
-  nls_select = select[select.specialized_nls, :]
-  solver = if !isempty(nls_select)
-    return first(nls_select)
-  else
-    return first(select)
-  end
-  (verbose ≥ 1) && println("Solve using $(solver.name):")
-  return eval(solver.solve_function)(nlp; kwargs...)
-end
-
-function solve(nlp, solver_name::Symbol; kwargs...)
-  solver = solvers[solvers.name .== solver_name, :]
-  if isempty(nls_select)
-    @warn "$(solver_name) does not exist."
-    return nothing
-  end
-  return eval(solver.solve_function)(nlp; kwargs...)
-end
+include("solve.jl")
 
 end # module

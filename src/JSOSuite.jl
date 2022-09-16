@@ -43,7 +43,7 @@ solvers = DataFrame(
   nonlinear_con = Bool[],
   highest_derivative = Int[],
 )
-push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true))
+push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true, 2))
 push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true, true, true, 1))
 push!(solvers, ("TRON", :tron, true, true, false, false, true, true, true, true, 2))
 push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true, true, true, 2))

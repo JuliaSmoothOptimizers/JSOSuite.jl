@@ -43,7 +43,7 @@ solvers = DataFrame(
   nonlinear_con = Bool[],
   highest_derivative = Int[],
 )
-# push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true))
+push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true))
 push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true, true, true, 1))
 push!(solvers, ("TRON", :tron, true, true, false, false, true, true, true, true, 2))
 push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true, true, true, 2))
@@ -52,16 +52,6 @@ push!(solvers, ("IPOPT", :ipopt, true, true, true, true, false, true, true, true
 push!(solvers, ("Percival", :percival, true, true, true, true, false, true, true, true, 2))
 push!(solvers, ("DCISolver", :dci, true, false, true, false, false, true, true, true, 2))
 push!(solvers, ("RipQP", :ripqp, true, true, true, true, false, true, false, false, 2)) # need to check linear constraints and quadratic constraints
-
-function select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
-push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true, true, true))
-push!(solvers, ("TRON", :tron, true, true, false, false, true, true, true, true))
-push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true, true, true))
-push!(solvers, ("CaNNOLeS", :cannoles, true, false, true, false, true, false, true, true)) # cannot solve nlp
-push!(solvers, ("IPOPT", :ipopt, true, true, true, true, false, true, true, true))
-push!(solvers, ("Percival", :percival, true, true, true, true, false, true, true, true))
-push!(solvers, ("DCISolver", :dci, true, false, true, false, false, true, true, true))
-push!(solvers, ("RipQP", :ripqp, true, true, true, true, false, true, false, false)) # need to check linear constraints and quadratic constraints
 
 """
     select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
@@ -72,8 +62,8 @@ This function checks whether the model has:
   - linear or nonlinear constraints;
   - unconstrained, bound constraints, equality constraints, inequality constraints;
   - nonlinear or quadratic objective.
-We detect linear or quadratic objective if the type of `nlp` is a `QuadraticModel` or an `LLSModel`.
-The selection between general optimization problem and nonlinear least squares is done in [`solve`](@ref).
+A linear or quadratic objective is detected if the type of `nlp` is a `QuadraticModel` or an `LLSModel`.
+The selection between a general optimization problem and a nonlinear least squares is done in [`solve`](@ref).
 
 If no solvers were selected, consider setting `verbose` to `true` to see what went wrong.
 
@@ -81,18 +71,22 @@ If no solvers were selected, consider setting `verbose` to `true` to see what we
 
 - `selected_solvers::DataFrame`: A subset of [`solvers`](@ref) adapted to the problem `nlp`.
 
-See also [`solvers`](@ref), [`solve`](@ref).
+See also [`solve`](@ref).
 
 ## Examples
 
-```jldoctest
-julia> a = [1 2; 3 4]
-2×2 Array{Int64,2}:
- 1  2
- 3  4
+```jldoctest; output = false
+using ADNLPModels, JSOSuite
+nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
+selected_solvers = JSOSuite.select_solvers(nlp)
+print(selected_solvers[!, :name])
+
+# output
+
+["LBFGS", "TRON", "TRUNK", "CaNNOLeS", "IPOPT", "Percival", "DCISolver", "RipQP"]
 ```
 """
-function select_solvers(nlp::AbstractNLPModel, verbose = true)
+function select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
   select = solvers[solvers.is_available, :]
   (verbose ≥ 1) && println(
     "Problem $(nlp.meta.name) with $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints",
@@ -181,7 +175,7 @@ stats
 "Execution stats: first-order stationary"
 ```
 
-The list of available solver can be obtained using `JSOSuite.solvers[!, :name]`.
+The list of available solver can be obtained using `JSOSuite.solvers[!, :name]` or see [`select_solvers`](@ref).
 
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite

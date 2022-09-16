@@ -163,6 +163,8 @@ Further possible options are documented in each solver's documentation.
 
 ## Output
 
+The value returned is a `GenericExecutionStats`, see `SolverCore.jl`.
+
 # Examples
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite

@@ -12,7 +12,24 @@ if KNITRO.has_knitro()
   using NLPModelsKnitro
 end
 
-# DataFrame with the solver and their properties
+"""
+    solvers
+
+DataFrame with the solver and their properties.
+
+For each solver, the following are available:
+- `name::String`: name of the solver;
+- `solve_function = Symbol`: name of the function;
+- `is_available = Bool`: `true` if the solver is available as some may require a license;
+- `bounds = Bool`: `true` if the solver can handle bound constraints;
+- `equalities = Bool`: `true` if the solver can handle equality constraints;
+- `inequalities = Bool`: `true` if the solver can handle inequality constraints;
+- `specialized_nls = Bool`: `true` if the solver has a specialized variant for nonlinear least squares;
+- `can_solve_nlp = Bool`: `true` if the solver can solve any nlp. Some may only solve nonlinear least squares;
+- `nonlinear_obj = Bool`: `true` if the solver can handle nonlinear objective;
+- `nonlinear_con = Bool`: `true` if the solver can handle nonlinear constraints;
+- `highest_derivative = Int`: order of the highest derivative used by the algorithm.
+"""
 solvers = DataFrame(
   name = String[],
   solve_function = Symbol[],
@@ -37,6 +54,45 @@ push!(solvers, ("DCISolver", :dci, true, false, true, false, false, true, true, 
 push!(solvers, ("RipQP", :ripqp, true, true, true, true, false, true, false, false, 2)) # need to check linear constraints and quadratic constraints
 
 function select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
+push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true, true, true))
+push!(solvers, ("TRON", :tron, true, true, false, false, true, true, true, true))
+push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true, true, true))
+push!(solvers, ("CaNNOLeS", :cannoles, true, false, true, false, true, false, true, true)) # cannot solve nlp
+push!(solvers, ("IPOPT", :ipopt, true, true, true, true, false, true, true, true))
+push!(solvers, ("Percival", :percival, true, true, true, true, false, true, true, true))
+push!(solvers, ("DCISolver", :dci, true, false, true, false, false, true, true, true))
+push!(solvers, ("RipQP", :ripqp, true, true, true, true, false, true, false, false)) # need to check linear constraints and quadratic constraints
+
+"""
+    select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
+
+Narrow the list of solvers to solve `nlp` problem using `highest_derivative_available`.
+
+This function checks whether the model has:
+  - linear or nonlinear constraints;
+  - unconstrained, bound constraints, equality constraints, inequality constraints;
+  - nonlinear or quadratic objective.
+We detect linear or quadratic objective if the type of `nlp` is a `QuadraticModel` or an `LLSModel`.
+The selection between general optimization problem and nonlinear least squares is done in [`solve`](@ref).
+
+If no solvers were selected, consider setting `verbose` to `true` to see what went wrong.
+
+## Output
+
+- `selected_solvers::DataFrame`: A subset of [`solvers`](@ref) adapted to the problem `nlp`.
+
+See also [`solvers`](@ref), [`solve`](@ref).
+
+## Examples
+
+```jldoctest
+julia> a = [1 2; 3 4]
+2×2 Array{Int64,2}:
+ 1  2
+ 3  4
+```
+"""
+function select_solvers(nlp::AbstractNLPModel, verbose = true)
   select = solvers[solvers.is_available, :]
   (verbose ≥ 1) && println(
     "Problem $(nlp.meta.name) with $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints",
@@ -110,6 +166,8 @@ Keywords available for all the solvers are given below:
 - `verbose::Int = 0`: if > 0, display iteration details every `verbose` iteration.
 
 Further possible options are documented in each solver's documentation.
+
+## Output
 
 # Examples
 ```jldoctest; output = false

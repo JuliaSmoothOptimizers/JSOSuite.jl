@@ -83,6 +83,11 @@ print(selected_solvers[!, :name])
 
 # output
 
+Problem Generic with 2 variables and 0 constraints
+Select algorithm:
+Problem is unconstrained.
+Problem may use 2.
+There are 8 solvers available.
 ["LBFGS", "TRON", "TRUNK", "CaNNOLeS", "IPOPT", "Percival", "DCISolver", "RipQP"]
 ```
 """

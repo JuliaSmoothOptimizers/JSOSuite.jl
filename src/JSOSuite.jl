@@ -43,7 +43,10 @@ solvers = DataFrame(
   nonlinear_con = Bool[],
   highest_derivative = Int[],
 )
-push!(solvers, ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true, 2))
+push!(
+  solvers,
+  ("KNITRO", :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true, 2),
+)
 push!(solvers, ("LBFGS", :lbfgs, true, false, false, false, false, true, true, true, 1))
 push!(solvers, ("TRON", :tron, true, true, false, false, true, true, true, true, 2))
 push!(solvers, ("TRUNK", :trunk, true, false, false, false, true, true, true, true, 2))
@@ -91,7 +94,11 @@ There are 8 solvers available.
 ["LBFGS", "TRON", "TRUNK", "CaNNOLeS", "IPOPT", "Percival", "DCISolver", "RipQP"]
 ```
 """
-function select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
+function select_solvers(
+  nlp::AbstractNLPModel,
+  verbose = true,
+  highest_derivative_available::Integer = 2,
+)
   select = solvers[solvers.is_available, :]
   (verbose ≥ 1) && println(
     "Problem $(nlp.meta.name) with $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints",
@@ -127,13 +134,17 @@ function select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivativ
   end
   nsolvers_before_derivative = nrow(select)
   if nsolvers_before_derivative == 0
-    (verbose ≥ 1) && println("No solvers are available for this type of problem. Consider open an issue to JSOSuite.jl")
+    (verbose ≥ 1) && println(
+      "No solvers are available for this type of problem. Consider open an issue to JSOSuite.jl",
+    )
   else
     (verbose ≥ 1) && println("Problem may use $(highest_derivative_available).")
     select = select[select.highest_derivative .<= highest_derivative_available, :]
     nsolvers_after_derivative = nrow(select)
     if (nsolvers_after_derivative == 0) && (nsolvers_before_derivative > 0)
-      (verbose ≥ 1) && println("No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.")
+      (verbose ≥ 1) && println(
+        "No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
+      )
     else
       (verbose ≥ 1) && println("There are $(nrow(select)) solvers available.")
     end

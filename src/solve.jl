@@ -1,4 +1,9 @@
-function solve(nlp::AbstractNLPModel; verbose = true, highest_derivative_available::Integer = 2, kwargs...)
+function solve(
+  nlp::AbstractNLPModel;
+  verbose = true,
+  highest_derivative_available::Integer = 2,
+  kwargs...,
+)
   select = select_solvers(nlp, verbose, highest_derivative_available)
   select = select[select.can_solve_nlp, :]
   (verbose ≥ 1) && println("Solve using $(first(select).name):")
@@ -6,7 +11,12 @@ function solve(nlp::AbstractNLPModel; verbose = true, highest_derivative_availab
   return solve(nlp, Val(Symbol(solver.name)); kwargs...)
 end
 
-function solve(nlp::AbstractNLSModel; verbose = true, highest_derivative_available::Integer = 2, kwargs...)
+function solve(
+  nlp::AbstractNLSModel;
+  verbose = true,
+  highest_derivative_available::Integer = 2,
+  kwargs...,
+)
   select = select_solvers(nlp, verbose, highest_derivative_available)
   nls_select = select[select.specialized_nls, :]
   solver = if !isempty(nls_select)

@@ -50,6 +50,7 @@ push!(
   ("KNITRO", :KnitroSolver, :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true, 2),
 )
 push!(solvers, ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, 1))
+# push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, 1))
 push!(solvers, ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, 2))
 push!(solvers, ("TRUNK", :TrunkSolver, :trunk, true, false, false, false, false, true, true, true, 2))
 push!(solvers, ("TRON-NLS", :TronSolverNLS, :tron, true, true, false, false, true, false, true, true, 2))
@@ -94,8 +95,8 @@ Problem Generic with 2 variables and 0 constraints
 Select algorithm:
 Problem is unconstrained.
 Problem may use 2.
-There are 8 solvers available.
-["LBFGS", "TRON", "TRUNK", "CaNNOLeS", "IPOPT", "Percival", "DCISolver", "RipQP"]
+There are 10 solvers available.
+["LBFGS", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "Percival", "DCISolver", "RipQP"]
 ```
 """
 function select_solvers(

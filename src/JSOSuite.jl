@@ -47,19 +47,56 @@ solvers = DataFrame(
 )
 push!(
   solvers,
-  ("KNITRO", :KnitroSolver, :knitro, KNITRO.has_knitro(), true, true, true, true, true, true, true, 2),
+  (
+    "KNITRO",
+    :KnitroSolver,
+    :knitro,
+    KNITRO.has_knitro(),
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    2,
+  ),
 )
-push!(solvers, ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, 1))
+push!(
+  solvers,
+  ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, 1),
+)
 # push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, 1))
 push!(solvers, ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, 2))
-push!(solvers, ("TRUNK", :TrunkSolver, :trunk, true, false, false, false, false, true, true, true, 2))
-push!(solvers, ("TRON-NLS", :TronSolverNLS, :tron, true, true, false, false, true, false, true, true, 2))
-push!(solvers, ("TRUNK-NLS", :TrunkSolverNLS, :trunk, true, false, false, false, true, false, true, true, 2))
-push!(solvers, ("CaNNOLeS", :not_implemented, :cannoles, true, false, true, false, true, false, true, true, 2)) # cannot solve nlp
+push!(
+  solvers,
+  ("TRUNK", :TrunkSolver, :trunk, true, false, false, false, false, true, true, true, 2),
+)
+push!(
+  solvers,
+  ("TRON-NLS", :TronSolverNLS, :tron, true, true, false, false, true, false, true, true, 2),
+)
+push!(
+  solvers,
+  ("TRUNK-NLS", :TrunkSolverNLS, :trunk, true, false, false, false, true, false, true, true, 2),
+)
+push!(
+  solvers,
+  ("CaNNOLeS", :not_implemented, :cannoles, true, false, true, false, true, false, true, true, 2),
+) # cannot solve nlp
 push!(solvers, ("IPOPT", :IpoptSolver, :ipopt, true, true, true, true, false, true, true, true, 2))
-push!(solvers, ("Percival", :PercivalSolver, :percival, true, true, true, true, false, true, true, true, 2))
-push!(solvers, ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, 2))
-push!(solvers, ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, true, false, false, 2)) # need to check linear constraints and quadratic constraints
+push!(
+  solvers,
+  ("Percival", :PercivalSolver, :percival, true, true, true, true, false, true, true, true, 2),
+)
+push!(
+  solvers,
+  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, 2),
+)
+push!(
+  solvers,
+  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, true, false, false, 2),
+) # need to check linear constraints and quadratic constraints
 
 """
     select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)

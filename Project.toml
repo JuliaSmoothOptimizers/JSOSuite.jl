@@ -25,7 +25,7 @@ SolverCore = "ff4d7338-4cf1-434d-91df-b86cb86fb843"
 
 [compat]
 CaNNOLeS = "0.6.0"
-DCISolver = "0.3.1"
+DCISolver = "0.3.1, 0.4"
 DataFrames = "1"
 JSOSolvers = "0.8.1"
 JuMP = "1"

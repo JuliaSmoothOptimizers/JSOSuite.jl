@@ -38,7 +38,7 @@ NLPModelsKnitro = "0.7"
 NLPModelsModifiers = "0.6.2"
 Percival = "0.6.0"
 QuadraticModels = "0.9.2"
-RipQP = "0.5"
+RipQP = "0.5, 0.6"
 SolverCore = "0.3"
 julia = "^1.6.0"
 

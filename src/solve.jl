@@ -1,6 +1,6 @@
 function solve(
   nlp::AbstractNLPModel;
-  verbose = true,
+  verbose = 1,
   highest_derivative_available::Integer = 2,
   kwargs...,
 )
@@ -13,7 +13,7 @@ end
 
 function solve(
   nlp::AbstractNLSModel;
-  verbose = true,
+  verbose = 1,
   highest_derivative_available::Integer = 2,
   kwargs...,
 )

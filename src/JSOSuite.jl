@@ -99,7 +99,7 @@ push!(
 ) # need to check linear constraints and quadratic constraints
 
 """
-    select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
+    select_solvers(nlp::AbstractNLPModel, verbose = 1, highest_derivative_available::Integer = 2)
 
 Narrow the list of solvers to solve `nlp` problem using `highest_derivative_available`.
 
@@ -138,7 +138,7 @@ There are 10 solvers available.
 """
 function select_solvers(
   nlp::AbstractNLPModel,
-  verbose = true,
+  verbose = 1,
   highest_derivative_available::Integer = 2,
 )
   select = solvers[solvers.is_available, :]

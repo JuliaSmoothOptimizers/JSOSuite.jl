@@ -99,7 +99,7 @@ push!(
 ) # need to check linear constraints and quadratic constraints
 
 """
-    select_solvers(nlp::AbstractNLPModel, verbose = true, highest_derivative_available::Integer = 2)
+    select_solvers(nlp::AbstractNLPModel, verbose = 1, highest_derivative_available::Integer = 2)
 
 Narrow the list of solvers to solve `nlp` problem using `highest_derivative_available`.
 
@@ -138,7 +138,7 @@ There are 10 solvers available.
 """
 function select_solvers(
   nlp::AbstractNLPModel,
-  verbose = true,
+  verbose = 1,
   highest_derivative_available::Integer = 2,
 )
   select = solvers[solvers.is_available, :]
@@ -227,7 +227,7 @@ The value returned is a `GenericExecutionStats`, see `SolverCore.jl`.
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite
 nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-stats = solve(nlp, verbose = false)
+stats = solve(nlp, verbose = 0)
 stats
 
 # output
@@ -240,7 +240,7 @@ The list of available solver can be obtained using `JSOSuite.solvers[!, :name]` 
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite
 nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-stats = solve(nlp, "DCISolver", verbose = false)
+stats = solve(nlp, "DCISolver", verbose = 0)
 stats
 
 # output

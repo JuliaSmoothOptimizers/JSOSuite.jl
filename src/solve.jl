@@ -8,7 +8,7 @@ function solve(
   select = select[select.can_solve_nlp, :]
   (verbose ≥ 1) && println("Solve using $(first(select).name):")
   solver = first(select)
-  return solve(nlp, Val(Symbol(solver.name)); kwargs...)
+  return solve(nlp, Val(Symbol(solver.name)); verbose = verbose, kwargs...)
 end
 
 function solve(
@@ -20,19 +20,19 @@ function solve(
   select = select_solvers(nlp, verbose, highest_derivative_available)
   nls_select = select[select.specialized_nls, :]
   solver = if !isempty(nls_select)
-    return first(nls_select)
+    first(nls_select)
   else
-    return first(select)
+    first(select)
   end
   (verbose ≥ 1) && println("Solve using $(solver.name):")
-  return solve(nlp, Val(Symbol(solver.name)); kwargs...)
+  return solve(nlp, Val(Symbol(solver.name)); verbose = verbose, kwargs...)
 end
 
 function solve(nlp, solver_name::String; kwargs...)
   solver = solvers[solvers.name .== solver_name, :]
   if isempty(solver)
     @warn "$(solver_name) does not exist."
-    return nothing
+    return GenericExecutionStats(nlp)
   end
   return solve(nlp, Val(Symbol(solver_name)); kwargs...)
 end

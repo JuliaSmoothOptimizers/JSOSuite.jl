@@ -82,7 +82,6 @@ function solve(nlp, ::Val{:CaNNOLeS}; kwargs...)
   end
   if :rtol in keys(keywords)
     keywords[:ϵtol] = keywords[:rtol]
-    keywords[:feastol] = keywords[:rtol]
     delete!(keywords, :rtol)
   end
   if :max_eval in keys(keywords)

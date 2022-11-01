@@ -45,8 +45,9 @@ julia = "^1.6.0"
 [extras]
 ADNLPModels = "54578032-b7ea-4c30-94aa-7cbd1cce6c9a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NLSProblems = "7cde8186-f29c-533a-9367-b4054c592979"
 OptimizationProblems = "5049e819-d29b-5fba-b941-0eee7e64c1c6"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["ADNLPModels", "LinearAlgebra", "OptimizationProblems", "Test"]
+test = ["ADNLPModels", "LinearAlgebra", "NLSProblems", "OptimizationProblems", "Test"]

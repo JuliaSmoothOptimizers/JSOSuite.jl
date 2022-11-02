@@ -31,6 +31,7 @@ print(selected_solvers[!, :name])
 The problem has 2 variables and no constraints.
 Algorithm selection:
 - unconstrained: ✓;
+- nonlinear objective: ✓;
 - may use 2-th order derivative.
 There are 9 solvers available:
 ["LBFGS", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "Percival", "DCISolver"].

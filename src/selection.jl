@@ -24,6 +24,7 @@ See also [`solve`](@ref).
 using ADNLPModels, JSOSuite
 nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
 selected_solvers = JSOSuite.select_solvers(nlp)
+print(selected_solvers[!, :name])
 
 # output
 
@@ -31,7 +32,8 @@ The problem has 2 variables and no constraints.
 Algorithm selection:
 - unconstrained: ✓;
 - may use 2-th order derivative.
-There are 9 solvers available.
+There are 9 solvers available:
+["LBFGS", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "Percival", "DCISolver"].
 ["LBFGS", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "Percival", "DCISolver"]
 ```
 """

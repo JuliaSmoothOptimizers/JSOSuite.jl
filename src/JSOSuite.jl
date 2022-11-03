@@ -5,7 +5,7 @@ using DataFrames, JuMP, KNITRO
 # stdlib
 using LinearAlgebra, Logging
 # JSO
-using LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
+using ADNLPModels, LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
 # JSO solvers
 using CaNNOLeS, DCISolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
 if KNITRO.has_knitro()
@@ -104,9 +104,17 @@ export solve
 
 """
     stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
-    stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::Symbol; kwargs...)
 
 Compute a local minimum of the optimization problem `nlp`.
+
+    stats = solve(f::Function, x0::AbstractVector, args...; kwargs...)
+    stats = solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
+
+Define an NLPModel using [`ADNLPModel`](@ref).
+
+The solver can be chosen as follows.
+
+    stats = solve(solver_name::Symbol, args...; kwargs...)
 
 `JuMP.Model` are converted in NLPModels via NLPModelsJuMP.jl.
 
@@ -131,9 +139,8 @@ The value returned is a `GenericExecutionStats`, see `SolverCore.jl`.
 
 # Examples
 ```jldoctest; output = false
-using ADNLPModels, JSOSuite
-nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-stats = solve(nlp, verbose = 0)
+using JSOSuite
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
 stats
 
 # output
@@ -144,9 +151,8 @@ stats
 The list of available solver can be obtained using `JSOSuite.solvers[!, :name]` or see [`select_solvers`](@ref).
 
 ```jldoctest; output = false
-using ADNLPModels, JSOSuite
-nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-stats = solve(nlp, "DCISolver", verbose = 0)
+using JSOSuite
+stats = solve("DCISolver", x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
 stats
 
 # output
@@ -155,6 +161,26 @@ stats
 ```
 """
 function solve end
+
+function solve(f::Function, x0::AbstractVector, args...; kwargs...)
+  nlp = ADNLPModel(f, x0, args...)
+  return solve(nlp; kwargs...)
+end
+
+function solve(solver_name::String, f::Function, x0::AbstractVector, args...; kwargs...)
+  nlp = ADNLPModel(f, x0, args...)
+  return solve(solver_name, nlp; kwargs...)
+end
+
+function solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
+  nlp = ADNLSModel(F, x0, nequ, args...)
+  return solve(nlp; kwargs...)
+end
+
+function solve(solver_name::String, F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
+  nlp = ADNLSModel(F, x0, nequ, args...)
+  return solve(solver_name, nlp; kwargs...)
+end
 
 function solve(model::JuMP.Model, args...; kwargs...)
   nlp = MathOptNLPModel(model)

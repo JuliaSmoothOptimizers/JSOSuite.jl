@@ -7,6 +7,22 @@ using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems
 # stdlib
 using LinearAlgebra, Test
 
+@testset "Basic solve tests" begin
+  f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
+  stats = solve(f, [-1.2; 1.0], verbose = 0)
+  @test stats.status_reliable && (stats.status == :first_order)
+
+  stats = solve("DCISolver", f, [-1.2; 1.0], verbose = 0)
+  @test stats.status_reliable && (stats.status == :first_order)
+
+  F = x -> [10 * (x[2] - x[1]^2); x[1] - 1]
+  stats = solve(F, [-1.2; 1.0], 2, verbose = 0)
+  @test stats.status_reliable && (stats.status == :first_order)
+
+  stats = solve("DCISolver", F, [-1.2; 1.0], 2, verbose = 0)
+  @test stats.status_reliable && (stats.status == :first_order)
+end
+
 meta = OptimizationProblems.meta
 @testset "Test solve on OptimizationProblems" begin
   for name in meta[meta.nvar .< 100, :name]
@@ -26,8 +42,8 @@ for solver in eachrow(JSOSuite.solvers)
     if solver.is_available
       if solver.nonlinear_obj
         solve(
-          nlp,
           solver.name,
+          nlp,
           atol = 1e-5,
           rtol = 1e-5,
           max_time = 12.0,
@@ -38,8 +54,8 @@ for solver in eachrow(JSOSuite.solvers)
       else
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
         solve(
-          nlp_qm,
           solver.name,
+          nlp_qm,
           atol = 1e-5,
           rtol = 1e-5,
           max_time = 12.0,
@@ -59,8 +75,8 @@ for solver in eachrow(JSOSuite.solvers)
     if solver.is_available && solver.can_solve_nlp
       if solver.nonlinear_obj
         solve(
-          nlp,
           solver.name,
+          nlp,
           atol = 1e-5,
           rtol = 1e-5,
           max_time = 12.0,
@@ -71,8 +87,8 @@ for solver in eachrow(JSOSuite.solvers)
       else
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
         solve(
-          nlp_qm,
           solver.name,
+          nlp_qm,
           atol = 1e-5,
           rtol = 1e-5,
           max_time = 12.0,

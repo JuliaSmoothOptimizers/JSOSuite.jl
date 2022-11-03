@@ -8,7 +8,7 @@ function solve(
   select = select[select.can_solve_nlp, :]
   (verbose ≥ 1) && println("Solve using $(first(select).name):")
   solver = first(select)
-  return solve(nlp, Val(Symbol(solver.name)); verbose = verbose, kwargs...)
+  return solve(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
 end
 
 function solve(
@@ -25,25 +25,25 @@ function solve(
     first(select)
   end
   (verbose ≥ 1) && println("Solve using $(solver.name):")
-  return solve(nlp, Val(Symbol(solver.name)); verbose = verbose, kwargs...)
+  return solve(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
 end
 
-function solve(nlp, solver_name::String; kwargs...)
+function solve(solver_name::String, nlp; kwargs...)
   solver = solvers[solvers.name .== solver_name, :]
   if isempty(solver)
     @warn "$(solver_name) does not exist."
     return GenericExecutionStats(nlp)
   end
-  return solve(nlp, Val(Symbol(solver_name)); kwargs...)
+  return solve(Val(Symbol(solver_name)), nlp; kwargs...)
 end
 
-function solve(nlp, ::Val{solver_name}; kwargs...) where {solver_name}
+function solve(::Val{solver_name}, nlp; kwargs...) where {solver_name}
   solver = solvers[solvers.name .== string(solver_name), :]
   return eval(solver.solve_function[1])(nlp; kwargs...)
 end
 
 # See https://www.artelys.com/docs/knitro/3_referenceManual/userOptions.html for the list of options accepted.
-function solve(nlp, ::Val{:KNITRO}; kwargs...)
+function solve(::Val{:KNITRO}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     keywords[:outlev] = keywords[:verbose]
@@ -70,7 +70,7 @@ function solve(nlp, ::Val{:KNITRO}; kwargs...)
   return knitro(nlp; keywords...)
 end
 
-function solve(nlp, ::Val{:CaNNOLeS}; kwargs...)
+function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     @warn "Not implemented option `verbose` for CaNNOLeS."
@@ -91,7 +91,7 @@ function solve(nlp, ::Val{:CaNNOLeS}; kwargs...)
   return cannoles(nlp; keywords...)
 end
 
-function solve(nlp, ::Val{:Percival}; kwargs...)
+function solve(::Val{:Percival}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     @warn "Not implemented option `verbose` for Percival."
@@ -101,7 +101,7 @@ function solve(nlp, ::Val{:Percival}; kwargs...)
 end
 
 # Selection of possible [options](https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF).
-function solve(nlp, ::Val{:IPOPT}; kwargs...)
+function solve(::Val{:IPOPT}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     keywords[:print_level] = keywords[:verbose]
@@ -126,7 +126,7 @@ function solve(nlp, ::Val{:IPOPT}; kwargs...)
   return ipopt(nlp; keywords...)
 end
 
-function solve(nlp::Union{QuadraticModel{T0}, LLSModel{T0}}, ::Val{:RipQP}; kwargs...) where {T0}
+function solve(::Val{:RipQP}, nlp::Union{QuadraticModel{T0}, LLSModel{T0}}; kwargs...) where {T0}
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     keywords[:display] = convert(Bool, keywords[:verbose])

@@ -37,7 +37,7 @@ It is also possible to define your NLPModel variant. Several examples are availa
 
 A nonlinear least squares problem is a special case with the objective function defined as  \(f(x) = \tfrac{1}{2}\|F(x)\|^2_2\).
 Although the problem can be solved using only  \(f\), knowing  \(F\) independently allows the development of more efficient methods.
-See the # [Nonlinear Least Squares](@id nls-section) for special treatment of these problems.
+See the [Nonlinear Least Squares](@ref nls-section) for special treatment of these problems.
 
 ### Output
 

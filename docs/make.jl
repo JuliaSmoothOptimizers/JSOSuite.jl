@@ -10,7 +10,7 @@ makedocs(
     prettyurls = get(ENV, "CI", nothing) == "true",
   ),
   sitename = "JSOSuite.jl",
-  pages = Any["Home" => "index.md", "Tutorial" => "tutorial.md", "Reference" => "reference.md"],
+  pages = Any["Home" => "index.md", "Tutorial" => "tutorial.md", "Nonlinear Least Squares" => "nls.md", "Reference" => "reference.md"],
 )
 
 deploydocs(

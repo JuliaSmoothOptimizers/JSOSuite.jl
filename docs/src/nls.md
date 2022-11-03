@@ -58,7 +58,7 @@ x0 = ones(3)
 c = x -> [x[1]]
 b = zeros(1)
 nlp = ADNLPModel(f, x0, c, b, b)
-stats = feasible(nlp)
+# stats = feasible(nlp)
 ```
 
 Using the function `cons` from the NLPModel API, we can verify that the obtained solution is feasible.

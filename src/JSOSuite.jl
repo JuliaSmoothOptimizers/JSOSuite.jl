@@ -110,7 +110,7 @@ Compute a local minimum of the optimization problem `nlp`.
     stats = solve(f::Function, x0::AbstractVector, args...; kwargs...)
     stats = solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
 
-Define an NLPModel using [`ADNLPModel`](@ref).
+Define an NLPModel using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/stable/).
 
 The solver can be chosen as follows.
 

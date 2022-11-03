@@ -103,7 +103,9 @@ end
 function solve(::Val{:IPOPT}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
-    keywords[:print_level] = keywords[:verbose]
+    if keywords[:verbose] == 0
+      keywords[:print_level] = keywords[:verbose]
+    end
     delete!(keywords, :verbose)
   end
   if :atol in keys(keywords)

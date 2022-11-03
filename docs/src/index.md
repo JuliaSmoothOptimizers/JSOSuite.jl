@@ -35,8 +35,8 @@ It is also possible to define your NLPModel variant. Several examples are availa
 - [KnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/KnetNLPModels.jl): An NLPModels Interface to Knet.
 - [PDENLPModels.jl](https://github.com/JuliaSmoothOptimizers/PDENLPModels.jl): A NLPModel API for optimization problems with PDE-constraints.
 
-A nonlinear least squares problem is a special case with the objective function defined as  \(f(x) = \tfrac{1}{2}\|F(x)\|^2_2\).
-Although the problem can be solved using only  \(f\), knowing  \(F\) independently allows the development of more efficient methods.
+A nonlinear least squares problem is a special case with the objective function defined as  ``f(x) = \tfrac{1}{2}\|F(x)\|^2_2``.
+Although the problem can be solved using only  ``f``, knowing  ``F`` independently allows the development of more efficient methods.
 See the [Nonlinear Least Squares](@ref nls-section) for special treatment of these problems.
 
 ### Output

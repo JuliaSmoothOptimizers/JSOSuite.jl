@@ -152,7 +152,7 @@ push!(
 
 include("selection.jl")
 
-export solve
+export solve, feasible
 
 """
     stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
@@ -280,6 +280,7 @@ The following keywords available are passed to the `JSOSuite` solvers:
 All the remaining keyword arguments are passed to the function `SolverBenchmark.bmark_solvers`.
 
 # Examples
+
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite
 nlps = (
@@ -361,6 +362,35 @@ function SolverBenchmark.bmark_solvers(
       )
   end
   return bmark_solvers(solvers, problems; kwargs...)
+end
+
+"""
+    stats = feasible(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
+    stats = feasible(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::Symbol; kwargs...)
+
+Compute a feasible point of the optimization problem `nlp`. The signature is the same as the function [`solve`](@ref).
+c(x) = [10 * (x[2] - x[1]^2); x[1] - 1]
+b = zeros(2)
+nlp = ADNLPModel(x -> 0.0, [-1.2; 1.0], c, b, b)
+stats = feasible(nlp, verbose = 0)
+stats
+
+# output
+
+"Execution stats: first-order stationary"
+```
+"""
+function feasible end
+
+function feasible(nlp::AbstractNLPModel, args...; kwargs...)
+  nls = FeasibilityFormNLS(FeasibilityResidual(nlp))
+  return solve(nls, args...; kwargs...)
+end
+
+function feasible(model::JuMP.Model, args...; kwargs...)
+  nlp = MathOptNLPModel(model)
+  nls = FeasibilityFormNLS(FeasibilityResidual(nlp))
+  return solve(nls, args...; kwargs...)
 end
 
 end # module

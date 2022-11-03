@@ -66,6 +66,14 @@ meta = OptimizationProblems.meta
   end
 end
 
+@testset "Test feasible" begin
+  nlp = OptimizationProblems.ADNLPProblems.lincon()
+  feasible(nlp)
+
+  nlp = OptimizationProblems.PureJuMP.lincon()
+  feasible(nlp)
+end
+
 for solver in eachrow(JSOSuite.solvers)
   nlp = mgh17()
   @testset "Test options in $(solver.name)" begin

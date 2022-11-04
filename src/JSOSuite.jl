@@ -5,7 +5,8 @@ using DataFrames, JuMP, KNITRO
 # stdlib
 using LinearAlgebra, Logging
 # JSO
-using ADNLPModels, LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
+using ADNLPModels,
+  LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
 # JSO solvers
 using CaNNOLeS, DCISolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
 if KNITRO.has_knitro()
@@ -177,7 +178,14 @@ function solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs..
   return solve(nlp; kwargs...)
 end
 
-function solve(solver_name::String, F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
+function solve(
+  solver_name::String,
+  F::Function,
+  x0::AbstractVector,
+  nequ::Integer,
+  args...;
+  kwargs...,
+)
   nlp = ADNLSModel(F, x0, nequ, args...)
   return solve(solver_name, nlp; kwargs...)
 end

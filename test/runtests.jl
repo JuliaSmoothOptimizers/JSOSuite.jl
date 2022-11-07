@@ -7,6 +7,18 @@ using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems
 # stdlib
 using LinearAlgebra, Test
 
+@testset "Benchmark on unconstrained problems" begin
+  ad_problems = (eval(Meta.parse(problem))() for problem ∈ OptimizationProblems.meta[!, :name])
+  stats = bmark_solvers(
+    ad_problems,
+    JSOSuite.solvers.name,
+    atol = 1e-3,
+    verbose = 0,
+    skipif = prob -> (!unconstrained(prob) || get_nvar(prob) > 100 || get_nvar(prob) < 5),
+  )
+  @test true # just test that it runs
+end
+
 @testset "Basic solve tests" begin
   f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
   stats = solve(f, [-1.2; 1.0], verbose = 0)

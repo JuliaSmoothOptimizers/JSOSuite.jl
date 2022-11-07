@@ -241,6 +241,12 @@ keys(stats)
 
 # output
 
+[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal
+[ Info:         Generic       2       0      first_order   4.2e+00   6.1e-15   8.9e-08   0.0e+00
+[ Info:         Generic       2       0      first_order   4.7e-01   1.3e-10   1.1e-05   0.0e+00
+[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal
+[ Info:         Generic       2       0      first_order   2.8e-03   1.5e-10   4.7e-04   0.0e+00
+[ Info:         Generic       2       0      first_order   2.5e-05   4.8e-10   2.2e-05   0.0e+00
 KeySet for a Dict{Symbol, DataFrames.DataFrame} with 2 entries. Keys:
   :TRON
   :LBFGS
@@ -264,6 +270,15 @@ keys(stats)
 
 # output
 
+[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal  
+[ Info:         Generic       2       0      first_order   7.5e-01   1.4e-11   2.6e-05   0.0e+00
+[ Info:         Generic       2       0      first_order   4.0e-01   5.4e-07   6.7e-04   0.0e+00
+[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal  
+[ Info:         Generic       2       0      first_order   2.9e+00   6.1e-15   8.9e-08   0.0e+00
+[ Info:         Generic       2       0      first_order   2.2e-02   1.3e-10   1.1e-05   0.0e+00
+[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal  
+[ Info:         Generic       2       0      first_order   0.0e+00   1.5e-10   4.7e-04   0.0e+00
+[ Info:         Generic       2       0      first_order   0.0e+00   4.8e-10   2.2e-05   0.0e+00
 KeySet for a Dict{Symbol, DataFrames.DataFrame} with 3 entries. Keys:
   :test
   :TRON

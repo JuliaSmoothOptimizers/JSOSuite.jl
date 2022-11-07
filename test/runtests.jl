@@ -8,13 +8,13 @@ using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems
 using LinearAlgebra, Test
 
 @testset "Benchmark on unconstrained problems" begin
-  ad_problems = (eval(Meta.parse(problem))() for problem ∈ OptimizationProblems.meta[!, :name])
+  ad_problems = (OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem ∈ OptimizationProblems.meta[!, :name])
   stats = bmark_solvers(
     ad_problems,
     JSOSuite.solvers.name,
     atol = 1e-3,
     verbose = 0,
-    skipif = prob -> (!unconstrained(prob) || get_nvar(prob) > 100 || get_nvar(prob) < 5),
+    skipif = prob -> (!unconstrained(prob) || get_nvar(prob) > 10 || get_nvar(prob) < 5),
   )
   @test true # just test that it runs
 end

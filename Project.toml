@@ -22,6 +22,7 @@ NLPModelsModifiers = "e01155f1-5c6f-4375-a9d8-616dd036575f"
 Percival = "01435c0c-c90d-11e9-3788-63660f8fbccc"
 QuadraticModels = "f468eda6-eac5-11e8-05a5-ff9e497bcd19"
 RipQP = "1e40b3f8-35eb-4cd8-8edd-3e515bb9de08"
+SolverBenchmark = "581a75fa-a23a-52d0-a590-d6201de2218a"
 SolverCore = "ff4d7338-4cf1-434d-91df-b86cb86fb843"
 
 [compat]

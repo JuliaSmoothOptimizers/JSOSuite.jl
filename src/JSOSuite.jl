@@ -236,17 +236,17 @@ nlps = (
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
 )
 names = ["LBFGS", "TRON"] # see `JSOSuite.solvers.name` for the complete list
-stats = bmark_solvers(nlps, names, atol = 1e-3, verbose = 0)
+stats = bmark_solvers(nlps, names, atol = 1e-3, verbose = 0, colstats = [:name, :nvar, :ncon, :status])
 keys(stats)
 
 # output
 
-[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal
-[ Info:         Generic       2       0      first_order   4.2e+00   6.1e-15   8.9e-08   0.0e+00
-[ Info:         Generic       2       0      first_order   4.7e-01   1.3e-10   1.1e-05   0.0e+00
-[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal
-[ Info:         Generic       2       0      first_order   2.8e-03   1.5e-10   4.7e-04   0.0e+00
-[ Info:         Generic       2       0      first_order   2.5e-05   4.8e-10   2.2e-05   0.0e+00
+[ Info:            Name    nvar    ncon           status  
+[ Info:         Generic       2       0      first_order
+[ Info:         Generic       2       0      first_order
+[ Info:            Name    nvar    ncon           status  
+[ Info:         Generic       2       0      first_order
+[ Info:         Generic       2       0      first_order
 KeySet for a Dict{Symbol, DataFrames.DataFrame} with 2 entries. Keys:
   :TRON
   :LBFGS
@@ -256,7 +256,7 @@ KeySet for a Dict{Symbol, DataFrames.DataFrame} with 2 entries. Keys:
 The second example shows how to add you own solver to the benchmark.
 
 ```jldoctest; output = false
-using ADNLPModels, JSOSolvers, JSOSuite
+using ADNLPModels, JSOSolvers, JSOSuite, Logging
 nlps = (
   ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
@@ -265,20 +265,20 @@ names = ["LBFGS", "TRON"] # see `JSOSuite.solvers.name` for the complete list
 other_solvers = Dict{Symbol, Function}(
   :test => nlp -> lbfgs(nlp; mem = 2, atol = 1e-3, verbose = 0),
 )
-stats = bmark_solvers(nlps, names, other_solvers, atol = 1e-3, verbose = 0)
+stats = bmark_solvers(nlps, names, other_solvers, atol = 1e-3, verbose = 0, colstats = [:name, :nvar, :ncon, :status])
 keys(stats)
 
 # output
 
-[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal  
-[ Info:         Generic       2       0      first_order   7.5e-01   1.4e-11   2.6e-05   0.0e+00
-[ Info:         Generic       2       0      first_order   4.0e-01   5.4e-07   6.7e-04   0.0e+00
-[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal  
-[ Info:         Generic       2       0      first_order   2.9e+00   6.1e-15   8.9e-08   0.0e+00
-[ Info:         Generic       2       0      first_order   2.2e-02   1.3e-10   1.1e-05   0.0e+00
-[ Info:            Name    nvar    ncon           status      Time      f(x)      Dual    Primal  
-[ Info:         Generic       2       0      first_order   0.0e+00   1.5e-10   4.7e-04   0.0e+00
-[ Info:         Generic       2       0      first_order   0.0e+00   4.8e-10   2.2e-05   0.0e+00
+[ Info:            Name    nvar    ncon           status  
+[ Info:         Generic       2       0      first_order
+[ Info:         Generic       2       0      first_order
+[ Info:            Name    nvar    ncon           status
+[ Info:         Generic       2       0      first_order
+[ Info:         Generic       2       0      first_order
+[ Info:            Name    nvar    ncon           status
+[ Info:         Generic       2       0      first_order
+[ Info:         Generic       2       0      first_order
 KeySet for a Dict{Symbol, DataFrames.DataFrame} with 3 entries. Keys:
   :test
   :TRON

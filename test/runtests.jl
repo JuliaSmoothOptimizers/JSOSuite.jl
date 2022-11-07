@@ -8,7 +8,10 @@ using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems
 using LinearAlgebra, Test
 
 @testset "Benchmark on unconstrained problems" begin
-  ad_problems = (OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem ∈ OptimizationProblems.meta[!, :name])
+  ad_problems = (
+    OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
+    problem ∈ OptimizationProblems.meta[!, :name]
+  )
   stats = bmark_solvers(
     ad_problems,
     JSOSuite.solvers.name,

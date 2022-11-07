@@ -298,7 +298,16 @@ function SolverBenchmark.bmark_solvers(
   kwargs...,
 )
   for s in solver_names
-    solvers[Symbol(s)] = nlp -> solve(s, nlp; atol = atol, rtol = rtol, verbose = verbose, max_time = max_time, max_eval = max_eval)
+    solvers[Symbol(s)] =
+      nlp -> solve(
+        s,
+        nlp;
+        atol = atol,
+        rtol = rtol,
+        verbose = verbose,
+        max_time = max_time,
+        max_eval = max_eval,
+      )
   end
   return bmark_solvers(solvers, problems; kwargs...)
 end

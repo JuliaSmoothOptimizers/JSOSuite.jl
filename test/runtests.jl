@@ -12,9 +12,10 @@ using LinearAlgebra, Test
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
     problem ∈ OptimizationProblems.meta[!, :name]
   )
+  select = solvers[solvers.can_solve_nlp, :name]
   stats = bmark_solvers(
     ad_problems,
-    JSOSuite.solvers.name,
+    select,
     atol = 1e-3,
     max_time = 10.0,
     verbose = 0,

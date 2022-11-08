@@ -67,7 +67,7 @@ push!(
   solvers,
   ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, 1),
 )
-# push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, 1))
+push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, 1))
 push!(solvers, ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, 2))
 push!(
   solvers,

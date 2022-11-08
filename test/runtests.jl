@@ -16,6 +16,7 @@ using LinearAlgebra, Test
     ad_problems,
     JSOSuite.solvers.name,
     atol = 1e-3,
+    max_time = 10.0,
     verbose = 0,
     skipif = prob -> (!unconstrained(prob) || get_nvar(prob) > 10 || get_nvar(prob) < 5),
   )

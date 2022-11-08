@@ -5,7 +5,6 @@ function solve(
   kwargs...,
 )
   select = select_solvers(nlp, verbose, highest_derivative_available)
-  select = select[select.can_solve_nlp, :]
   (verbose ≥ 1) && println("Solve using $(first(select).name):")
   solver = first(select)
   return solve(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)

@@ -33,6 +33,24 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
+There are 7 solvers available:
+["LBFGS", "R2", "TRON", "TRUNK", "IPOPT", "Percival", "DCISolver"].
+["LBFGS", "R2", "TRON", "TRUNK", "IPOPT", "Percival", "DCISolver"]
+```
+
+```jldoctest; output = false
+using ADNLPModels, JSOSuite
+nlp = ADNLSModel(x -> [10 * (x[2] - x[1]^2), (x[1] - 1)], [-1.2; 1.0], 2)
+selected_solvers = JSOSuite.select_solvers(nlp)
+print(selected_solvers[!, :name])
+
+# output
+
+The problem has 2 variables and no constraints.
+Algorithm selection:
+- unconstrained: ✓;
+- nonlinear objective: ✓;
+- may use 2-th order derivative.
 There are 10 solvers available:
 ["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "Percival", "DCISolver"].
 ["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "Percival", "DCISolver"]
@@ -43,7 +61,7 @@ function select_solvers(
   verbose = 1,
   highest_derivative_available::Integer = 2,
 )
-  select = solvers[solvers.is_available, :]
+  select = generic(nlp, solvers[solvers.is_available, :])
   if verbose ≥ 1
     used_name = nlp.meta.name == "Generic" ? "The problem" : "The problem $(nlp.meta.name)"
     s = "$(used_name) has $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints."
@@ -102,3 +120,10 @@ function select_solvers(
   end
   return select
 end
+
+"""Checker whether solvers are Generic only"""
+function generic end
+
+generic(::AbstractNLSModel, solvers::DataFrame) = solvers
+generic(::Union{QuadraticModel, LLSModel}, solvers::DataFrame) = solvers
+generic(::AbstractNLPModel, solvers::DataFrame) = solvers[solvers.can_solve_nlp, :]

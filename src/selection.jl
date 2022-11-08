@@ -57,10 +57,10 @@ There are 10 solvers available:
 ```
 """
 function select_solvers(
-  nlp::AbstractNLPModel,
+  nlp::AbstractNLPModel{T, S},
   verbose = 1,
   highest_derivative_available::Integer = 2,
-)
+) where {T, S}
   select = generic(nlp, solvers[solvers.is_available, :])
   if verbose ≥ 1
     used_name = nlp.meta.name == "Generic" ? "The problem" : "The problem $(nlp.meta.name)"
@@ -69,6 +69,10 @@ function select_solvers(
     println(s)
   end
   (verbose ≥ 1) && println("Algorithm selection:")
+  if T != Float64
+    (verbose ≥ 1) && println("- $T precision: ✓;")
+    select = select[.!select.double_precision_only, :]
+  end
   if !unconstrained(nlp)
     if has_equalities(nlp)
       (verbose ≥ 1) && println("- equalities: ✓;")

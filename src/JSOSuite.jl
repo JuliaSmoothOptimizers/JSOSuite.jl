@@ -152,7 +152,7 @@ push!(
 
 include("selection.jl")
 
-export solve, feasible
+export solve, feasible_point
 
 """
     stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
@@ -380,7 +380,7 @@ stats
 "Execution stats: first-order stationary"
 ```
 """
-function feasible end
+function feasible_point end
 
 function feasible_point(nlp::AbstractNLPModel, args...; kwargs...)
   nls = FeasibilityFormNLS(FeasibilityResidual(nlp))

@@ -11,19 +11,11 @@ using LinearAlgebra, Test
   nlp = OptimizationProblems.ADNLPProblems.genrose(type = Val(Float32))
   for solver in eachrow(JSOSuite.select_solvers(nlp))
     if solver.nonlinear_obj
-      solve(
-        solver.name,
-        nlp,
-        verbose = 0,
-      )
+      solve(solver.name, nlp, verbose = 0)
       @test true
     else
       nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
-      solve(
-        solver.name,
-        nlp_qm,
-        verbose = 0,
-      )
+      solve(solver.name, nlp_qm, verbose = 0)
       @test true
     end
   end

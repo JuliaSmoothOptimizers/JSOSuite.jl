@@ -30,6 +30,7 @@ For each solver, the following are available:
 - `can_solve_nlp::Bool`: `true` if the solver can solve general problems. Some may only solve nonlinear least squares;
 - `nonlinear_obj::Bool`: `true` if the solver can handle nonlinear objective;
 - `nonlinear_con::Bool`: `true` if the solver can handle nonlinear constraints;
+- `double_precision_only::Bool`: `true` if the solver only handles double precision (`Float64`);
 - `highest_derivative::Int`: order of the highest derivative used by the algorithm.
 """
 solvers = DataFrame(
@@ -44,6 +45,7 @@ solvers = DataFrame(
   can_solve_nlp = Bool[],
   nonlinear_obj = Bool[],
   nonlinear_con = Bool[],
+  double_precision_only = Bool[],
   highest_derivative = Int[],
 )
 push!(
@@ -60,43 +62,44 @@ push!(
     true,
     true,
     true,
+    true,
     2,
   ),
 )
 push!(
   solvers,
-  ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, 1),
+  ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, false, 1),
 )
-push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, 1))
-push!(solvers, ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, 2))
+push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, false, 1))
+push!(solvers, ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, false, 2))
 push!(
   solvers,
-  ("TRUNK", :TrunkSolver, :trunk, true, false, false, false, false, true, true, true, 2),
-)
-push!(
-  solvers,
-  ("TRON-NLS", :TronSolverNLS, :tron, true, true, false, false, true, false, true, true, 2),
+  ("TRUNK", :TrunkSolver, :trunk, true, false, false, false, false, true, true, true, false, 2),
 )
 push!(
   solvers,
-  ("TRUNK-NLS", :TrunkSolverNLS, :trunk, true, false, false, false, true, false, true, true, 2),
+  ("TRON-NLS", :TronSolverNLS, :tron, true, true, false, false, true, false, true, true, false, 2),
 )
 push!(
   solvers,
-  ("CaNNOLeS", :not_implemented, :cannoles, true, false, true, false, true, false, true, true, 2),
-)
-push!(solvers, ("IPOPT", :IpoptSolver, :ipopt, true, true, true, true, false, true, true, true, 2))
-push!(
-  solvers,
-  ("Percival", :PercivalSolver, :percival, true, true, true, true, false, true, true, true, 2),
+  ("TRUNK-NLS", :TrunkSolverNLS, :trunk, true, false, false, false, true, false, true, true, false, 2),
 )
 push!(
   solvers,
-  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, 2),
+  ("CaNNOLeS", :not_implemented, :cannoles, true, false, true, false, true, false, true, true, false, 2),
+)
+push!(solvers, ("IPOPT", :IpoptSolver, :ipopt, true, true, true, true, false, true, true, true, true, 2))
+push!(
+  solvers,
+  ("Percival", :PercivalSolver, :percival, true, true, true, true, false, true, true, true, true, 2),
 )
 push!(
   solvers,
-  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, 2),
+  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, true, 2),
+)
+push!(
+  solvers,
+  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, true, 2),
 ) # need to check linear constraints and quadratic constraints
 
 include("selection.jl")

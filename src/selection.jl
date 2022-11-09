@@ -65,7 +65,7 @@ function select_solvers(
   if verbose ≥ 1
     used_name = nlp.meta.name == "Generic" ? "The problem" : "The problem $(nlp.meta.name)"
     s = "$(used_name) has $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints."
-    s = replace(s, "0" => "no", "1 variables" => "1 variable", "1 constraints" => "1 constraint")
+    s = replace(s, " 0" => " no", "1 variables" => "1 variable", "1 constraints" => "1 constraint")
     println(s)
   end
   (verbose ≥ 1) && println("Algorithm selection:")

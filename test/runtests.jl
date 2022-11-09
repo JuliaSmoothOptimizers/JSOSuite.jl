@@ -68,10 +68,10 @@ end
 
 @testset "Test feasible" begin
   nlp = OptimizationProblems.ADNLPProblems.lincon()
-  feasible(nlp)
+  feasible_point(nlp)
 
   nlp = OptimizationProblems.PureJuMP.lincon()
-  feasible(nlp)
+  feasible_point(nlp)
 end
 
 for solver in eachrow(JSOSuite.solvers)

@@ -71,7 +71,10 @@ push!(
   ("LBFGS", :LBFGSSolver, :lbfgs, true, false, false, false, false, true, true, true, false, 1),
 )
 push!(solvers, ("R2", :R2Solver, :R2, true, false, false, false, false, true, true, true, false, 1))
-push!(solvers, ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, false, 2))
+push!(
+  solvers,
+  ("TRON", :TronSolver, :tron, true, true, false, false, false, true, true, true, false, 2),
+)
 push!(
   solvers,
   ("TRUNK", :TrunkSolver, :trunk, true, false, false, false, false, true, true, true, false, 2),
@@ -82,16 +85,61 @@ push!(
 )
 push!(
   solvers,
-  ("TRUNK-NLS", :TrunkSolverNLS, :trunk, true, false, false, false, true, false, true, true, false, 2),
+  (
+    "TRUNK-NLS",
+    :TrunkSolverNLS,
+    :trunk,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    2,
+  ),
 )
 push!(
   solvers,
-  ("CaNNOLeS", :not_implemented, :cannoles, true, false, true, false, true, false, true, true, false, 2),
+  (
+    "CaNNOLeS",
+    :not_implemented,
+    :cannoles,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    2,
+  ),
 )
-push!(solvers, ("IPOPT", :IpoptSolver, :ipopt, true, true, true, true, false, true, true, true, true, 2))
 push!(
   solvers,
-  ("Percival", :PercivalSolver, :percival, true, true, true, true, false, true, true, true, true, 2),
+  ("IPOPT", :IpoptSolver, :ipopt, true, true, true, true, false, true, true, true, true, 2),
+)
+push!(
+  solvers,
+  (
+    "Percival",
+    :PercivalSolver,
+    :percival,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    2,
+  ),
 )
 push!(
   solvers,

@@ -71,10 +71,6 @@ end
 
 function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
   keywords = Dict(kwargs)
-  if :verbose in keys(keywords)
-    @warn "Not implemented option `verbose` for CaNNOLeS."
-    delete!(keywords, :verbose)
-  end
   if :atol in keys(keywords)
     @warn "Not implemented option `atol` for CaNNOLeS."
     delete!(keywords, :atol)
@@ -87,7 +83,7 @@ function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
     keywords[:max_f] = keywords[:max_eval]
     delete!(keywords, :max_eval)
   end
-  return cannoles(nlp; keywords...)
+  return cannoles(nlp; linsolve = :ldlfactorizations, keywords...)
 end
 
 function solve(::Val{:Percival}, nlp; kwargs...)

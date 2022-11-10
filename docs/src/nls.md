@@ -111,5 +111,5 @@ Using the function `cons` from the NLPModel API, we can verify that the obtained
 ```@example feas
 using NLPModels
 
-cons(nlp, stats.solution[1:3]) # is close to zero.
+cons(nlp, stats.solution) # is close to zero.
 ```

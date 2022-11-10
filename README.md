@@ -25,19 +25,19 @@ If you use JSOSuite.jl in your work, please cite using the format given in [CITA
 ] add JSOSuite
 ```
 
-## Example
+## Examples
 
 ```julia
-using JSOSuite, ADNLPModels
+using JSOSuite
 
 # Rosenbrock
-nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-stats = solve(nlp)
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
 
-# Constrained
-nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0],
-                 x->[x[1] * x[2] - 1], [0.0], [0.0])
-stats = solve(nlp)
+# Constrained problem
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], x->[x[1] * x[2] - 1], [0.0], [0.0])
+
+# Constrained problem in Float32
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, Float32[-1.2; 1.0], x->[x[1] * x[2] - 1], Float32[0.0], Float32[0.0])
 ```
 
 # Bug reports and discussions

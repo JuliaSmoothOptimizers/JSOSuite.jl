@@ -125,6 +125,10 @@ push!(
 )
 push!(
   solvers,
+  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, false, 2),
+)
+push!(
+  solvers,
   (
     "Percival",
     :PercivalSolver,
@@ -137,17 +141,13 @@ push!(
     true,
     true,
     true,
-    true,
+    false,
     2,
   ),
 )
 push!(
   solvers,
-  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, true, 2),
-)
-push!(
-  solvers,
-  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, true, 2),
+  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, false, 2),
 ) # need to check linear constraints and quadratic constraints
 
 include("selection.jl")
@@ -166,7 +166,7 @@ Define an NLPModel using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/
 
 The solver can be chosen as follows.
 
-    stats = solve(solver_name::Symbol, args...; kwargs...)
+    stats = solve(solver_name::String, args...; kwargs...)
 
 `JuMP.Model` are converted in NLPModels via NLPModelsJuMP.jl.
 

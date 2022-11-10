@@ -13,12 +13,18 @@ All these solvers rely on the `NLPModel API` from [NLPModels.jl](https://github.
 \end{aligned}
 ```
 
-The `NLPModel API` is a general consistent API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions to evaluate their derivatives, and to provide essentially any information that a solver might request from a model. [JuliaSmoothOrganization's website](https://juliasmoothoptimizers.github.io) or [NLPModels.jl's documentation](https://juliasmoothoptimizers.github.io/NLPModels.jl/dev/) provide more tutorials on this topic.
-
 The package `JSOSuite` exports a function [`solve`](@ref): 
+```
+output = solve(args...; kwargs...)
+```
+The arguments are used to define the problem, see [Tutorial](@ref tutorial-section).
+
+It is also possible to define a `NLPModel` or a `JuMP` model represeting the problem, and then call `solve`:
 ```
 output = solve(nlpmodel; kwargs...)
 ```
+
+The `NLPModel API` is a general consistent API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions to evaluate their derivatives, and to provide essentially any information that a solver might request from a model. [JuliaSmoothOrganization's website](https://juliasmoothoptimizers.github.io) or [NLPModels.jl's documentation](https://juliasmoothoptimizers.github.io/NLPModels.jl/dev/) provide more tutorials on this topic.
 
 ### NLPModel
 
@@ -67,10 +73,10 @@ show_statuses()
 All the keyword arguments are passed to the selected solver.
 Keywords available for all the solvers are given below:
 
-- `atol`: absolute tolerance;
-- `rtol`: relative tolerance;
-- `max_time`: maximum number of seconds;
-- `max_eval`: maximum number of cons + obj evaluations;
+- `atol::T = √eps(T)`: absolute tolerance;
+- `rtol::T = √eps(T)`: relative tolerance;
+- `max_time::Float64 = 300.0`: maximum number of seconds;
+- `max_eval::Int = 10 000`: maximum number of constraint and objective functions evaluations;
 - `verbose::Int = 0`: if > 0, display iteration details for every `verbose` iteration.
 
 Further possible options are documented in each solver's documentation.

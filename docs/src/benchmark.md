@@ -24,14 +24,15 @@ It is possible to then select the problems without evaluating them first.
 ```@example op
 selected_meta = OptimizationProblems.meta
 selected_meta = selected_meta[(selected_meta.nvar .< 200), :] # choose problem with <200 variables.
-selected_meta = selected_meta[.!selected_meta.has_bounds .&& (selected_meta.ncon .== 0), :] # unconstrained problems
+selected_meta = selected_meta[.!selected_meta.has_bounds .&& (selected_meta.ncon .== 0), :]; # unconstrained problems
+list = selected_meta[!, :name]
 ```
 
 Then, we generate the list of problems using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S).
 
 ```@example op
 ad_problems = [
-  OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem ∈ selected_meta[!, :name]
+  OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem ∈ list
 ]
 length(ad_problems) # return the number of problems
 ```
@@ -40,7 +41,8 @@ We now want to select appropriate solvers using the `JSOSuite.solvers`.
 
 ```@example op
 selected_solvers = JSOSuite.solvers
-selected_solvers = selected_solvers[selected_solvers.can_solve_nlp, :] # solvers can solve general `nlp` as some are specific to variants (NLS, ...)
+# solvers can solve general `nlp` as some are specific to variants (NLS, ...)
+selected_solvers = selected_solvers[selected_solvers.can_solve_nlp, :]
 selected_solvers[selected_solvers.is_available, :] # solvers available
 ```
 
@@ -78,7 +80,11 @@ Note that there are fundamental differences between these solvers as highlighted
 ```@example op
 for solver in ["IPOPT", "TRUNK", "LBFGS"]
   println("$solver evaluations:")
-  a, b, c, d = eachcol(stats[Symbol(solver)][!, [:neval_obj, :neval_grad, :neval_hess, :neval_hprod]])
-  println("neval_obj: $(sum(a)),  neval_grad: $(sum(b)), neval_hess: $(sum(c)), neval_hprod: $(sum(d)).")
+  a, b, c, d = eachcol(
+    stats[Symbol(solver)][!, [:neval_obj, :neval_grad, :neval_hess, :neval_hprod]]
+  )
+  println(
+    "neval_obj: $(sum(a)),  neval_grad: $(sum(b)), neval_hess: $(sum(c)), neval_hprod: $(sum(d))."
+  )
 end
 ```

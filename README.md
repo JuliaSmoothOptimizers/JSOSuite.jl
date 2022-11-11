@@ -31,13 +31,16 @@ If you use JSOSuite.jl in your work, please cite using the format given in [CITA
 using JSOSuite
 
 # Rosenbrock
-stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
+x0 = [-1.2; 1.0]
+f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
+stats = solve(f, x0)
 
 # Constrained problem
-stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], x->[x[1] * x[2] - 1], [0.0], [0.0])
+c = x -> [x[1] * x[2] - 1]
+stats = solve(f, x0, c, [0.0], [0.0])
 
 # Constrained problem in Float32
-stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, Float32[-1.2; 1.0], x->[x[1] * x[2] - 1], Float32[0.0], Float32[0.0])
+stats = solve(f, Float32.(x0), c, Float32[0.0], Float32[0.0])
 ```
 
 # Bug reports and discussions

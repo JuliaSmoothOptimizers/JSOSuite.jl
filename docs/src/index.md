@@ -19,7 +19,7 @@ output = solve(args...; kwargs...)
 ```
 The arguments are used to define the problem, see [Tutorial](@ref tutorial-section).
 
-It is also possible to define a `NLPModel` or a `JuMP` model represeting the problem, and then call `solve`:
+It is also possible to define an `NLPModel` or a `JuMP` model representing the problem, and then call `solve`:
 ```
 output = solve(nlpmodel; kwargs...)
 ```
@@ -37,7 +37,7 @@ Depending on the origin of the problem several modeling tools are available. The
 - Models using automatic differentiation can be generated using [ADNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl).
 - Models with manually input derivatives can be defined using [ManualNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ManualNLPModels.jl).
 
-It is also possible to define your NLPModel variant. Several examples are available within JuliaSmoothOptimizers umbrella:
+It is also possible to define your NLPModel variant. Several examples are available within JuliaSmoothOptimizers' umbrella:
 - [KnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/KnetNLPModels.jl): An NLPModels Interface to Knet.
 - [PDENLPModels.jl](https://github.com/JuliaSmoothOptimizers/PDENLPModels.jl): A NLPModel API for optimization problems with PDE-constraints.
 

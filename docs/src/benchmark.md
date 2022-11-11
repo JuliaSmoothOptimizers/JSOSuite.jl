@@ -31,7 +31,9 @@ length(ad_problems)
 ```
 
 ```@example op
-select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp, :name]
+selected_solvers = JSOSuite.solvers
+selected_solvers = selected_solvers[selected_solvers.can_solve_nlp, :]
+select = selected_solvers[selected_solvers.is_available, :name]
 ```
 
 ```@example op

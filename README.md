@@ -14,3 +14,35 @@
 [release-url]: https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/releases
 
 One stop solutions for all things optimization.
+
+## How to Cite
+
+If you use JSOSuite.jl in your work, please cite using the format given in [CITATION.cff](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/blob/main/CITATION.cff).
+
+## Installation
+
+```
+] add JSOSuite
+```
+
+## Examples
+
+```julia
+using JSOSuite
+
+# Rosenbrock
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
+
+# Constrained problem
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], x->[x[1] * x[2] - 1], [0.0], [0.0])
+
+# Constrained problem in Float32
+stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, Float32[-1.2; 1.0], x->[x[1] * x[2] - 1], Float32[0.0], Float32[0.0])
+```
+
+# Bug reports and discussions
+
+If you think you found a bug, feel free to open an [issue](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/issues).
+Focused suggestions and requests can also be opened as issues. Before opening a pull request, start an issue or a discussion on the topic, please.
+
+If you want to ask a question not suited for a bug report, feel free to start a discussion [here](https://github.com/JuliaSmoothOptimizers/Organization/discussions). This forum is for general discussion about this repository and the [JuliaSmoothOptimizers](https://github.com/JuliaSmoothOptimizers), so questions about any of our packages are welcome.

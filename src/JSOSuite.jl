@@ -125,6 +125,10 @@ push!(
 )
 push!(
   solvers,
+  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, false, 2),
+)
+push!(
+  solvers,
   (
     "Percival",
     :PercivalSolver,
@@ -137,17 +141,13 @@ push!(
     true,
     true,
     true,
-    true,
+    false,
     2,
   ),
 )
 push!(
   solvers,
-  ("DCISolver", :DCIWorkspace, :dci, true, false, true, false, false, true, true, true, true, 2),
-)
-push!(
-  solvers,
-  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, true, 2),
+  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, false, 2),
 ) # need to check linear constraints and quadratic constraints
 
 include("selection.jl")
@@ -166,7 +166,7 @@ Define an NLPModel using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/
 
 The solver can be chosen as follows.
 
-    stats = solve(solver_name::Symbol, args...; kwargs...)
+    stats = solve(solver_name::String, args...; kwargs...)
 
 `JuMP.Model` are converted in NLPModels via NLPModelsJuMP.jl.
 
@@ -369,6 +369,13 @@ end
     stats = feasible_point(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::Symbol; kwargs...)
 
 Compute a feasible point of the optimization problem `nlp`. The signature is the same as the function [`solve`](@ref).
+
+## Output
+
+The value returned is a `GenericExecutionStats`, see `SolverCore.jl`, where the `status`, `solution`, `primal_residual`, `iter` and `time` are filled-in.
+
+```jldoctest; output = false
+using ADNLPModels, JSOSuite
 c(x) = [10 * (x[2] - x[1]^2); x[1] - 1]
 b = zeros(2)
 nlp = ADNLPModel(x -> 0.0, [-1.2; 1.0], c, b, b)
@@ -384,13 +391,18 @@ function feasible_point end
 
 function feasible_point(nlp::AbstractNLPModel, args...; kwargs...)
   nls = FeasibilityFormNLS(FeasibilityResidual(nlp))
-  return solve(nls, args...; kwargs...)
+  stats_nls = solve(nls, args...; kwargs...)
+  stats = GenericExecutionStats(nlp)
+  set_status!(stats, stats_nls.status)
+  set_solution!(stats, stats_nls.solution[1:get_nvar(nlp)])
+  set_primal_residual!(stats, stats_nls.objective)
+  set_iter!(stats, stats_nls.iter)
+  set_time!(stats, stats_nls.elapsed_time)
+  return stats
 end
 
 function feasible_point(model::JuMP.Model, args...; kwargs...)
-  nlp = MathOptNLPModel(model)
-  nls = FeasibilityFormNLS(FeasibilityResidual(nlp))
-  return solve(nls, args...; kwargs...)
+  return feasible_point(MathOptNLPModel(model), args...; kwargs...)
 end
 
 end # module

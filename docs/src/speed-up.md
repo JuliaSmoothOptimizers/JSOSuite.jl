@@ -42,13 +42,13 @@ Note that all solvers presented here have been carefully optimized. All have dif
 
 ### Unconstrained/Bound-constrained
 
-#### LBFGS
+##### LBFGS
 
 - `mem::Int = 5`: memory parameter of the `lbfgs` algorithm;
 - `τ₁::T = T(0.9999)`: slope factor in the Wolfe condition when performing the line search;
 - `bk_max:: Int = 25`: maximum number of backtracks when performing the line search.
 
-#### TRON
+##### TRON
 
 - `μ₀::T = T(1e-2)`: algorithm parameter in (0, 0.5);
 - `μ₁::T = one(T)`: algorithm parameter in (0, +∞);
@@ -56,11 +56,11 @@ Note that all solvers presented here have been carefully optimized. All have dif
 - `max_cgiter::Int = 50`: subproblem's iteration limit;
 - `cgtol::T = T(0.1)`: subproblem tolerance.
 
-#### TRUNK
+##### TRUNK
 
 TODO
 
-#### R2
+##### R2
 
 - `η1 = eps(T)^(1/4)`, `η2 = T(0.95)`: step acceptance parameters;
 - `γ1 = T(1/2)`, `γ2 = 1/γ1`: regularization update parameters;
@@ -69,23 +69,23 @@ TODO
 
 ### Constrained
 
-#### Percival.jl
+##### Percival
 
 - `μ::Real = T(10.0)`: Starting value of the penalty parameter.
 
-#### CaNNOLeS
+##### CaNNOLeS
 
 - `linsolve::Symbol = :ma57`: solver to compute LDLt factorization. Available methods are: `:ma57`, `:ldlfactorizations`;
 - `method::Symbol = :Newton`: available methods `:Newton, :LM, :Newton_noFHess`, and `:Newton_vanishing`;
 
 See [CaNNOLeS.jl tutorial](https://juliasmoothoptimizers.github.io/CaNNOLeS.jl/dev/tutorial/).
 
-#### DCISolver
+##### DCISolver
 
 - `linear_solver = :ldlfact`: Solver for the factorization. options: `:ma57` if `HSL.jl` available.
 
 See [`fine-tuneDCI`](https://juliasmoothoptimizers.github.io/DCISolver.jl/dev/fine-tuneDCI/).
 
-#### RipQP
+##### RipQP
 
 TODO

@@ -17,7 +17,7 @@ makedocs(
     "Benchmarking" => "benchmark.md",
     "Speed up Solvers Tips" => "speed-up.md",
     "Reference" => "reference.md",
-    ],
+  ],
 )
 
 deploydocs(

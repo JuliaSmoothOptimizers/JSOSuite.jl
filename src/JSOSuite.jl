@@ -8,7 +8,7 @@ using LinearAlgebra, Logging
 using ADNLPModels,
   LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
 # JSO solvers
-using CaNNOLeS, DCISolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
+using CaNNOLeS, DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
 if KNITRO.has_knitro()
   using NLPModelsKnitro
 end
@@ -105,7 +105,7 @@ push!(
   solvers,
   (
     "CaNNOLeS",
-    :not_implemented,
+    :CaNNOLeSSolver,
     :cannoles,
     true,
     false,
@@ -129,6 +129,10 @@ push!(
 )
 push!(
   solvers,
+  ("FletcherPenaltySolver", :FPSSSolver, :fps_solve, true, false, true, false, false, true, true, true, false, 2),
+)
+push!(
+  solvers,
   (
     "Percival",
     :PercivalSolver,
@@ -147,7 +151,7 @@ push!(
 )
 push!(
   solvers,
-  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, false, 2),
+  ("RipQP", :RipQPSolver, :ripqp, true, true, true, true, false, false, false, false, false, 2),
 ) # need to check linear constraints and quadratic constraints
 
 include("selection.jl")

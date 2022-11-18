@@ -33,7 +33,7 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 7 solvers available:
+There are 8 solvers available:
 ["LBFGS", "R2", "TRON", "TRUNK", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"].
 ["LBFGS", "R2", "TRON", "TRUNK", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"]
 ```
@@ -51,7 +51,7 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 10 solvers available:
+There are 11 solvers available:
 ["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"].
 ["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"]
 ```

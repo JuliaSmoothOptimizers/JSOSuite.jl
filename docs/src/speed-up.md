@@ -6,6 +6,7 @@ The following contains a list of tips to speed up the solver selection and usage
 
 The solvers available in `JSOSuite.jl` are all using first and sometines second-order derivatives. There are mainly three categories:
 - 1st order methods use only gradient information;
+- 1st order quasi-Newton methods require only gradient information, and uses it to build an approximation of the Hessian;
 - 2nd order methods: Those are using gradients and Hessian information.
 - 2nd order methods matrix-free: Those are solvers using Hessian information, but without ever forming the matrix, so only matrix-vector products are computed.
 

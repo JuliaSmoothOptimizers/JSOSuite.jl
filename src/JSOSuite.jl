@@ -105,7 +105,7 @@ push!(
   solvers,
   (
     "CaNNOLeS",
-    :not_implemented,
+    :CaNNOLeSSolver,
     :cannoles,
     true,
     false,
@@ -147,7 +147,7 @@ push!(
 )
 push!(
   solvers,
-  ("RipQP", :not_implemented, :ripqp, true, true, true, true, false, false, false, false, false, 2),
+  ("RipQP", :RipQPSolver, :ripqp, true, true, true, true, false, false, false, false, false, 2),
 ) # need to check linear constraints and quadratic constraints
 
 include("selection.jl")

@@ -8,7 +8,8 @@ using LinearAlgebra, Logging
 using ADNLPModels,
   LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
 # JSO solvers
-using CaNNOLeS, DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
+using CaNNOLeS,
+  DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
 if KNITRO.has_knitro()
   using NLPModelsKnitro
 end
@@ -129,7 +130,21 @@ push!(
 )
 push!(
   solvers,
-  ("FletcherPenaltySolver", :FPSSSolver, :fps_solve, true, false, true, false, false, true, true, true, false, 2),
+  (
+    "FletcherPenaltySolver",
+    :FPSSSolver,
+    :fps_solve,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    2,
+  ),
 )
 push!(
   solvers,

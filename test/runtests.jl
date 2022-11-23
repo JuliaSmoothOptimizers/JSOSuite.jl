@@ -2,7 +2,7 @@
 using JSOSuite
 
 # JSO
-using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems
+using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 
 # stdlib
 using LinearAlgebra, SparseArrays, Test

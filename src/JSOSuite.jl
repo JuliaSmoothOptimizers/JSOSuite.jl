@@ -183,8 +183,10 @@ Compute a local minimum of the optimization problem `nlp`.
 
 Define an NLPModel using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/stable/).
 
-    stats = solve(c, Hrows, Hcols, Hvals, Arows = Arows, Acols = Acols, Avals = Avals, lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar, c0 = c0, sortcols = sortcols, x0 = x0, name = name; kwargs...)
-    stats = solve(c, H, A = A, lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, lvar, uvar, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
 
 Define a QuadraticModel using [`QuadraticModel`](https://juliasmoothoptimizers.github.io/QuadraticModels.jl/stable/).
 
@@ -224,22 +226,6 @@ stats
 "Execution stats: first-order stationary"
 ```
 
-```jldoctest; output = false
-using JSOSuite
-# We solve here a quadratic problem with bound-constraints
-c = [1.0; 1.0]
-H = [-2.0 0.0; 3.0 4.0]
-uvar = [1.0; 1.0]
-lvar = [0.0; 0.0]
-x0 = [0.5; 0.5]
-stats = solve(c, H, lvar = lvar, uvar = uvar, x0 = x0, name = "bndqp_QP", verbose = 0)
-stats
-
-# output
-
-"Execution stats: first-order stationary"
-```
-
 The list of available solver can be obtained using `JSOSuite.solvers[!, :name]` or see [`select_solvers`](@ref).
 
 ```jldoctest; output = false
@@ -250,6 +236,23 @@ stats
 # output
 
 "Execution stats: first-order stationary"
+```
+
+```jldoctest; output = false
+using JSOSuite
+# We solve here a quadratic problem with bound-constraints
+c = [1.0; 1.0]
+H = [-2.0 0.0; 3.0 4.0]
+uvar = [1.0; 1.0]
+lvar = [0.0; 0.0]
+x0 = [0.5; 0.5]
+stats = solve("TRON", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP", verbose = 0)
+stats
+
+# output
+
+"Execution stats: first-order stationary"
+
 ```
 
 """

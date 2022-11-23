@@ -37,8 +37,8 @@ FletcherPenaltySolver = "0.2"
 JSOSolvers = "0.9"
 JuMP = "1"
 KNITRO = "0.13.0"
-LinearOperators = "2"
 LLSModels = "0.3.6"
+LinearOperators = "2"
 NLPModels = "0.19"
 NLPModelsIpopt = "0.10"
 NLPModelsJuMP = "0.11, 0.12"
@@ -56,7 +56,8 @@ ADNLPModels = "54578032-b7ea-4c30-94aa-7cbd1cce6c9a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NLSProblems = "7cde8186-f29c-533a-9367-b4054c592979"
 OptimizationProblems = "5049e819-d29b-5fba-b941-0eee7e64c1c6"
+SparseMatricesCOO = "fa32481b-f100-4b48-8dc8-c62f61b13870"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["ADNLPModels", "LinearAlgebra", "NLSProblems", "OptimizationProblems", "Test"]
+test = ["ADNLPModels", "LinearAlgebra", "NLSProblems", "OptimizationProblems", "SparseMatricesCOO", "Test"]

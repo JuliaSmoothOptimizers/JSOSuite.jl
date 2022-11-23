@@ -4,14 +4,15 @@
     Hrows = [1, 2, 2]
     Hcols = [1, 1, 2]
     Hvals = [8.0; -1.0; 10.0]
+    H = sparse(Hrows, Hcols, Hvals)
     c0 = 1.0
     x0 = [-1.2; 1.0]
-    qp_model = QuadraticModel(c, Hrows, Hcols, Hvals, c0 = c0, x0 = x0, name = "uncqp_QP")
+    qp_model = QuadraticModel(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
     stats = solve(qp_model)
     @test true
-    solve(c, Hrows, Hcols, Hvals, c0 = c0, x0 = x0, name = "uncqp_QP")
+    solve(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
     @test true
-    solve("RipQP", c, Hrows, Hcols, Hvals, c0 = c0, x0 = x0, name = "uncqp_QP")
+    solve("RipQP", c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
     @test true
   end
 
@@ -21,12 +22,12 @@
     uvar = [1.0; 1.0]
     lvar = [0.0; 0.0]
     x0 = [0.5; 0.5]
-    qp_model = QuadraticModel(c, H, lvar = lvar, uvar = uvar, x0 = x0, name = "bndqp_QP")
+    qp_model = QuadraticModel(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
     stats = solve(qp_model)
     @test true
-    solve(c, H, lvar = lvar, uvar = uvar, x0 = x0, name = "bndqp_QP")
+    solve(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
     @test true
-    solve("RipQP", c, H, lvar = lvar, uvar = uvar, x0 = x0, name = "bndqp_QP")
+    solve("RipQP", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
     @test true
   end
 
@@ -38,12 +39,12 @@
     A = ones(1, n)
     lcon = [1.0]
     ucon = [1.0]
-    qp_model = QuadraticModel(c, H, A = A, lcon = lcon, ucon = ucon, name = "eqconqp_QP")
+    qp_model = QuadraticModel(c, H, A, lcon, ucon, name = "eqconqp_QP")
     stats = solve(qp_model)
     @test true
-    solve(c, H, A = A, lcon = lcon, ucon = ucon, name = "eqconqp_QP")
+    solve(c, H, A, lcon, ucon, name = "eqconqp_QP")
     @test true
-    solve("RipQP", c, H, A = A, lcon = lcon, ucon = ucon, name = "eqconqp_QP")
+    solve("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
     @test true
   end
 
@@ -52,59 +53,21 @@
     Hrows = [1, 2]
     Hcols = [1, 2]
     Hvals = ones(2)
+    H = SparseMatrixCOO(2, 2, Hrows, Hcols, Hvals)
     Arows = [1, 1, 2, 2, 3, 3]
     Acols = [1, 2, 1, 2, 1, 2]
     Avals = [1.0; -1.0; -1.0; 1.0; 1.0; 1.0]
+    A = SparseMatrixCOO(3, 2, Arows, Acols, Avals)
     c0 = 1.0
     lcon = [0.0; -Inf; -1.0]
     ucon = [Inf; 0.0; 1.0]
     x0 = ones(2)
-    qp_model = QuadraticModel(
-      c,
-      Hrows,
-      Hcols,
-      Hvals,
-      Arows = Arows,
-      Acols = Acols,
-      Avals = Avals,
-      lcon = lcon,
-      ucon = ucon,
-      c0 = c0,
-      x0 = x0,
-      name = "ineqconqp_QP",
-    )
+    qp_model = QuadraticModel(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
     stats = solve(qp_model)
     @test true
-    solve(
-      c,
-      Hrows,
-      Hcols,
-      Hvals,
-      Arows = Arows,
-      Acols = Acols,
-      Avals = Avals,
-      lcon = lcon,
-      ucon = ucon,
-      c0 = c0,
-      x0 = x0,
-      name = "ineqconqp_QP",
-    )
+    solve(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
     @test true
-    solve(
-      "RipQP",
-      c,
-      Hrows,
-      Hcols,
-      Hvals,
-      Arows = Arows,
-      Acols = Acols,
-      Avals = Avals,
-      lcon = lcon,
-      ucon = ucon,
-      c0 = c0,
-      x0 = x0,
-      name = "ineqconqp_QP",
-    )
+    solve("RipQP", c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
     @test true
   end
 end

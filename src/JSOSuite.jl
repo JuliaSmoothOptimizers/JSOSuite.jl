@@ -3,10 +3,10 @@ module JSOSuite
 # other dependencies
 using DataFrames, JuMP, KNITRO
 # stdlib
-using LinearAlgebra, Logging
+using LinearAlgebra, Logging, SparseArrays
 # JSO
-using ADNLPModels,
-  LLSModels, NLPModels, NLPModelsJuMP, NLPModelsModifiers, QuadraticModels, SolverCore
+using ADNLPModels, LLSModels, NLPModels, NLPModelsJuMP, QuadraticModels
+using LinearOperators, NLPModelsModifiers, SolverCore
 # JSO solvers
 using CaNNOLeS,
   DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
@@ -183,6 +183,13 @@ Compute a local minimum of the optimization problem `nlp`.
 
 Define an NLPModel using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/stable/).
 
+    stats = solve(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, lvar, uvar, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = solve(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+
+Define a QuadraticModel using [`QuadraticModel`](https://juliasmoothoptimizers.github.io/QuadraticModels.jl/stable/).
+
 The solver can be chosen as follows.
 
     stats = solve(solver_name::String, args...; kwargs...)
@@ -230,40 +237,28 @@ stats
 
 "Execution stats: first-order stationary"
 ```
+
+```jldoctest; output = false
+using JSOSuite
+# We solve here a quadratic problem with bound-constraints
+c = [1.0; 1.0]
+H = [-2.0 0.0; 3.0 4.0]
+uvar = [1.0; 1.0]
+lvar = [0.0; 0.0]
+x0 = [0.5; 0.5]
+stats = solve("TRON", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP", verbose = 0)
+stats
+
+# output
+
+"Execution stats: first-order stationary"
+
+```
+
 """
 function solve end
 
-function solve(f::Function, x0::AbstractVector, args...; kwargs...)
-  nlp = ADNLPModel(f, x0, args...)
-  return solve(nlp; kwargs...)
-end
-
-function solve(solver_name::String, f::Function, x0::AbstractVector, args...; kwargs...)
-  nlp = ADNLPModel(f, x0, args...)
-  return solve(solver_name, nlp; kwargs...)
-end
-
-function solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
-  nlp = ADNLSModel(F, x0, nequ, args...)
-  return solve(nlp; kwargs...)
-end
-
-function solve(
-  solver_name::String,
-  F::Function,
-  x0::AbstractVector,
-  nequ::Integer,
-  args...;
-  kwargs...,
-)
-  nlp = ADNLSModel(F, x0, nequ, args...)
-  return solve(solver_name, nlp; kwargs...)
-end
-
-function solve(model::JuMP.Model, args...; kwargs...)
-  nlp = MathOptNLPModel(model)
-  return solve(nlp, args...; kwargs...)
-end
+include("solve_model.jl")
 
 include("solve.jl")
 

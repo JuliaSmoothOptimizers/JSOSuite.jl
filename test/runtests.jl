@@ -2,10 +2,12 @@
 using JSOSuite
 
 # JSO
-using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems
+using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 
 # stdlib
-using LinearAlgebra, Test
+using LinearAlgebra, SparseArrays, Test
+
+include("qp_tests.jl")
 
 @testset "Test `Float32`" begin
   nlp = OptimizationProblems.ADNLPProblems.genrose(type = Val(Float32))

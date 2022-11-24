@@ -30,16 +30,55 @@ function solve(model::JuMP.Model, args...; kwargs...)
   return solve(nlp, args...; kwargs...)
 end
 
-function QuadraticModel(c::S, H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}}, lvar::S, uvar::S; c0::T = zero(T), x0 = fill!(S(undef, length(c)), zero(T)), name::String = "Generic") where {T, S <: AbstractVector{T}}
+function QuadraticModel(
+  c::S,
+  H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
+  lvar::S,
+  uvar::S;
+  c0::T = zero(T),
+  x0 = fill!(S(undef, length(c)), zero(T)),
+  name::String = "Generic",
+) where {T, S <: AbstractVector{T}}
   return QuadraticModel(c, H, lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name)
 end
 
-function QuadraticModel(c::S, H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}}, A::Union{AbstractMatrix, AbstractLinearOperator}, lcon::S, ucon::S; c0::T = zero(T), x0 = fill!(S(undef, length(c)), zero(T)), name::String = "Generic") where {T, S <: AbstractVector{T}}
+function QuadraticModel(
+  c::S,
+  H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
+  A::Union{AbstractMatrix, AbstractLinearOperator},
+  lcon::S,
+  ucon::S;
+  c0::T = zero(T),
+  x0 = fill!(S(undef, length(c)), zero(T)),
+  name::String = "Generic",
+) where {T, S <: AbstractVector{T}}
   return QuadraticModel(c, H, A = A, lcon = lcon, ucon = ucon, c0 = c0, x0 = x0, name = name)
 end
 
-function QuadraticModel(c::S, H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}}, lvar::S, uvar::S, A::Union{AbstractMatrix, AbstractLinearOperator}, lcon::S, ucon::S; c0::T = zero(T), x0 = fill!(S(undef, length(c)), zero(T)), name::String = "Generic") where {T, S <: AbstractVector{T}}
-  return QuadraticModel(c, H, A = A, lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name)
+function QuadraticModel(
+  c::S,
+  H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
+  lvar::S,
+  uvar::S,
+  A::Union{AbstractMatrix, AbstractLinearOperator},
+  lcon::S,
+  ucon::S;
+  c0::T = zero(T),
+  x0 = fill!(S(undef, length(c)), zero(T)),
+  name::String = "Generic",
+) where {T, S <: AbstractVector{T}}
+  return QuadraticModel(
+    c,
+    H,
+    A = A,
+    lcon = lcon,
+    ucon = ucon,
+    lvar = lvar,
+    uvar = uvar,
+    c0 = c0,
+    x0 = x0,
+    name = name,
+  )
 end
 
 function solve(

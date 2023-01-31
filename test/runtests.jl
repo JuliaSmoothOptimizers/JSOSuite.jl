@@ -32,13 +32,7 @@ end
     problem ∈ meta[(5 .<= meta.nvar .<= 10) .& (meta.contype .== :unconstrained), :name]
   ]
   select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp, :name]
-  stats = bmark_solvers(
-    ad_problems,
-    select,
-    atol = 1e-3,
-    max_time = 10.0,
-    verbose = 0,
-  )
+  stats = bmark_solvers(ad_problems, select, atol = 1e-3, max_time = 10.0, verbose = 0)
   @test true # just test that it runs
 end
 

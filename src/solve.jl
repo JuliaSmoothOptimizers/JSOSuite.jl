@@ -113,7 +113,12 @@ function solve(::Val{:IPOPT}, nlp; kwargs...)
     delete!(keywords, :rtol)
   end
   if :max_time in keys(keywords)
-    keywords[:max_cpu_time] = keywords[:max_time]
+    max_time = keywords[:max_time]
+    if max_time > 0
+      keywords[:max_cpu_time] = max_time
+    else
+      @warn "`max_time` should be positive, ignored parameter."
+    end
     delete!(keywords, :max_time)
   end
   if :max_eval in keys(keywords)

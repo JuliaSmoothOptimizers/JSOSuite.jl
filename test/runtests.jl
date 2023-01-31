@@ -29,7 +29,7 @@ end
 @testset "Benchmark on unconstrained problems" begin
   ad_problems = [
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
-    problem ∈ meta[5 .<= meta.nvar .<= 10, :name]
+    problem ∈ meta[(5 .<= meta.nvar .<= 10) .& (meta.contype .== :unconstrained), :name]
   ]
   select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp, :name]
   stats = bmark_solvers(

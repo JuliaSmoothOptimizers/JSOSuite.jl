@@ -4,6 +4,8 @@ using JSOSuite
 # JSO
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 
+meta = OptimizationProblems.meta
+
 # stdlib
 using LinearAlgebra, SparseArrays, Test
 
@@ -27,7 +29,7 @@ end
 @testset "Benchmark on unconstrained problems" begin
   ad_problems = [
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
-    problem ∈ OptimizationProblems.meta[!, :name]
+    problem ∈ meta[5 .<= meta.nvar .<= 10, :name]
   ]
   select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp, :name]
   stats = bmark_solvers(
@@ -36,7 +38,6 @@ end
     atol = 1e-3,
     max_time = 10.0,
     verbose = 0,
-    skipif = prob -> (!unconstrained(prob) || get_nvar(prob) > 10 || get_nvar(prob) < 5),
   )
   @test true # just test that it runs
 end
@@ -57,7 +58,6 @@ end
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
-meta = OptimizationProblems.meta
 @testset "Test solve on OptimizationProblems" begin
   for name in meta[meta.nvar .< 100, :name]
     nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()

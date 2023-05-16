@@ -1,6 +1,6 @@
 name = "JSOSuite"
 uuid = "ed6ae0be-a024-11e9-2788-05dbf8cd15d9"
-authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>"]
+authors = ["Tangi Migot <tangi.migot@gmail.com>"]
 version = "0.1.0"
 
 [deps]

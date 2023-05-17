@@ -69,6 +69,10 @@ function solve(::Val{:KNITRO}, nlp; kwargs...)
   return knitro(nlp; keywords...)
 end
 
+function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
+  return cannoles(nlp; linsolve = :ldlfactorizations, kwargs...)
+end
+
 # Selection of possible [options](https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF).
 function solve(::Val{:IPOPT}, nlp; kwargs...)
   keywords = Dict(kwargs)

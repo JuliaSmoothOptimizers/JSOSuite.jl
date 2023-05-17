@@ -31,7 +31,7 @@ end
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
     problem ∈ meta[(5 .<= meta.nvar .<= 10) .& (meta.contype .== :unconstrained), :name]
   ]
-  select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp, :name]
+  select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp .& JSOSuite.solvers.is_available, :name]
   stats = bmark_solvers(ad_problems, select, atol = 1e-3, max_time = 10.0, verbose = 0)
   @test true # just test that it runs
 end
@@ -52,15 +52,13 @@ end
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
-@testset "Test solve on OptimizationProblems" begin
-  for name in meta[meta.nvar .< 100, :name]
-    nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
-    solve(nlp, verbose = 0)
-    @test true
-    model = OptimizationProblems.PureJuMP.eval(Meta.parse(name))()
-    solve(model, verbose = 0)
-    @test true
-  end
+@testset "Test solve on OptimizationProblems: $name" for name in meta[meta.nvar .< 100, :name]
+  nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
+  solve(nlp, verbose = 0)
+  @test true
+  model = OptimizationProblems.PureJuMP.eval(Meta.parse(name))()
+  solve(model, verbose = 0)
+  @test true
 end
 
 @testset "Test feasible" begin

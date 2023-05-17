@@ -69,32 +69,6 @@ function solve(::Val{:KNITRO}, nlp; kwargs...)
   return knitro(nlp; keywords...)
 end
 
-function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
-  keywords = Dict(kwargs)
-  if :atol in keys(keywords)
-    @warn "Not implemented option `atol` for CaNNOLeS."
-    delete!(keywords, :atol)
-  end
-  if :rtol in keys(keywords)
-    keywords[:ϵtol] = keywords[:rtol]
-    delete!(keywords, :rtol)
-  end
-  if :max_eval in keys(keywords)
-    keywords[:max_f] = keywords[:max_eval]
-    delete!(keywords, :max_eval)
-  end
-  return cannoles(nlp; linsolve = :ldlfactorizations, keywords...)
-end
-
-function solve(::Val{:Percival}, nlp; kwargs...)
-  keywords = Dict(kwargs)
-  if :verbose in keys(keywords)
-    @warn "Not implemented option `verbose` for Percival."
-    delete!(keywords, :verbose)
-  end
-  return percival(nlp; keywords...)
-end
-
 # Selection of possible [options](https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF).
 function solve(::Val{:IPOPT}, nlp; kwargs...)
   keywords = Dict(kwargs)

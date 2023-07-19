@@ -131,6 +131,8 @@ end
           nls,
           atol = 1e-5,
           rtol = 1e-5,
+          Fatol = 1e-5,
+          Frtol = 1e-5,
           max_time = 12.0,
           max_iter = 100,
           max_eval = 10,

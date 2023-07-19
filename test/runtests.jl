@@ -106,6 +106,7 @@ end
 @testset "Test kwargs in solvers on $model" for model in (:arglina, :hs6)
   nlp = OptimizationProblems.ADNLPProblems.eval(model)()
   nls = OptimizationProblems.ADNLPProblems.eval(model)(use_nls = true)
+  callback = (args...) -> nothing
   for solver in eachrow(JSOSuite.solvers)
     @testset "Test options in $(solver.name)" begin
       solver.is_available || continue
@@ -120,6 +121,7 @@ end
           max_time = 12.0,
           max_iter = 100,
           max_eval = 10,
+          callback = callback,
           verbose = 0,
         )
         @test true
@@ -132,6 +134,7 @@ end
           max_time = 12.0,
           max_iter = 100,
           max_eval = 10,
+          callback = callback,
           verbose = 0,
         )
         @test true
@@ -145,6 +148,7 @@ end
           max_time = 12.0,
           max_iter = 100,
           max_eval = 10,
+          callback = callback,
           verbose = 0,
         )
         @test true

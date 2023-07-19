@@ -103,6 +103,10 @@ function solve(::Val{:IPOPT}, nlp; kwargs...)
     @warn "Not implemented option `max_eval` for IPOPT."
     delete!(keywords, :max_eval)
   end
+  if :callback in keys(keywords)
+    @warn "Not implemented option `callback` for IPOPT."
+    delete!(keywords, :callback)
+  end
   return ipopt(nlp; keywords...)
 end
 
@@ -132,8 +136,12 @@ function solve(::Val{:RipQP}, nlp::Union{QuadraticModel{T0}, LLSModel{T0}}; max_
     RipQP.InputTol(T0)
   end
   if :max_eval in keys(keywords)
-    @warn "Not implemented option `max_eval` for RipQP"
+    @warn "Not implemented option `max_eval` for RipQP."
     delete!(keywords, :max_eval)
+  end
+  if :callback in keys(keywords)
+    @warn "Not implemented option `callback` for RipQP."
+    delete!(keywords, :callback)
   end
   return ripqp(nlp; itol = itol, keywords...)
 end

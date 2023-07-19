@@ -208,11 +208,20 @@ Keywords available for all the solvers are given below:
 - `max_time`: maximum number of seconds;
 - `max_iter`: maximum number of iterations;
 - `max_eval`: maximum number of cons + obj evaluations;
+- `callback = (args...) -> nothing`: callback called at each iteration;
 - `verbose::Int = 0`: if > 0, display iteration details every `verbose` iteration.
 
 Further possible options are documented in each solver's documentation.
 
-## Output
+## Callback
+
+The callback is called at each iteration.
+The expected signature of the callback is `callback(nlp, solver, stats)`, and its output is ignored.
+Changing any of the input arguments will affect the subsequent iterations.
+In particular, setting `stats.status = :user` will stop the algorithm.
+All relevant information should be available in `nlp` and `solver`.
+
+# Output
 
 The value returned is a `GenericExecutionStats`, see `SolverCore.jl`.
 

@@ -78,7 +78,13 @@ Keywords available for all the solvers are given below:
 - `max_time::Float64 = 300.0`: maximum number of seconds;
 - `max_iter::Int = typemax(Int)`: maximum number of iterations;
 - `max_eval::Int = 10 000`: maximum number of constraint and objective functions evaluations;
+- `callback = (args...) -> nothing`: callback called at each iteration;
 - `verbose::Int = 0`: if > 0, display iteration details for every `verbose` iteration.
+
+The expected signature of the callback is `callback(nlp, solver, stats)`, and its output is ignored.
+Changing any of the input arguments will affect the subsequent iterations.
+In particular, setting `stats.status = :user` will stop the algorithm.
+All relevant information should be available in `nlp` and `solver`.
 
 Further possible options are documented in each solver's documentation.
 

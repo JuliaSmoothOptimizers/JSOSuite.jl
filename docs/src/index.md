@@ -76,6 +76,7 @@ Keywords available for all the solvers are given below:
 - `atol::T = √eps(T)`: absolute tolerance;
 - `rtol::T = √eps(T)`: relative tolerance;
 - `max_time::Float64 = 300.0`: maximum number of seconds;
+- `max_iter::Int = typemax(Int)`: maximum number of iterations;
 - `max_eval::Int = 10 000`: maximum number of constraint and objective functions evaluations;
 - `verbose::Int = 0`: if > 0, display iteration details for every `verbose` iteration.
 

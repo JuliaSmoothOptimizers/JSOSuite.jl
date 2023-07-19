@@ -206,6 +206,7 @@ Keywords available for all the solvers are given below:
 - `atol`: absolute tolerance;
 - `rtol`: relative tolerance;
 - `max_time`: maximum number of seconds;
+- `max_iter`: maximum number of iterations;
 - `max_eval`: maximum number of cons + obj evaluations;
 - `verbose::Int = 0`: if > 0, display iteration details every `verbose` iteration.
 

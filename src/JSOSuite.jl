@@ -211,6 +211,11 @@ Keywords available for all the solvers are given below:
 - `callback = (args...) -> nothing`: callback called at each iteration;
 - `verbose::Int = 0`: if > 0, display iteration details every `verbose` iteration.
 
+The following are specific to nonlinear least squares:
+
+- `Fatol::T = √eps(T)`: absolute tolerance on the residual;
+- `Frtol::T = eps(T)`: relative tolerance on the residual, the algorithm stops when ‖F(xᵏ)‖ ≤ Fatol + Frtol * ‖F(x⁰)‖.
+
 Further possible options are documented in each solver's documentation.
 
 ## Callback

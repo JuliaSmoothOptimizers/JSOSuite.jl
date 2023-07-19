@@ -86,6 +86,11 @@ Changing any of the input arguments will affect the subsequent iterations.
 In particular, setting `stats.status = :user` will stop the algorithm.
 All relevant information should be available in `nlp` and `solver`.
 
+The following are specific to nonlinear least squares:
+
+- `Fatol::T = √eps(T)`: absolute tolerance on the residual;
+- `Frtol::T = eps(T)`: relative tolerance on the residual, the algorithm stops when ‖F(xᵏ)‖ ≤ Fatol + Frtol * ‖F(x⁰)‖.
+
 Further possible options are documented in each solver's documentation.
 
 ## Installation

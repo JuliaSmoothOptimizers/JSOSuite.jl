@@ -103,23 +103,39 @@ for solver in eachrow(JSOSuite.solvers)
   end
 end
 
-for solver in eachrow(JSOSuite.solvers)
-  nlp = OptimizationProblems.ADNLPProblems.genrose()
-  @testset "Test options in $(solver.name)" begin
-    # We just test that the solver runs with the options
-    if solver.is_available && solver.can_solve_nlp
-      if solver.nonlinear_obj
+@testset "Test kwargs in solvers on $model" for model in (:arglina, :hs6)
+  nlp = OptimizationProblems.ADNLPProblems.eval(model)()
+  nls = OptimizationProblems.ADNLPProblems.eval(model)(use_nls = true)
+  for solver in eachrow(JSOSuite.solvers)
+    @testset "Test options in $(solver.name)" begin
+      solver.is_available || continue
+      ((nlp.meta.ncon > 0) && (!solver.equalities)) && continue
+      # We just test that the solver runs with the options
+      if solver.can_solve_nlp
         solve(
           solver.name,
           nlp,
           atol = 1e-5,
           rtol = 1e-5,
           max_time = 12.0,
+          max_iter = 100,
           max_eval = 10,
           verbose = 0,
         )
         @test true
-      else
+      elseif solver.specialized_nls
+        solve(
+          solver.name,
+          nls,
+          atol = 1e-5,
+          rtol = 1e-5,
+          max_time = 12.0,
+          max_iter = 100,
+          max_eval = 10,
+          verbose = 0,
+        )
+        @test true
+      else # RipQP
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
         solve(
           solver.name,
@@ -127,6 +143,7 @@ for solver in eachrow(JSOSuite.solvers)
           atol = 1e-5,
           rtol = 1e-5,
           max_time = 12.0,
+          max_iter = 100,
           max_eval = 10,
           verbose = 0,
         )

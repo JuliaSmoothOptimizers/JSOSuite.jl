@@ -30,6 +30,12 @@ function solve(model::JuMP.Model, args...; kwargs...)
   return solve(nlp, args...; kwargs...)
 end
 
+# TODO: Add AbstractOptimizationSolver constructors with JuMP model. 
+#function solve!(solver::SolverCore.AbstractOptimizationSolver, model::JuMP.Model, args...; kwargs...)
+#  nlp = MathOptNLPModel(model)
+#  return solve!(solver, nlp, args...; kwargs...)
+#end
+
 function QuadraticModel(
   c::S,
   H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},

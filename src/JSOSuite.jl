@@ -178,7 +178,7 @@ push!(
 
 include("selection.jl")
 
-export solve, feasible_point
+export solve, solve!, feasible_point
 
 """
     stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
@@ -279,6 +279,17 @@ stats
 
 """
 function solve end
+
+"""
+    solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
+    solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}, stats; kwargs...)
+
+`JSOSuite` extension of `SolverCore.solve!`.
+The first argument should be of type `SolverCore.AbstractOptimizationSolver`, see for instance `JSOSuite.solvers[!, :name_solver]`.
+"""
+function SolverCore.solve!(solver, args...; kwargs...)
+  throw("solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.solvers[!, :name_solver]`.")
+end
 
 include("solve_model.jl")
 

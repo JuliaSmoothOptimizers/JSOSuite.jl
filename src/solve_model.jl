@@ -30,6 +30,16 @@ function solve(model::JuMP.Model, args...; kwargs...)
   return solve(nlp, args...; kwargs...)
 end
 
+function solve(solver_name::String, model::JuMP.Model, args...; kwargs...)
+  nlp = MathOptNLPModel(model)
+  return solve(solver_name, nlp, args...; kwargs...)
+end
+
+function solve(solver::Val{solver_name}, model::JuMP.Model, args...; kwargs...) where {solver_name}
+  nlp = MathOptNLPModel(model)
+  return solve(solver, nlp, args...; kwargs...)
+end
+
 # TODO: Add AbstractOptimizationSolver constructors with JuMP model. 
 function SolverCore.solve!(solver::SolverCore.AbstractOptimizationSolver, model::JuMP.Model, args...; kwargs...)
   nlp = MathOptNLPModel(model)

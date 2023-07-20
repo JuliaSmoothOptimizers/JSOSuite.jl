@@ -1,5 +1,5 @@
 """
-    select_solvers(nlp::AbstractNLPModel, verbose = 1, highest_derivative_available::Integer = 2)
+    select_solvers(nlp::Union{AbstractNLPModel, JuMP.Model}, verbose = 1, highest_derivative_available::Integer = 2)
 
 Narrow the list of solvers to solve `nlp` problem using `highest_derivative_available`.
 
@@ -125,6 +125,11 @@ function select_solvers(
     end
   end
   return select
+end
+
+function select_solvers(model::JuMP.Model, args...; kwargs...)
+  nlp = MathOptNLPModel(model)
+  return select_solvers(nlp, args...; kwargs...)
 end
 
 """Checker whether solvers are Generic only"""

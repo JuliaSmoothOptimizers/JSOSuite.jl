@@ -31,10 +31,10 @@ function solve(model::JuMP.Model, args...; kwargs...)
 end
 
 # TODO: Add AbstractOptimizationSolver constructors with JuMP model. 
-#function solve!(solver::SolverCore.AbstractOptimizationSolver, model::JuMP.Model, args...; kwargs...)
-#  nlp = MathOptNLPModel(model)
-#  return solve!(solver, nlp, args...; kwargs...)
-#end
+function SolverCore.solve!(solver::SolverCore.AbstractOptimizationSolver, model::JuMP.Model, args...; kwargs...)
+  nlp = MathOptNLPModel(model)
+  return SolverCore.solve!(solver, nlp, args...; kwargs...)
+end
 
 function QuadraticModel(
   c::S,

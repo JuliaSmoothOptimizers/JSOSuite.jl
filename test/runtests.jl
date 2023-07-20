@@ -1,6 +1,9 @@
 # this package
 using JSOSuite
 
+# others
+using JuMP, NLPModelsJuMP
+
 # JSO
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 using CaNNOLeS, DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, Percival, RipQP, SolverCore
@@ -22,9 +25,22 @@ function test_in_place_solve(nlp, solver_name)
   @test stats.status == :first_order
 end
 
+function test_in_place_solve(model::JuMP.Model, solver_name)
+  nlp = MathOptNLPModel(model)
+  pkg_name = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :name_pkg][1]
+  pkg_name = replace(pkg_name, ".jl" => "")
+  solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
+  stats = solve!(solver, model)
+  @test stats.status == :first_order
+  reset!(solver, nlp)
+  stats = GenericExecutionStats(nlp)
+  solve!(solver, model, stats)
+  @test stats.status == :first_order
+end
+
 @testset "Test in-place solve!" begin
   nlp = OptimizationProblems.ADNLPProblems.arglina()
-  # model = OptimizationProblems.PureJuMP.arglina()
+  model = OptimizationProblems.PureJuMP.arglina()
   @testset "Test $solver_name" for solver_name in JSOSuite.solvers[!, :name_solver]
     solver_name == :DCIWorkspace && continue
     solver_name == :RipQPSolver && continue
@@ -33,6 +49,7 @@ end
     spec_nls = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :specialized_nls]
     if is_available[1] && can_solve_nlp[1]
       test_in_place_solve(nlp, solver_name)
+      test_in_place_solve(model, solver_name)
     elseif is_available[1] && spec_nls[1] # NLS
       nls = OptimizationProblems.ADNLPProblems.arglina(use_nls = true)
       test_in_place_solve(nls, solver_name)

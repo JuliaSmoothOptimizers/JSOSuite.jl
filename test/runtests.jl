@@ -9,6 +9,20 @@ meta = OptimizationProblems.meta
 # stdlib
 using LinearAlgebra, SparseArrays, Test
 
+@testset "Test in-place solve!" begin
+  nlp = OptimizationProblems.ADNLPProblems.arglina()
+  # model = OptimizationProblems.PureJuMP.arglina()
+  @testset "Test $solver_name" for solver_name in JSOSuite.solvers[!, :name_solver]
+    solver = eval(solver_name)(nlp)
+    stats = solve!(solver, nlp)
+    @test stats.status == :first__order
+    reset!(solver)
+    stats = GenericExecutionStats(nlp)
+    stats = solve!(solver, nlp)
+    @test stats.status == :first__order
+  end
+end
+
 include("qp_tests.jl")
 
 @testset "Test `Float32`" begin

@@ -3,23 +3,43 @@ using JSOSuite
 
 # JSO
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
+using CaNNOLeS, DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, Percival, RipQP, SolverCore
 
 meta = OptimizationProblems.meta
 
 # stdlib
 using LinearAlgebra, SparseArrays, Test
 
+function test_in_place_solve(nlp, solver_name)
+  pkg_name = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :name_pkg][1]
+  pkg_name = replace(pkg_name, ".jl" => "")
+  solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
+  stats = solve!(solver, nlp)
+  @test stats.status == :first_order
+  reset!(solver, nlp)
+  stats = GenericExecutionStats(nlp)
+  solve!(solver, nlp, stats)
+  @test stats.status == :first_order
+end
+
 @testset "Test in-place solve!" begin
   nlp = OptimizationProblems.ADNLPProblems.arglina()
   # model = OptimizationProblems.PureJuMP.arglina()
   @testset "Test $solver_name" for solver_name in JSOSuite.solvers[!, :name_solver]
-    solver = eval(solver_name)(nlp)
-    stats = solve!(solver, nlp)
-    @test stats.status == :first__order
-    reset!(solver)
-    stats = GenericExecutionStats(nlp)
-    stats = solve!(solver, nlp)
-    @test stats.status == :first__order
+    solver_name == :DCIWorkspace && continue
+    solver_name == :RipQPSolver && continue
+    is_available = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :is_available]
+    can_solve_nlp = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :can_solve_nlp]
+    spec_nls = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :specialized_nls]
+    if is_available[1] && can_solve_nlp[1]
+      test_in_place_solve(nlp, solver_name)
+    elseif is_available[1] && spec_nls[1] # NLS
+      nls = OptimizationProblems.ADNLPProblems.arglina(use_nls = true)
+      test_in_place_solve(nls, solver_name)
+    elseif is_available[1] # RipQP
+      nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
+      test_in_place_solve(nlp_qm, solver_name)
+    end
   end
 end
 

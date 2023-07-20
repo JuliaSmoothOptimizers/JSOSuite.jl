@@ -77,6 +77,16 @@ include("qp_tests.jl")
   end
 end
 
+@testset "JSOSuite JuMP API" begin
+  model = OptimizationProblems.PureJuMP.genrose()
+  jum = MathOptNLPModel(model)
+  @test JSOSuite.select_solvers(model) == JSOSuite.select_solvers(jum)
+  for solver in eachrow(JSOSuite.select_solvers(model))
+    solve(solver.name, model, verbose = 0)
+    @test true
+  end
+end
+
 @testset "Benchmark on unconstrained problems" begin
   ad_problems = [
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for

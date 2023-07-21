@@ -11,7 +11,8 @@ end
 
 # JSO
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
-using CaNNOLeS, DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, Percival, RipQP, SolverCore
+using CaNNOLeS,
+  DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, Percival, RipQP, SolverCore
 
 meta = OptimizationProblems.meta
 

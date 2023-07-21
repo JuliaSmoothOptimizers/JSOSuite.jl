@@ -72,20 +72,98 @@ push!(
 )
 push!(
   solvers,
-  ("LBFGS", :LBFGSSolver, "JSOSolvers.jl", :lbfgs, true, false, false, false, false, true, true, true, false, 1),
+  (
+    "LBFGS",
+    :LBFGSSolver,
+    "JSOSolvers.jl",
+    :lbfgs,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    1,
+  ),
 )
-push!(solvers, ("R2", :R2Solver, "JSOSolvers.jl", :R2, true, false, false, false, false, true, true, true, false, 1))
 push!(
   solvers,
-  ("TRON", :TronSolver, "JSOSolvers.jl", :tron, true, true, false, false, false, true, true, true, false, 2),
+  (
+    "R2",
+    :R2Solver,
+    "JSOSolvers.jl",
+    :R2,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    1,
+  ),
 )
 push!(
   solvers,
-  ("TRUNK", :TrunkSolver, "JSOSolvers.jl", :trunk, true, false, false, false, false, true, true, true, false, 2),
+  (
+    "TRON",
+    :TronSolver,
+    "JSOSolvers.jl",
+    :tron,
+    true,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    2,
+  ),
 )
 push!(
   solvers,
-  ("TRON-NLS", :TronSolverNLS, "JSOSolvers.jl", :tron, true, true, false, false, true, false, true, true, false, 2),
+  (
+    "TRUNK",
+    :TrunkSolver,
+    "JSOSolvers.jl",
+    :trunk,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    2,
+  ),
+)
+push!(
+  solvers,
+  (
+    "TRON-NLS",
+    :TronSolverNLS,
+    "JSOSolvers.jl",
+    :tron,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    2,
+  ),
 )
 push!(
   solvers,
@@ -127,11 +205,41 @@ push!(
 )
 push!(
   solvers,
-  ("IPOPT", :IpoptSolver, "NLPModelsIpopt.jl", :ipopt, true, true, true, true, false, true, true, true, true, 2),
+  (
+    "IPOPT",
+    :IpoptSolver,
+    "NLPModelsIpopt.jl",
+    :ipopt,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    2,
+  ),
 )
 push!(
   solvers,
-  ("DCISolver", :DCIWorkspace, "DCISolver.jl", :dci, true, false, true, false, false, true, true, true, false, 2),
+  (
+    "DCISolver",
+    :DCIWorkspace,
+    "DCISolver.jl",
+    :dci,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    2,
+  ),
 )
 push!(
   solvers,
@@ -173,7 +281,22 @@ push!(
 )
 push!(
   solvers,
-  ("RipQP", :RipQPSolver, "RipQP.jl", :ripqp, true, true, true, true, false, false, false, false, false, 2),
+  (
+    "RipQP",
+    :RipQPSolver,
+    "RipQP.jl",
+    :ripqp,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    2,
+  ),
 ) # need to check linear constraints and quadratic constraints
 
 include("selection.jl")
@@ -288,7 +411,9 @@ function solve end
 The first argument should be of type `SolverCore.AbstractOptimizationSolver`, see for instance `JSOSuite.solvers[!, :name_solver]`.
 """
 function SolverCore.solve!(solver, args...; kwargs...)
-  throw("solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.solvers[!, :name_solver]`.")
+  throw(
+    "solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.solvers[!, :name_solver]`.",
+  )
 end
 
 include("solve_model.jl")

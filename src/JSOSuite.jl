@@ -393,7 +393,8 @@ function SolverBenchmark.bmark_solvers(
   rtol::Real = √eps(),
   verbose::Integer = 0,
   max_time::Float64 = 300.0,
-  max_eval::Integer = typemax(Int),
+  max_eval::Integer = 10000,
+  max_iter::Integer = 10000,
   kwargs...,
 )
   for s in solver_names

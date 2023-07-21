@@ -4,6 +4,11 @@ using JSOSuite
 # others
 using JuMP, NLPModelsJuMP
 
+using KNITRO
+if KNITRO.has_knitro()
+  using NLPModelsKnitro
+end
+
 # JSO
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 using CaNNOLeS, DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, Percival, RipQP, SolverCore

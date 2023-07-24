@@ -447,7 +447,7 @@ end
 end
 
 @init begin
-  @require NLPModelsIpopt = "429524aa-4258-5aef-a3af-852621145aeb" begin
+  @require NLPModelsIpopt = "f4238b75-b362-5c4c-b852-0801c9a21d71" begin
     JSOSuite.solvers[JSOSuite.solvers.name .== "IPOPT", :is_available] .= 1
     include("solvers/ipopt_solve.jl")
   end

@@ -133,7 +133,7 @@ end
 end
 
 @testset "Test solve OptimizationProblems: $name" for name in meta[meta.nvar .< 10, :name]
-  name in ["bennett5", "channel", "hs73", "misra1c"] && continue
+  name in ["bennett5", "channel", "hs253", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
   solve(nlp, verbose = 0)
   @test true

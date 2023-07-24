@@ -1,4 +1,4 @@
-function solve(
+function minimize(
   ::Val{:RipQP},
   nlp::Union{QuadraticModel{T0}, LLSModel{T0}};
   max_iter = 200,

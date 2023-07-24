@@ -16,7 +16,7 @@ The latter is usually a good tradeoff for very large problems.
 using JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
-stats = solve(f, x0, verbose = 0, highest_derivative_available = 1)
+stats = minimize(f, x0, verbose = 0, highest_derivative_available = 1)
 stats
 ```
 

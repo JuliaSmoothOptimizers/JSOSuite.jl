@@ -297,28 +297,28 @@ push!(
 
 include("selection.jl")
 
-export solve, solve!, feasible_point
+export minimize, solve!, feasible_point
 
 """
-    stats = solve(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
+    stats = minimize(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
 
 Compute a local minimum of the optimization problem `nlp`.
 
-    stats = solve(f::Function, x0::AbstractVector, args...; kwargs...)
-    stats = solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
+    stats = minimize(f::Function, x0::AbstractVector, args...; kwargs...)
+    stats = minimize(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
 
 Define an NLPModel using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/stable/).
 
-    stats = solve(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
-    stats = solve(c, H, lvar, uvar, c0 = c0, x0 = x0, name = name; kwargs...)
-    stats = solve(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
-    stats = solve(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = minimize(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = minimize(c, H, lvar, uvar, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = minimize(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+    stats = minimize(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
 
 Define a QuadraticModel using [`QuadraticModel`](https://juliasmoothoptimizers.github.io/QuadraticModels.jl/stable/).
 
-The solver can be chosen as follows.
+The optimizer can be chosen as follows.
 
-    stats = solve(solver_name::String, args...; kwargs...)
+    stats = minimize(optimizer_name::String, args...; kwargs...)
 
 `JuMP.Model` are converted in NLPModels via NLPModelsJuMP.jl.
 
@@ -359,7 +359,7 @@ The value returned is a `GenericExecutionStats`, see `SolverCore.jl`.
 # Examples
 ```jldoctest; output = false
 using JSOSuite
-stats = solve(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
+stats = minimize(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
 stats
 
 # output
@@ -371,7 +371,7 @@ The list of available solver can be obtained using `JSOSuite.optimizers[!, :name
 
 ```jldoctest; output = false
 using JSOSuite
-stats = solve("TRON", x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
+stats = minimize("TRON", x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
 stats
 
 # output
@@ -383,13 +383,13 @@ Some optimizers are available after loading only.
 
 ```jldoctest; output = false
 using JSOSuite
-# We solve here a quadratic problem with bound-constraints
+# We minimize here a quadratic problem with bound-constraints
 c = [1.0; 1.0]
 H = [-2.0 0.0; 3.0 4.0]
 uvar = [1.0; 1.0]
 lvar = [0.0; 0.0]
 x0 = [0.5; 0.5]
-stats = solve("TRON", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP", verbose = 0)
+stats = minimize("TRON", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP", verbose = 0)
 stats
 
 # output
@@ -399,7 +399,7 @@ stats
 ```
 
 """
-function solve end
+function minimize end
 
 """
     solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
@@ -421,7 +421,7 @@ include("solve.jl")
 @init begin
   @require CaNNOLeS = "5a1c9e79-9c58-5ec0-afc4-3298fdea2875" begin
     JSOSuite.optimizers[JSOSuite.optimizers.name .== "CaNNOLeS", :is_available] .= 1
-    function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
+    function minimize(::Val{:CaNNOLeS}, nlp; kwargs...)
       return CaNNOLeS.cannoles(nlp; linsolve = :ldlfactorizations, kwargs...)
     end
 
@@ -431,7 +431,7 @@ end
 @init begin
   @require DCISolver = "bee2e536-65f6-11e9-3844-e5bb4c9c55c9" begin
     JSOSuite.optimizers[JSOSuite.optimizers.name .== "DCISolver", :is_available] .= 1
-    function solve(::Val{:DCISolver}, nlp; kwargs...)
+    function minimize(::Val{:DCISolver}, nlp; kwargs...)
       return DCISolver.dci(nlp; kwargs...)
     end
   end
@@ -440,7 +440,7 @@ end
 @init begin
   @require FletcherPenaltySolver = "e59f0261-166d-4fee-8bf3-5e50457de5db" begin
     JSOSuite.optimizers[JSOSuite.optimizers.name .== "FletcherPenaltySolver", :is_available] .= 1
-    function solve(::Val{:FletcherPenaltySolver}, nlp; kwargs...)
+    function minimize(::Val{:FletcherPenaltySolver}, nlp; kwargs...)
       return FletcherPenaltySolver.fps_solve(nlp; kwargs...)
     end
   end
@@ -576,7 +576,7 @@ function bmark_solvers end
     )
       for s in solver_names
         solvers[Symbol(s)] =
-          nlp -> solve(
+          nlp -> minimize(
             s,
             nlp;
             atol = atol,
@@ -619,7 +619,7 @@ function feasible_point end
 
 function feasible_point(nlp::AbstractNLPModel, args...; kwargs...)
   nls = FeasibilityFormNLS(FeasibilityResidual(nlp))
-  stats_nls = solve(nls, args...; kwargs...)
+  stats_nls = minimize(nls, args...; kwargs...)
   stats = GenericExecutionStats(nlp)
   set_status!(stats, stats_nls.status)
   set_solution!(stats, stats_nls.solution[1:get_nvar(nlp)])

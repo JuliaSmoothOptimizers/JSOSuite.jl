@@ -18,10 +18,10 @@ In JuliaSmoothOptimizers, the package [`QuadraticModels.jl`](https://github.com/
 The function `solve` with the following sets of arguments will automatically build a `QuadraticModel` and choose the adequate solver.
 
 ```julia
-  stats = solve(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
-  stats = solve(c, H, lvar, uvar, c0 = c0, x0 = x0, name = name; kwargs...)
-  stats = solve(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
-  stats = solve(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+  stats = minimize(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
+  stats = minimize(c, H, lvar, uvar, c0 = c0, x0 = x0, name = name; kwargs...)
+  stats = minimize(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
+  stats = minimize(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
 ```
 
 ## Example
@@ -41,7 +41,7 @@ The quadratic model can then be solved using [`solve`](@ref).
 
 ```@example ex1
 using JSOSuite
-  stats = solve(c, H, A, lcon, ucon, name = "eqconqp_QP")
+  stats = minimize(c, H, A, lcon, ucon, name = "eqconqp_QP")
 ```
 
 This is equivalent to building a `QuadraticModel` and then [`solve`](@ref).
@@ -49,12 +49,12 @@ This is equivalent to building a `QuadraticModel` and then [`solve`](@ref).
 ```@example ex1
 using QuadraticModels, JSOSuite
   qp_model = QuadraticModel(c, H, A, lcon, ucon, name = "eqconqp_QP")
-  stats = solve(qp_model)
+  stats = minimize(qp_model)
 ```
 
 As usual, it is also possible to select manually the solver to be used.
 
 ```@example ex1
   using RipQP
-  stats = solve("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
+  stats = minimize("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
 ```

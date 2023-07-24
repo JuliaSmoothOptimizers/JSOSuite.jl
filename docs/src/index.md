@@ -15,13 +15,13 @@ All these solvers rely on the `NLPModel API` from [NLPModels.jl](https://github.
 
 The package `JSOSuite` exports a function [`solve`](@ref): 
 ```
-output = solve(args...; kwargs...)
+output = minimize(args...; kwargs...)
 ```
 The arguments are used to define the problem, see [Tutorial](@ref tutorial-section).
 
 It is also possible to define an `NLPModel` or a `JuMP` model representing the problem, and then call `solve`:
 ```
-output = solve(nlpmodel; kwargs...)
+output = minimize(nlpmodel; kwargs...)
 ```
 
 The `NLPModel API` is a general consistent API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions to evaluate their derivatives, and to provide essentially any information that a solver might request from a model. [JuliaSmoothOrganization's website](https://juliasmoothoptimizers.github.io) or [NLPModels.jl's documentation](https://juliasmoothoptimizers.github.io/NLPModels.jl/dev/) provide more tutorials on this topic.

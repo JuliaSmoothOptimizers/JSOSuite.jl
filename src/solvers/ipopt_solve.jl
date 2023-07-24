@@ -1,5 +1,5 @@
 # Selection of possible [options](https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF).
-function solve(::Val{:IPOPT}, nlp; kwargs...)
+function minimize(::Val{:IPOPT}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     if keywords[:verbose] == 0

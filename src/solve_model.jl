@@ -1,19 +1,19 @@
-function solve(f::Function, x0::AbstractVector, args...; kwargs...)
+function minimize(f::Function, x0::AbstractVector, args...; kwargs...)
   nlp = ADNLPModel(f, x0, args...)
-  return solve(nlp; kwargs...)
+  return minimize(nlp; kwargs...)
 end
 
-function solve(solver_name::String, f::Function, x0::AbstractVector, args...; kwargs...)
+function minimize(solver_name::String, f::Function, x0::AbstractVector, args...; kwargs...)
   nlp = ADNLPModel(f, x0, args...)
-  return solve(solver_name, nlp; kwargs...)
+  return minimize(solver_name, nlp; kwargs...)
 end
 
-function solve(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
+function minimize(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
   nlp = ADNLSModel(F, x0, nequ, args...)
-  return solve(nlp; kwargs...)
+  return minimize(nlp; kwargs...)
 end
 
-function solve(
+function minimize(
   solver_name::String,
   F::Function,
   x0::AbstractVector,
@@ -22,22 +22,22 @@ function solve(
   kwargs...,
 )
   nlp = ADNLSModel(F, x0, nequ, args...)
-  return solve(solver_name, nlp; kwargs...)
+  return minimize(solver_name, nlp; kwargs...)
 end
 
-function solve(model::JuMP.Model, args...; kwargs...)
+function minimize(model::JuMP.Model, args...; kwargs...)
   nlp = MathOptNLPModel(model)
-  return solve(nlp, args...; kwargs...)
+  return minimize(nlp, args...; kwargs...)
 end
 
-function solve(solver_name::String, model::JuMP.Model, args...; kwargs...)
+function minimize(solver_name::String, model::JuMP.Model, args...; kwargs...)
   nlp = MathOptNLPModel(model)
-  return solve(solver_name, nlp, args...; kwargs...)
+  return minimize(solver_name, nlp, args...; kwargs...)
 end
 
-function solve(solver::Val{solver_name}, model::JuMP.Model, args...; kwargs...) where {solver_name}
+function minimize(solver::Val{solver_name}, model::JuMP.Model, args...; kwargs...) where {solver_name}
   nlp = MathOptNLPModel(model)
-  return solve(solver, nlp, args...; kwargs...)
+  return minimize(solver, nlp, args...; kwargs...)
 end
 
 # TODO: Add AbstractOptimizationSolver constructors with JuMP model. 
@@ -102,7 +102,7 @@ function QuadraticModel(
   )
 end
 
-function solve(
+function minimize(
   c::S,
   args...;
   c0::T = zero(T),
@@ -111,10 +111,10 @@ function solve(
   kwargs...,
 ) where {T, S <: AbstractVector{T}}
   qp_model = QuadraticModel(c, args...; c0 = c0, x0 = x0, name = name)
-  return solve(qp_model; kwargs...)
+  return minimize(qp_model; kwargs...)
 end
 
-function solve(
+function minimize(
   solver_name::String,
   c::S,
   args...;
@@ -124,5 +124,5 @@ function solve(
   kwargs...,
 ) where {T, S <: AbstractVector{T}}
   qp_model = QuadraticModel(c, args...; c0 = c0, x0 = x0, name = name)
-  return solve(solver_name, qp_model; kwargs...)
+  return minimize(solver_name, qp_model; kwargs...)
 end

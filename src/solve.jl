@@ -1,4 +1,4 @@
-function solve(
+function minimize(
   nlp::AbstractNLPModel;
   verbose = 1,
   highest_derivative_available::Integer = 2,
@@ -7,10 +7,10 @@ function solve(
   select = select_optimizers(nlp, verbose, highest_derivative_available)
   (verbose ≥ 1) && println("Solve using $(first(select).name):")
   solver = first(select)
-  return solve(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
+  return minimize(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
 end
 
-function solve(
+function minimize(
   nlp::AbstractNLSModel;
   verbose = 1,
   highest_derivative_available::Integer = 2,
@@ -24,16 +24,16 @@ function solve(
     first(select)
   end
   (verbose ≥ 1) && println("Solve using $(solver.name):")
-  return solve(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
+  return minimize(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
 end
 
-function solve(solver_name::String, nlp; kwargs...)
+function minimize(solver_name::String, nlp; kwargs...)
   solver = optimizers[optimizers.name .== solver_name, :]
   if isempty(solver)
     @warn "$(solver_name) does not exist."
     return GenericExecutionStats(nlp)
   end
-  return solve(Val(Symbol(solver_name)), nlp; kwargs...)
+  return minimize(Val(Symbol(solver_name)), nlp; kwargs...)
 end
 
 function throw_error_solve(solver::Symbol)
@@ -47,7 +47,7 @@ function throw_error_solve(solver::Symbol)
   return throw(ArgumentError(str))
 end
 
-function solve(::Val{solver_name}, nlp; kwargs...) where {solver_name}
+function minimize(::Val{solver_name}, nlp; kwargs...) where {solver_name}
   solver = optimizers[optimizers.name .== string(solver_name), :]
   if !is_available(solver_name)
     throw_error_solve(solver_name)

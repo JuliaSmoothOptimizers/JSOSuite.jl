@@ -14,12 +14,12 @@ using JSOSolvers, Percival, SolverCore
 @testset "Test not loaded solvers" begin
   nlp = ADNLPModel(x -> sum(x), ones(2))
 
-  @test_throws ArgumentError solve("CaNNOLeS", nlp)
-  @test_throws ArgumentError solve("DCISolver", nlp)
-  @test_throws ArgumentError solve("FletcherPenaltySolver", nlp)
-  @test_throws ArgumentError solve("IPOPT", nlp)
-  @test_throws ArgumentError solve("KNITRO", nlp)
-  @test_throws ArgumentError solve("RipQP", nlp)
+  @test_throws ArgumentError minimize("CaNNOLeS", nlp)
+  @test_throws ArgumentError minimize("DCISolver", nlp)
+  @test_throws ArgumentError minimize("FletcherPenaltySolver", nlp)
+  @test_throws ArgumentError minimize("IPOPT", nlp)
+  @test_throws ArgumentError minimize("KNITRO", nlp)
+  @test_throws ArgumentError minimize("RipQP", nlp)
 end
 
 # optionals
@@ -86,11 +86,11 @@ include("qp_tests.jl")
   atol, rtol = √eps(Float32), √eps(Float32)
   for solver in eachrow(JSOSuite.select_optimizers(nlp))
     if solver.nonlinear_obj
-      solve(solver.name, nlp, verbose = 0, atol = atol, rtol = rtol)
+      minimize(solver.name, nlp, verbose = 0, atol = atol, rtol = rtol)
       @test true
     else
       nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
-      solve(solver.name, nlp_qm, verbose = 0, atol = atol, rtol = rtol)
+      minimize(solver.name, nlp_qm, verbose = 0, atol = atol, rtol = rtol)
       @test true
     end
   end
@@ -101,7 +101,7 @@ end
   jum = MathOptNLPModel(model)
   @test JSOSuite.select_optimizers(model) == JSOSuite.select_optimizers(jum)
   for solver in eachrow(JSOSuite.select_optimizers(model))
-    solve(solver.name, model, verbose = 0)
+    minimize(solver.name, model, verbose = 0)
     @test true
   end
 end
@@ -118,27 +118,27 @@ end
 
 @testset "Basic solve tests" begin
   f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
-  stats = solve(f, [-1.2; 1.0], verbose = 0)
+  stats = minimize(f, [-1.2; 1.0], verbose = 0)
   @test stats.status_reliable && (stats.status == :first_order)
 
-  stats = solve("DCISolver", f, [-1.2; 1.0], verbose = 0)
+  stats = minimize("DCISolver", f, [-1.2; 1.0], verbose = 0)
   @test stats.status_reliable && (stats.status == :first_order)
 
   F = x -> [10 * (x[2] - x[1]^2); x[1] - 1]
-  stats = solve(F, [-1.2; 1.0], 2, verbose = 0)
+  stats = minimize(F, [-1.2; 1.0], 2, verbose = 0)
   @test stats.status_reliable && (stats.status == :first_order)
 
-  stats = solve("DCISolver", F, [-1.2; 1.0], 2, verbose = 0)
+  stats = minimize("DCISolver", F, [-1.2; 1.0], 2, verbose = 0)
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
 @testset "Test solve OptimizationProblems: $name" for name in meta[meta.nvar .< 10, :name]
   name in ["bennett5", "channel", "hs253", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
-  solve(nlp, verbose = 0)
+  minimize(nlp, verbose = 0)
   @test true
   model = OptimizationProblems.PureJuMP.eval(Meta.parse(name))()
-  solve(model, verbose = 0)
+  minimize(model, verbose = 0)
   @test true
 end
 
@@ -156,7 +156,7 @@ for solver in eachrow(JSOSuite.optimizers)
     # We just test that the solver runs with the options
     if solver.is_available
       if solver.nonlinear_obj
-        solve(
+        minimize(
           solver.name,
           nlp,
           atol = 1e-5,
@@ -168,7 +168,7 @@ for solver in eachrow(JSOSuite.optimizers)
         @test true
       else
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
-        solve(
+        minimize(
           solver.name,
           nlp_qm,
           atol = 1e-5,
@@ -193,7 +193,7 @@ end
       ((nlp.meta.ncon > 0) && (!solver.equalities)) && continue
       # We just test that the solver runs with the options
       if solver.can_solve_nlp
-        solve(
+        minimize(
           solver.name,
           nlp,
           atol = 1e-5,
@@ -206,7 +206,7 @@ end
         )
         @test true
       elseif solver.specialized_nls
-        solve(
+        minimize(
           solver.name,
           nls,
           atol = 1e-5,
@@ -222,7 +222,7 @@ end
         @test true
       else # RipQP
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
-        solve(
+        minimize(
           solver.name,
           nlp_qm,
           atol = 1e-5,

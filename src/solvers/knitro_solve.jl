@@ -1,5 +1,5 @@
 # See https://www.artelys.com/docs/knitro/3_referenceManual/userOptions.html for the list of options accepted.
-function solve(::Val{:KNITRO}, nlp; kwargs...)
+function minimize(::Val{:KNITRO}, nlp; kwargs...)
   keywords = Dict(kwargs)
   if :verbose in keys(keywords)
     keywords[:outlev] = keywords[:verbose]

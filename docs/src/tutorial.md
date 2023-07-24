@@ -19,7 +19,7 @@ All these optimizers rely on the `NLPModel API` from [NLPModels.jl](https://gith
 
 The function `solve` accepts as an argument any model `nlp` subtype of `AbstractNLPModel`.
 ```julia
-output = solve(nlpmodel::AbstractNLPModel; kwargs...)
+output = minimize(nlpmodel::AbstractNLPModel; kwargs...)
 ```
 
 In the rest of this section, we focus on examples using generic modeling tools.
@@ -35,7 +35,7 @@ model = Model()
 @variable(model, y)
 @NLobjective(model, Min, (1 - x)^2 + 100 * (y - x^2)^2)
 
-solve(model)
+minimize(model)
 ```
 
 We refer to [`JuMP tutorial`](https://jump.dev/JuMP.jl/stable/).
@@ -50,7 +50,7 @@ We refer to [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.j
 using JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
-stats = solve(f, x0, verbose = 0)
+stats = minimize(f, x0, verbose = 0)
 ```
 
 ```@example
@@ -58,7 +58,7 @@ using ADNLPModels, JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 nlp = ADNLPModel(f, x0)
-stats = solve(nlp)
+stats = minimize(nlp)
 ```
 
 One of the main advantages of this constructor is the possibility to run computations in different arithmetics. 
@@ -67,7 +67,7 @@ One of the main advantages of this constructor is the possibility to run computa
 using JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = Float32[-1.2; 1.0]
-stats = solve(f, x0, verbose = 0)
+stats = minimize(f, x0, verbose = 0)
 ```
 
 #### Bound-constrained
@@ -77,7 +77,7 @@ using JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 lvar, uvar = 2 * ones(2), 4 * ones(2)
-stats = solve(f, x0, lvar, uvar, verbose = 0)
+stats = minimize(f, x0, lvar, uvar, verbose = 0)
 ```
 
 ```@example
@@ -85,7 +85,7 @@ using ADNLPModels, JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 nlp = ADNLPModel(f, x0)
-stats = solve(nlp)
+stats = minimize(nlp)
 ```
 
 #### Nonlinear constrained
@@ -96,7 +96,7 @@ f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 c = x -> [x[1]]
 l = ones(1)
-stats = solve(f, x0, c, l, l, verbose = 0)
+stats = minimize(f, x0, c, l, l, verbose = 0)
 ```
 
 #### Linearly constrained
@@ -110,7 +110,7 @@ A = sparse([
     2.0 3.0
 ])
 l = ones(2)
-stats = solve(f, x0, A, l, l, verbose = 0)
+stats = minimize(f, x0, A, l, l, verbose = 0)
 ```
 
 #### All constraints
@@ -122,7 +122,7 @@ x0 = [-1.2; 1.0]
 A = sparse([2.0 3.0])
 c = x -> [x[1]]
 l = ones(2)
-stats = solve(f, x0, A, c, l, l, verbose = 0)
+stats = minimize(f, x0, A, c, l, l, verbose = 0)
 ```
 
 ## Solving
@@ -170,7 +170,7 @@ using ADNLPModels, JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 nlp = ADNLPModel(f, x0)
-stats = solve(nlp, atol = 1e-5, rtol = 1e-7, max_time = 10.0, max_eval = 10000, verbose = 1)
+stats = minimize(nlp, atol = 1e-5, rtol = 1e-7, max_time = 10.0, max_eval = 10000, verbose = 1)
 ```
 
 Further possible options are documented in each solver's documentation. For instance, we can update the `mem` parameter of `LBFGS`.
@@ -180,5 +180,5 @@ using ADNLPModels, JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 nlp = ADNLPModel(f, x0)
-stats = solve("LBFGS", nlp, mem = 10, verbose = 1)
+stats = minimize("LBFGS", nlp, mem = 10, verbose = 1)
 ```

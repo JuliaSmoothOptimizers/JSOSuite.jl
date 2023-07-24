@@ -44,13 +44,13 @@ nls = ADNLSModel(F, x0, nres, c, l, l, name="AD-Rosenbrock")
 Note that the length of the residual function is given explictly to avoid any superfluous evaluation of this (potentially very large) function.
 
 ```@example ex1
-stats = solve(nls)
+stats = minimize(nls)
 ```
 
 `JSOSuite.jl` uses by default automatic differentiation, so the following code would be equivalent:
 
 ```@example ex1
-stats = solve(F, x0, nres, c, l, l)
+stats = minimize(F, x0, nres, c, l, l)
 ```
 
 By default, `JSOSuite.solve` will use a solver tailored for nonlineat least squares problem.
@@ -58,7 +58,7 @@ Nevertheless, it is also possible to specify the solver to be used.
 
 ```@example ex1
 using NLPModelsIpopt
-stats = solve("IPOPT", F, x0, nres, c, l, l)
+stats = minimize("IPOPT", F, x0, nres, c, l, l)
 ```
 
 We refer to the documentation of [`ADNLPModels.jl`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/dev/backend/) for more details on the AD system use and how to modify it.
@@ -78,7 +78,7 @@ x0 = [-1.2; 1.0]
 @NLconstraint(model, x[1] * x[2] == 1)
 
 nls = MathOptNLSModel(model, [F1, F2], name="Ju-Rosenbrock")
-stats = solve(nls)
+stats = minimize(nls)
 ```
 
 ## Find a feasible point of an optimization problem or solve a nonlinear system

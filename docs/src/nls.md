@@ -57,6 +57,7 @@ By default, `JSOSuite.solve` will use a solver tailored for nonlineat least squa
 Nevertheless, it is also possible to specify the solver to be used.
 
 ```@example ex1
+using NLPModelsIpopt
 stats = solve("IPOPT", F, x0, nres, c, l, l)
 ```
 

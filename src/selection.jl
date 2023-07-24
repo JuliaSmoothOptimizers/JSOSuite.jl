@@ -33,9 +33,9 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 8 solvers available:
-["LBFGS", "R2", "TRON", "TRUNK", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"]
+There are 5 solvers available:
+["LBFGS", "R2", "TRON", "TRUNK", "Percival"].
+["LBFGS", "R2", "TRON", "TRUNK", "Percival"]
 ```
 
 ```jldoctest; output = false
@@ -51,9 +51,9 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 11 solvers available:
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "CaNNOLeS", "IPOPT", "DCISolver", "FletcherPenaltySolver", "Percival"]
+There are 7 solvers available:
+["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"].
+["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"]
 ```
 """
 function select_solvers(
@@ -61,7 +61,7 @@ function select_solvers(
   verbose = 1,
   highest_derivative_available::Integer = 2,
 ) where {T, S}
-  select = generic(nlp, solvers[solvers.is_available, :])
+  select = generic(nlp, solvers)
   if verbose ≥ 1
     used_name = nlp.meta.name == "Generic" ? "The problem" : "The problem $(nlp.meta.name)"
     s = "$(used_name) has $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints."
@@ -103,19 +103,43 @@ function select_solvers(
   else
     (verbose ≥ 1) && println("- quadratic objective: ✓;")
   end
+
+  all_select = copy(select)
+  nsolvers_total_before_derivative = nrow(all_select)
+
+  select = select[select.is_available, :]
   nsolvers_before_derivative = nrow(select)
+
   if nsolvers_before_derivative == 0
-    (verbose ≥ 1) && println(
-      "No solvers are available for this type of problem. Consider open an issue to JSOSuite.jl",
-    )
+    if nsolvers_total_before_derivative == 0
+      (verbose ≥ 1) && println(
+        "No solvers are available for this type of problem. Consider open an issue to JSOSuite.jl",
+      )
+    else
+      (verbose ≥ 1) && println(
+        "No solvers are available for this type of problem. Consider loading more solvers $(all_select[!, :name_pkg])",
+      )
+    end
   else
     (verbose ≥ 1) && println("- may use $(highest_derivative_available)-th order derivative.")
+    all_select = all_select[all_select.highest_derivative .<= highest_derivative_available, :]
+    nsolvers_total_after_derivative = nrow(all_select)
     select = select[select.highest_derivative .<= highest_derivative_available, :]
     nsolvers_after_derivative = nrow(select)
     if (nsolvers_after_derivative == 0) && (nsolvers_before_derivative > 0)
-      (verbose ≥ 1) && println(
-        "No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
-      )
+      if (nsolvers_total_after_derivative == 0) && (nsolvers_before_derivative > 0)
+        (verbose ≥ 1) && println(
+          "No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
+        )
+      elseif (nsolvers_total_after_derivative > 0)
+        (verbose ≥ 1) && println(
+          "No solvers are available for this type of problem. Consider loading more solvers $(all_select[!, :name_pkg])",
+        )
+      else
+        (verbose ≥ 1) && println(
+          "No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
+        )
+      end
     else
       if verbose ≥ 1
         s = "There are $(nrow(select)) solvers available:"

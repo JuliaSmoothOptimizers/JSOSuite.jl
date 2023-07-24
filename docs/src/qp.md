@@ -55,5 +55,6 @@ using QuadraticModels, JSOSuite
 As usual, it is also possible to select manually the solver to be used.
 
 ```@example ex1
+  using RipQP
   stats = solve("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
 ```

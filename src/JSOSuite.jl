@@ -1,18 +1,14 @@
 module JSOSuite
 
 # other dependencies
-using DataFrames, JuMP, KNITRO
+using DataFrames, JuMP, Requires
 # stdlib
 using LinearAlgebra, Logging, SparseArrays
 # JSO
 using ADNLPModels, LLSModels, NLPModels, NLPModelsJuMP, QuadraticModels
 using LinearOperators, NLPModelsModifiers, SolverCore
 # JSO solvers
-using CaNNOLeS,
-  DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, JSOSolvers, Percival, RipQP
-if KNITRO.has_knitro()
-  using NLPModelsKnitro
-end
+using JSOSolvers, Percival
 
 """
     solvers
@@ -58,7 +54,7 @@ push!(
     :KnitroSolver,
     "NLPModelsKnitro.jl",
     :knitro,
-    KNITRO.has_knitro(),
+    false,
     true,
     true,
     true,
@@ -191,7 +187,7 @@ push!(
     :CaNNOLeSSolver,
     "CaNNOLeS.jl",
     :cannoles,
-    true,
+    false,
     false,
     true,
     false,
@@ -210,7 +206,7 @@ push!(
     :IpoptSolver,
     "NLPModelsIpopt.jl",
     :ipopt,
-    true,
+    false,
     true,
     true,
     true,
@@ -229,7 +225,7 @@ push!(
     :DCIWorkspace,
     "DCISolver.jl",
     :dci,
-    true,
+    false,
     false,
     true,
     false,
@@ -248,7 +244,7 @@ push!(
     :FPSSSolver,
     "FletcherPenaltySolver.jl",
     :fps_solve,
-    true,
+    false,
     false,
     true,
     false,
@@ -286,7 +282,7 @@ push!(
     :RipQPSolver,
     "RipQP.jl",
     :ripqp,
-    true,
+    false,
     true,
     true,
     true,
@@ -375,13 +371,15 @@ The list of available solver can be obtained using `JSOSuite.solvers[!, :name]` 
 
 ```jldoctest; output = false
 using JSOSuite
-stats = solve("DCISolver", x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
+stats = solve("TRON", x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0], verbose = 0)
 stats
 
 # output
 
 "Execution stats: first-order stationary"
 ```
+
+Some solvers are available after loading only.
 
 ```jldoctest; output = false
 using JSOSuite
@@ -420,9 +418,58 @@ include("solve_model.jl")
 
 include("solve.jl")
 
-using SolverBenchmark
+@init begin
+  @require CaNNOLeS = "5a1c9e79-9c58-5ec0-afc4-3298fdea2875" begin
+    JSOSuite.solvers[JSOSuite.solvers.name .== "CaNNOLeS", :is_available] .= 1
+    function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
+      return CaNNOLeS.cannoles(nlp; linsolve = :ldlfactorizations, kwargs...)
+    end
 
-export bmark_solvers
+  end
+end
+
+@init begin
+  @require DCISolver = "bee2e536-65f6-11e9-3844-e5bb4c9c55c9" begin
+    JSOSuite.solvers[JSOSuite.solvers.name .== "DCISolver", :is_available] .= 1
+    function solve(::Val{:DCISolver}, nlp; kwargs...)
+      return DCISolver.dci(nlp; kwargs...)
+    end
+  end
+end
+
+@init begin
+  @require FletcherPenaltySolver = "e59f0261-166d-4fee-8bf3-5e50457de5db" begin
+    JSOSuite.solvers[JSOSuite.solvers.name .== "FletcherPenaltySolver", :is_available] .= 1
+    function solve(::Val{:FletcherPenaltySolver}, nlp; kwargs...)
+      return FletcherPenaltySolver.fps_solve(nlp; kwargs...)
+    end
+  end
+end
+
+@init begin
+  @require NLPModelsIpopt = "f4238b75-b362-5c4c-b852-0801c9a21d71" begin
+    JSOSuite.solvers[JSOSuite.solvers.name .== "IPOPT", :is_available] .= 1
+    include("solvers/ipopt_solve.jl")
+  end
+end
+
+@init begin
+  @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
+    @init begin
+      @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
+        JSOSuite.solvers[JSOSuite.solvers.name .== "KNITRO", :is_available] .= KNITRO.has_knitro()
+      end
+    end
+    include("solvers/knitro_solve.jl")
+  end
+end
+
+@init begin
+  @require RipQP = "1e40b3f8-35eb-4cd8-8edd-3e515bb9de08" begin
+    JSOSuite.solvers[JSOSuite.solvers.name .== "RipQP", :is_available] .= 1
+    include("solvers/ripqp_solve.jl")
+  end
+end
 
 """
     bmark_solvers(problems, solver_names::Vector{String}; kwargs...)
@@ -454,7 +501,7 @@ All the remaining keyword arguments are passed to the function `SolverBenchmark.
 # Examples
 
 ```jldoctest; output = false
-using ADNLPModels, JSOSuite
+using ADNLPModels, JSOSuite, SolverBenchmark
 nlps = (
   ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
@@ -480,7 +527,7 @@ KeySet for a Dict{Symbol, DataFrames.DataFrame} with 2 entries. Keys:
 The second example shows how to add you own solver to the benchmark.
 
 ```jldoctest; output = false
-using ADNLPModels, JSOSolvers, JSOSuite, Logging
+using ADNLPModels, JSOSolvers, JSOSuite, Logging, SolverBenchmark
 nlps = (
   ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
@@ -510,31 +557,39 @@ KeySet for a Dict{Symbol, DataFrames.DataFrame} with 3 entries. Keys:
 
 ```
 """
-function SolverBenchmark.bmark_solvers(
-  problems,
-  solver_names::Vector{String},
-  solvers::Dict{Symbol, Function} = Dict{Symbol, Function}();
-  atol::Real = √eps(),
-  rtol::Real = √eps(),
-  verbose::Integer = 0,
-  max_time::Float64 = 300.0,
-  max_eval::Integer = 10000,
-  max_iter::Integer = 10000,
-  kwargs...,
-)
-  for s in solver_names
-    solvers[Symbol(s)] =
-      nlp -> solve(
-        s,
-        nlp;
-        atol = atol,
-        rtol = rtol,
-        verbose = verbose,
-        max_time = max_time,
-        max_eval = max_eval,
-      )
+function bmark_solvers end
+
+@init begin
+  @require SolverBenchmark = "581a75fa-a23a-52d0-a590-d6201de2218a" begin
+
+    function SolverBenchmark.bmark_solvers(
+      problems,
+      solver_names::Vector{String},
+      solvers::Dict{Symbol, Function} = Dict{Symbol, Function}();
+      atol::Real = √eps(),
+      rtol::Real = √eps(),
+      verbose::Integer = 0,
+      max_time::Float64 = 300.0,
+      max_eval::Integer = 10000,
+      max_iter::Integer = 10000,
+      kwargs...,
+    )
+      for s in solver_names
+        solvers[Symbol(s)] =
+          nlp -> solve(
+            s,
+            nlp;
+            atol = atol,
+            rtol = rtol,
+            verbose = verbose,
+            max_time = max_time,
+            max_eval = max_eval,
+          )
+      end
+      return SolverBenchmark.bmark_solvers(solvers, problems; kwargs...)
+    end
+
   end
-  return bmark_solvers(solvers, problems; kwargs...)
 end
 
 """

@@ -6,7 +6,7 @@ There are two important challenges in solving an optimization problem: (i) model
 
 ## Modeling
 
-All these solvers rely on the `NLPModel API` from [NLPModels.jl](https://github.com/JuliaSmoothOptimizers/NLPModels.jl) for general nonlinear optimization problems of the form
+All these optimizers rely on the `NLPModel API` from [NLPModels.jl](https://github.com/JuliaSmoothOptimizers/NLPModels.jl) for general nonlinear optimization problems of the form
 
 ```math
 \begin{aligned}
@@ -127,37 +127,37 @@ stats = solve(f, x0, A, c, l, l, verbose = 0)
 
 ## Solving
 
-Internally, the `solve` function selects solvers according to the problem's property and JSO-compliant solvers available.
+Internally, the `solve` function selects optimizers according to the problem's property and JSO-compliant optimizers available.
 
-### Available solvers
+### Available optimizers
 
-All the information used by the handled solvers is available in the following `DataFrame`:
+All the information used by the handled optimizers is available in the following `DataFrame`:
 
 ```@example ex1
 using JSOSuite
-JSOSuite.solvers
+JSOSuite.optimizers
 ```
 
-Required information can be extracted by simple `DataFrame` manipulations. For instance, the list of solvers handled by this package
+Required information can be extracted by simple `DataFrame` manipulations. For instance, the list of optimizers handled by this package
 ```@example ex1
-JSOSuite.solvers.name
+JSOSuite.optimizers.name
 ```
 
-### Select solvers
+### Select optimizers
 
-The function [`JSOSuite.select_solvers`](@ref) returns a list of compatible solvers.
+The function [`JSOSuite.select_optimizers`](@ref) returns a list of compatible optimizers.
 ```@example
 using ADNLPModels, JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
 x0 = [-1.2; 1.0]
 nlp = ADNLPModel(f, x0)
-JSOSuite.select_solvers(nlp)
+JSOSuite.select_optimizers(nlp)
 ```
 
 ### Fine-tune solve call
 
 All the keyword arguments are passed to the solver.
-Keywords available for all the solvers are given below:
+Keywords available for all the optimizers are given below:
 
 - `atol`: absolute tolerance;
 - `rtol`: relative tolerance;

@@ -1,8 +1,8 @@
-# Benchmarking solvers
+# Benchmarking optimizers
 
 Benchmarking is very important when researching new algorithms or selecting the most approriate ones.
 
-The package [`SolverBenchmark`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl) exports the function [`bmark_solvers`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/src/bmark_solvers.jl) that runs a set of solvers on a set of problems. `JSOSuite.jl` specialize this function, see `bmark_solvers`.
+The package [`SolverBenchmark`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl) exports the function [`bmark_solvers`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/src/bmark_solvers.jl) that runs a set of optimizers on a set of problems. `JSOSuite.jl` specialize this function, see `bmark_solvers`.
 
 The [JuliaSmoothOptimizers organization](https://juliasmoothoptimizers.github.io) contains several packages of test problems ready to use for benchmarking. The main ones are
 - [`OptimizationProblems.jl`](https://github.com/JuliaSmoothOptimizers/OptimizationProblems.jl): This package provides a collection of optimization problems in JuMP and ADNLPModels syntax;
@@ -36,21 +36,21 @@ ad_problems = [
 length(ad_problems) # return the number of problems
 ```
 
-We now want to select appropriate solvers using the `JSOSuite.solvers`.
+We now want to select appropriate optimizers using the `JSOSuite.optimizers`.
 
 ```@example op
-selected_solvers = JSOSuite.solvers
-# solvers can solve general `nlp` as some are specific to variants (NLS, ...)
-selected_solvers = selected_solvers[selected_solvers.can_solve_nlp, :]
-selected_solvers[selected_solvers.is_available, :] # solvers available
+selected_optimizers = JSOSuite.optimizers
+# optimizers can solve general `nlp` as some are specific to variants (NLS, ...)
+selected_optimizers = selected_optimizers[selected_optimizers.can_solve_nlp, :]
+selected_optimizers[selected_optimizers.is_available, :] # optimizers available
 ```
 
-For the purpose of this example, we will consider 3 solvers.
+For the purpose of this example, we will consider 3 optimizers.
 ```@example op
 select = ["IPOPT", "TRUNK", "LBFGS"]
 ```
 
-Once the problems and solvers are chosen, the function `bmark_solvers` runs the benchmark. 
+Once the problems and optimizers are chosen, the function `bmark_solvers` runs the benchmark. 
 
 ```@example op
 using SolverBenchmark
@@ -75,7 +75,7 @@ gr()
 profile_solvers(stats, costs, costnames)
 ```
 
-Note that there are fundamental differences between these solvers as highlighted in the following.
+Note that there are fundamental differences between these optimizers as highlighted in the following.
 
 ```@example op
 for solver in ["IPOPT", "TRUNK", "LBFGS"]

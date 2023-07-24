@@ -1,7 +1,7 @@
 """
-    select_solvers(nlp::Union{AbstractNLPModel, JuMP.Model}, verbose = 1, highest_derivative_available::Integer = 2)
+    select_optimizers(nlp::Union{AbstractNLPModel, JuMP.Model}, verbose = 1, highest_derivative_available::Integer = 2)
 
-Narrow the list of solvers to solve `nlp` problem using `highest_derivative_available`.
+Narrow the list of optimizers to solve `nlp` problem using `highest_derivative_available`.
 
 This function checks whether the model has:
   - linear or nonlinear constraints;
@@ -10,11 +10,11 @@ This function checks whether the model has:
 A linear or quadratic objective is detected if the type of `nlp` is a `QuadraticModel` or an `LLSModel`.
 The selection between a general optimization problem and a nonlinear least squares is done in [`solve`](@ref).
 
-If no solvers were selected, consider setting `verbose` to `true` to see what went wrong.
+If no optimizers were selected, consider setting `verbose` to `true` to see what went wrong.
 
 ## Output
 
-- `selected_solvers::DataFrame`: A subset of [`solvers`](@ref) adapted to the problem `nlp`.
+- `selected_optimizers::DataFrame`: A subset of [`optimizers`](@ref) adapted to the problem `nlp`.
 
 See also [`solve`](@ref).
 
@@ -23,8 +23,8 @@ See also [`solve`](@ref).
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite
 nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-selected_solvers = JSOSuite.select_solvers(nlp)
-print(selected_solvers[!, :name])
+selected_optimizers = JSOSuite.select_optimizers(nlp)
+print(selected_optimizers[!, :name])
 
 # output
 
@@ -33,7 +33,7 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 5 solvers available:
+There are 5 optimizers available:
 ["LBFGS", "R2", "TRON", "TRUNK", "Percival"].
 ["LBFGS", "R2", "TRON", "TRUNK", "Percival"]
 ```
@@ -41,8 +41,8 @@ There are 5 solvers available:
 ```jldoctest; output = false
 using ADNLPModels, JSOSuite
 nlp = ADNLSModel(x -> [10 * (x[2] - x[1]^2), (x[1] - 1)], [-1.2; 1.0], 2)
-selected_solvers = JSOSuite.select_solvers(nlp)
-print(selected_solvers[!, :name])
+selected_optimizers = JSOSuite.select_optimizers(nlp)
+print(selected_optimizers[!, :name])
 
 # output
 
@@ -51,17 +51,17 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 7 solvers available:
+There are 7 optimizers available:
 ["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"].
 ["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"]
 ```
 """
-function select_solvers(
+function select_optimizers(
   nlp::AbstractNLPModel{T, S},
   verbose = 1,
   highest_derivative_available::Integer = 2,
 ) where {T, S}
-  select = generic(nlp, solvers)
+  select = generic(nlp, optimizers)
   if verbose ≥ 1
     used_name = nlp.meta.name == "Generic" ? "The problem" : "The problem $(nlp.meta.name)"
     s = "$(used_name) has $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints."
@@ -129,21 +129,21 @@ function select_solvers(
     if (nsolvers_after_derivative == 0) && (nsolvers_before_derivative > 0)
       if (nsolvers_total_after_derivative == 0) && (nsolvers_before_derivative > 0)
         (verbose ≥ 1) && println(
-          "No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
+          "No optimizers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
         )
       elseif (nsolvers_total_after_derivative > 0)
         (verbose ≥ 1) && println(
-          "No solvers are available for this type of problem. Consider loading more solvers $(all_select[!, :name_pkg])",
+          "No optimizers are available for this type of problem. Consider loading more optimizers $(all_select[!, :name_pkg])",
         )
       else
         (verbose ≥ 1) && println(
-          "No solvers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
+          "No optimizers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
         )
       end
     else
       if verbose ≥ 1
-        s = "There are $(nrow(select)) solvers available:"
-        println(replace(s, "are 1 solvers" => "is 1 solver"))
+        s = "There are $(nrow(select)) optimizers available:"
+        println(replace(s, "are 1 optimizers" => "is 1 optimizer"))
         println("$(select[!, :name]).")
       end
     end
@@ -151,14 +151,14 @@ function select_solvers(
   return select
 end
 
-function select_solvers(model::JuMP.Model, args...; kwargs...)
+function select_optimizers(model::JuMP.Model, args...; kwargs...)
   nlp = MathOptNLPModel(model)
-  return select_solvers(nlp, args...; kwargs...)
+  return select_optimizers(nlp, args...; kwargs...)
 end
 
-"""Checker whether solvers are Generic only"""
+"""Checker whether optimizers are Generic only"""
 function generic end
 
-generic(::AbstractNLSModel, solvers::DataFrame) = solvers
-generic(::Union{QuadraticModel, LLSModel}, solvers::DataFrame) = solvers[solvers.can_solve_nlp, :]
-generic(::AbstractNLPModel, solvers::DataFrame) = solvers[solvers.can_solve_nlp, :]
+generic(::AbstractNLSModel, optimizers::DataFrame) = optimizers
+generic(::Union{QuadraticModel, LLSModel}, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]
+generic(::AbstractNLPModel, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]

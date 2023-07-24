@@ -4,11 +4,11 @@ The following contains a list of tips to speed up the solver selection and usage
 
 ## Derivatives
 
-The solvers available in `JSOSuite.jl` are all using first and sometines second-order derivatives. There are mainly three categories:
+The optimizers available in `JSOSuite.jl` are all using first and sometines second-order derivatives. There are mainly three categories:
 - 1st order methods use only gradient information;
 - 1st order quasi-Newton methods require only gradient information, and uses it to build an approximation of the Hessian;
 - 2nd order methods: Those are using gradients and Hessian information.
-- 2nd order methods matrix-free: Those are solvers using Hessian information, but without ever forming the matrix, so only matrix-vector products are computed.
+- 2nd order methods matrix-free: Those are optimizers using Hessian information, but without ever forming the matrix, so only matrix-vector products are computed.
 
 The latter is usually a good tradeoff for very large problems.
 
@@ -22,7 +22,7 @@ stats
 
 ## Find a better initial guess
 
-The majority of derivative-based solvers are local methods whose performance are dependent of the initial guess. 
+The majority of derivative-based optimizers are local methods whose performance are dependent of the initial guess. 
 This usually relies on specific knowledge of the problem.
 
 The function [`feasible_point`](@ref) computes a point satisfying the constraints of the problem that can be used as an initial guess. 
@@ -31,15 +31,15 @@ An alternative is to solve a simpler version of the problem and reuse the soluti
 ## Use the structure of the problem
 
 If the problem has linear constraints, then it is efficient to specify it at the modeling stage to avoid having them treated like nonlinear ones.
-Some of the solvers will also exploit this information.
+Some of the optimizers will also exploit this information.
 
-Similarly, quadratic objective or least squares problems have tailored modeling tools and solvers.
+Similarly, quadratic objective or least squares problems have tailored modeling tools and optimizers.
 
 ## Change the parameters of the solver
 
-Once a solver has been chosen it is also possible to play with the key parameters. Find below a list of the available solvers and parameters.
+Once a solver has been chosen it is also possible to play with the key parameters. Find below a list of the available optimizers and parameters.
 
-Note that all solvers presented here have been carefully optimized. All have different strengths. Trying another solver on the same problem sometimes provide a different solution.
+Note that all optimizers presented here have been carefully optimized. All have different strengths. Trying another solver on the same problem sometimes provide a different solution.
 
 ### Unconstrained/Bound-constrained
 

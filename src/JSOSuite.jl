@@ -11,7 +11,7 @@ using LinearOperators, NLPModelsModifiers, SolverCore
 using JSOSolvers, Percival
 
 """
-    solvers
+    optimizers
 
 DataFrame with the JSO-compliant solvers and their properties.
 
@@ -31,7 +31,7 @@ For each solver, the following are available:
 - `double_precision_only::Bool`: `true` if the solver only handles double precision (`Float64`);
 - `highest_derivative::Int`: order of the highest derivative used by the algorithm.
 """
-solvers = DataFrame(
+optimizers = DataFrame(
   name = String[],
   name_solver = Symbol[],
   name_pkg = String[],
@@ -48,7 +48,7 @@ solvers = DataFrame(
   highest_derivative = Int[],
 )
 push!(
-  solvers,
+  optimizers,
   (
     "KNITRO",
     :KnitroSolver,
@@ -67,7 +67,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "LBFGS",
     :LBFGSSolver,
@@ -86,7 +86,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "R2",
     :R2Solver,
@@ -105,7 +105,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "TRON",
     :TronSolver,
@@ -124,7 +124,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "TRUNK",
     :TrunkSolver,
@@ -143,7 +143,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "TRON-NLS",
     :TronSolverNLS,
@@ -162,7 +162,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "TRUNK-NLS",
     :TrunkSolverNLS,
@@ -181,7 +181,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "CaNNOLeS",
     :CaNNOLeSSolver,
@@ -200,7 +200,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "IPOPT",
     :IpoptSolver,
@@ -219,7 +219,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "DCISolver",
     :DCIWorkspace,
@@ -238,7 +238,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "FletcherPenaltySolver",
     :FPSSSolver,
@@ -257,7 +257,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "Percival",
     :PercivalSolver,
@@ -276,7 +276,7 @@ push!(
   ),
 )
 push!(
-  solvers,
+  optimizers,
   (
     "RipQP",
     :RipQPSolver,
@@ -367,7 +367,7 @@ stats
 "Execution stats: first-order stationary"
 ```
 
-The list of available solver can be obtained using `JSOSuite.solvers[!, :name]` or see [`select_solvers`](@ref).
+The list of available solver can be obtained using `JSOSuite.optimizers[!, :name]` or see [`select_optimizers`](@ref).
 
 ```jldoctest; output = false
 using JSOSuite
@@ -379,7 +379,7 @@ stats
 "Execution stats: first-order stationary"
 ```
 
-Some solvers are available after loading only.
+Some optimizers are available after loading only.
 
 ```jldoctest; output = false
 using JSOSuite
@@ -406,11 +406,11 @@ function solve end
     solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}, stats; kwargs...)
 
 `JSOSuite` extension of `SolverCore.solve!`.
-The first argument should be of type `SolverCore.AbstractOptimizationSolver`, see for instance `JSOSuite.solvers[!, :name_solver]`.
+The first argument should be of type `SolverCore.AbstractOptimizationSolver`, see for instance `JSOSuite.optimizers[!, :name_solver]`.
 """
 function SolverCore.solve!(solver, args...; kwargs...)
   throw(
-    "solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.solvers[!, :name_solver]`.",
+    "solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.optimizers[!, :name_solver]`.",
   )
 end
 
@@ -420,7 +420,7 @@ include("solve.jl")
 
 @init begin
   @require CaNNOLeS = "5a1c9e79-9c58-5ec0-afc4-3298fdea2875" begin
-    JSOSuite.solvers[JSOSuite.solvers.name .== "CaNNOLeS", :is_available] .= 1
+    JSOSuite.optimizers[JSOSuite.optimizers.name .== "CaNNOLeS", :is_available] .= 1
     function solve(::Val{:CaNNOLeS}, nlp; kwargs...)
       return CaNNOLeS.cannoles(nlp; linsolve = :ldlfactorizations, kwargs...)
     end
@@ -430,7 +430,7 @@ end
 
 @init begin
   @require DCISolver = "bee2e536-65f6-11e9-3844-e5bb4c9c55c9" begin
-    JSOSuite.solvers[JSOSuite.solvers.name .== "DCISolver", :is_available] .= 1
+    JSOSuite.optimizers[JSOSuite.optimizers.name .== "DCISolver", :is_available] .= 1
     function solve(::Val{:DCISolver}, nlp; kwargs...)
       return DCISolver.dci(nlp; kwargs...)
     end
@@ -439,7 +439,7 @@ end
 
 @init begin
   @require FletcherPenaltySolver = "e59f0261-166d-4fee-8bf3-5e50457de5db" begin
-    JSOSuite.solvers[JSOSuite.solvers.name .== "FletcherPenaltySolver", :is_available] .= 1
+    JSOSuite.optimizers[JSOSuite.optimizers.name .== "FletcherPenaltySolver", :is_available] .= 1
     function solve(::Val{:FletcherPenaltySolver}, nlp; kwargs...)
       return FletcherPenaltySolver.fps_solve(nlp; kwargs...)
     end
@@ -448,7 +448,7 @@ end
 
 @init begin
   @require NLPModelsIpopt = "f4238b75-b362-5c4c-b852-0801c9a21d71" begin
-    JSOSuite.solvers[JSOSuite.solvers.name .== "IPOPT", :is_available] .= 1
+    JSOSuite.optimizers[JSOSuite.optimizers.name .== "IPOPT", :is_available] .= 1
     include("solvers/ipopt_solve.jl")
   end
 end
@@ -457,7 +457,7 @@ end
   @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
     @init begin
       @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
-        JSOSuite.solvers[JSOSuite.solvers.name .== "KNITRO", :is_available] .= KNITRO.has_knitro()
+        JSOSuite.optimizers[JSOSuite.optimizers.name .== "KNITRO", :is_available] .= KNITRO.has_knitro()
       end
     end
     include("solvers/knitro_solve.jl")
@@ -466,7 +466,7 @@ end
 
 @init begin
   @require RipQP = "1e40b3f8-35eb-4cd8-8edd-3e515bb9de08" begin
-    JSOSuite.solvers[JSOSuite.solvers.name .== "RipQP", :is_available] .= 1
+    JSOSuite.optimizers[JSOSuite.optimizers.name .== "RipQP", :is_available] .= 1
     include("solvers/ripqp_solve.jl")
   end
 end
@@ -506,7 +506,7 @@ nlps = (
   ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
 )
-names = ["LBFGS", "TRON"] # see `JSOSuite.solvers.name` for the complete list
+names = ["LBFGS", "TRON"] # see `JSOSuite.optimizers.name` for the complete list
 stats = bmark_solvers(nlps, names, atol = 1e-3, verbose = 0, colstats = [:name, :nvar, :ncon, :status])
 keys(stats)
 
@@ -532,7 +532,7 @@ nlps = (
   ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
 )
-names = ["LBFGS", "TRON"] # see `JSOSuite.solvers.name` for the complete list
+names = ["LBFGS", "TRON"] # see `JSOSuite.optimizers.name` for the complete list
 other_solvers = Dict{Symbol, Function}(
   :test => nlp -> lbfgs(nlp; mem = 2, atol = 1e-3, verbose = 0),
 )

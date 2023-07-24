@@ -33,7 +33,7 @@ using SolverBenchmark
 meta = OptimizationProblems.meta
 
 function test_in_place_solve(nlp, solver_name)
-  pkg_name = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :name_pkg][1]
+  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]
   pkg_name = replace(pkg_name, ".jl" => "")
   solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
   stats = solve!(solver, nlp)
@@ -46,7 +46,7 @@ end
 
 function test_in_place_solve(model::JuMP.Model, solver_name)
   nlp = MathOptNLPModel(model)
-  pkg_name = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :name_pkg][1]
+  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]
   pkg_name = replace(pkg_name, ".jl" => "")
   solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
   stats = solve!(solver, model)
@@ -60,12 +60,12 @@ end
 @testset "Test in-place solve!" begin
   nlp = OptimizationProblems.ADNLPProblems.arglina()
   model = OptimizationProblems.PureJuMP.arglina()
-  @testset "Test $solver_name" for solver_name in JSOSuite.solvers[!, :name_solver]
+  @testset "Test $solver_name" for solver_name in JSOSuite.optimizers[!, :name_solver]
     solver_name == :DCIWorkspace && continue
     solver_name == :RipQPSolver && continue
-    is_available = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :is_available]
-    can_solve_nlp = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :can_solve_nlp]
-    spec_nls = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :specialized_nls]
+    is_available = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :is_available]
+    can_solve_nlp = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :can_solve_nlp]
+    spec_nls = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :specialized_nls]
     if is_available[1] && can_solve_nlp[1]
       test_in_place_solve(nlp, solver_name)
       test_in_place_solve(model, solver_name)
@@ -84,7 +84,7 @@ include("qp_tests.jl")
 @testset "Test `Float32`" begin
   nlp = OptimizationProblems.ADNLPProblems.genrose(type = Val(Float32))
   atol, rtol = √eps(Float32), √eps(Float32)
-  for solver in eachrow(JSOSuite.select_solvers(nlp))
+  for solver in eachrow(JSOSuite.select_optimizers(nlp))
     if solver.nonlinear_obj
       solve(solver.name, nlp, verbose = 0, atol = atol, rtol = rtol)
       @test true
@@ -99,8 +99,8 @@ end
 @testset "JSOSuite JuMP API" begin
   model = OptimizationProblems.PureJuMP.genrose()
   jum = MathOptNLPModel(model)
-  @test JSOSuite.select_solvers(model) == JSOSuite.select_solvers(jum)
-  for solver in eachrow(JSOSuite.select_solvers(model))
+  @test JSOSuite.select_optimizers(model) == JSOSuite.select_optimizers(jum)
+  for solver in eachrow(JSOSuite.select_optimizers(model))
     solve(solver.name, model, verbose = 0)
     @test true
   end
@@ -111,7 +111,7 @@ end
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
     problem ∈ meta[(5 .<= meta.nvar .<= 10) .& (meta.ncon .== 0) .& (.!meta.has_bounds), :name]
   ]
-  select = JSOSuite.solvers[JSOSuite.solvers.can_solve_nlp .& JSOSuite.solvers.is_available, :name]
+  select = JSOSuite.optimizers[JSOSuite.optimizers.can_solve_nlp .& JSOSuite.optimizers.is_available, :name]
   stats = bmark_solvers(ad_problems, select, atol = 1e-3, max_time = 10.0, verbose = 0)
   @test true # just test that it runs
 end
@@ -150,7 +150,7 @@ end
   feasible_point(nlp)
 end
 
-for solver in eachrow(JSOSuite.solvers)
+for solver in eachrow(JSOSuite.optimizers)
   nlp = mgh17()
   @testset "Test options in $(solver.name)" begin
     # We just test that the solver runs with the options
@@ -183,11 +183,11 @@ for solver in eachrow(JSOSuite.solvers)
   end
 end
 
-@testset "Test kwargs in solvers on $model" for model in (:arglina, :hs6)
+@testset "Test kwargs in optimizers on $model" for model in (:arglina, :hs6)
   nlp = OptimizationProblems.ADNLPProblems.eval(model)()
   nls = OptimizationProblems.ADNLPProblems.eval(model)(use_nls = true)
   callback = (args...) -> nothing
-  for solver in eachrow(JSOSuite.solvers)
+  for solver in eachrow(JSOSuite.optimizers)
     @testset "Test options in $(solver.name)" begin
       solver.is_available || continue
       ((nlp.meta.ncon > 0) && (!solver.equalities)) && continue

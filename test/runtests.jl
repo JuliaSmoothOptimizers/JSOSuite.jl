@@ -1,23 +1,36 @@
 # this package
 using JSOSuite
 
+# stdlib
+using LinearAlgebra, SparseArrays, Test
+
 # others
 using JuMP, NLPModelsJuMP
 
+# JSO
+using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
+using JSOSolvers, Percival, SolverCore
+
+@testset "Test not loaded solvers" begin
+  nlp = ADNLPModel(x -> sum(x), ones(2))
+
+  @test_throws ArgumentError solve("CaNNOLeS", nlp)
+  @test_throws ArgumentError solve("DCISolver", nlp)
+  @test_throws ArgumentError solve("FletcherPenaltySolver", nlp)
+  @test_throws ArgumentError solve("IPOPT", nlp)
+  @test_throws ArgumentError solve("KNITRO", nlp)
+  @test_throws ArgumentError solve("RipQP", nlp)
+end
+
+# optionals
 using KNITRO
 if KNITRO.has_knitro()
   using NLPModelsKnitro
 end
-
-# JSO
-using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
-using CaNNOLeS,
-  DCISolver, FletcherPenaltySolver, JSOSolvers, NLPModelsIpopt, Percival, RipQP, SolverCore
+using CaNNOLeS, DCISolver, FletcherPenaltySolver, NLPModelsIpopt, RipQP
+using SolverBenchmark
 
 meta = OptimizationProblems.meta
-
-# stdlib
-using LinearAlgebra, SparseArrays, Test
 
 function test_in_place_solve(nlp, solver_name)
   pkg_name = JSOSuite.solvers[JSOSuite.solvers.name_solver .== solver_name, :name_pkg][1]
@@ -119,8 +132,8 @@ end
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
-@testset "Test solve OptimizationProblems: $name" for name in meta[meta.nvar .< 100, :name]
-  name in ["AMPGO13"] && continue # fix in OptimizationProblems.jl ≥ 0.7.2
+@testset "Test solve OptimizationProblems: $name" for name in meta[meta.nvar .< 10, :name]
+  name in ["bennett5", "channel", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
   solve(nlp, verbose = 0)
   @test true

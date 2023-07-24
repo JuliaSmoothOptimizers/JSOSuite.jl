@@ -2,8 +2,7 @@
 
 Benchmarking is very important when researching new algorithms or selecting the most approriate ones.
 
-The package [`SolverBenchmark`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl) exports the function [`bmark_solvers`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/src/bmark_solvers.jl) that runs a set of solvers on a set of problems. `JSOSuite.jl` specialize this function, see [`bmark_solvers`](@ref).
-
+The package [`SolverBenchmark`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl) exports the function [`bmark_solvers`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/src/bmark_solvers.jl) that runs a set of solvers on a set of problems. `JSOSuite.jl` specialize this function, see `bmark_solvers`.
 
 The [JuliaSmoothOptimizers organization](https://juliasmoothoptimizers.github.io) contains several packages of test problems ready to use for benchmarking. The main ones are
 - [`OptimizationProblems.jl`](https://github.com/JuliaSmoothOptimizers/OptimizationProblems.jl): This package provides a collection of optimization problems in JuMP and ADNLPModels syntax;
@@ -51,9 +50,10 @@ For the purpose of this example, we will consider 3 solvers.
 select = ["IPOPT", "TRUNK", "LBFGS"]
 ```
 
-Once the problems and solvers are chosen, the function [`bmark_solvers`](@ref) runs the benchmark. 
+Once the problems and solvers are chosen, the function `bmark_solvers` runs the benchmark. 
 
 ```@example op
+using SolverBenchmark
 stats = bmark_solvers(ad_problems, select, atol = 1e-3, max_time = 10.0, verbose = 0)
 ```
 

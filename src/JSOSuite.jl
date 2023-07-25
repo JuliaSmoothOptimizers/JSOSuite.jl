@@ -596,7 +596,7 @@ end
     stats = feasible_point(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
     stats = feasible_point(nlp::Union{AbstractNLPModel, JuMP.Model}, solver_name::Symbol; kwargs...)
 
-Compute a feasible point of the optimization problem `nlp`. The signature is the same as the function [`solve`](@ref).
+Compute a feasible point of the optimization problem `nlp`. The signature is the same as the function [`minimize`](@ref).
 
 ## Output
 

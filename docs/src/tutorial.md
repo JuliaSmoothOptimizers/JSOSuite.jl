@@ -1,6 +1,6 @@
 # [Tutorial](@id tutorial-section)
 
-In this tutorial, we provide examples of usage of the `solve` function exported by `JSOSuite.jl`.
+In this tutorial, we provide examples of usage of the `minimize` function exported by `JSOSuite.jl`.
 
 There are two important challenges in solving an optimization problem: (i) model the problem, and (ii) solve the problem with an appropriate solver.
 
@@ -17,7 +17,7 @@ All these optimizers rely on the `NLPModel API` from [NLPModels.jl](https://gith
 \end{aligned}
 ```
 
-The function `solve` accepts as an argument any model `nlp` subtype of `AbstractNLPModel`.
+The function `minimize` accepts as an argument any model `nlp` subtype of `AbstractNLPModel`.
 ```julia
 output = minimize(nlpmodel::AbstractNLPModel; kwargs...)
 ```
@@ -127,7 +127,7 @@ stats = minimize(f, x0, A, c, l, l, verbose = 0)
 
 ## Solving
 
-Internally, the `solve` function selects optimizers according to the problem's property and JSO-compliant optimizers available.
+Internally, the `minimize` function selects optimizers according to the problem's property and JSO-compliant optimizers available.
 
 ### Available optimizers
 

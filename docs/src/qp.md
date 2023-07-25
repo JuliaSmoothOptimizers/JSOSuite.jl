@@ -15,7 +15,7 @@ The main data structure available in Julia are: `LinearAlgebra.Matrix`, `SparseA
 
 In JuliaSmoothOptimizers, the package [`QuadraticModels.jl`](https://github.com/JuliaSmoothOptimizers/QuadraticModels.jl) can be used to access the NLPModel API for such instance.
 
-The function `solve` with the following sets of arguments will automatically build a `QuadraticModel` and choose the adequate solver.
+The function `minimize` with the following sets of arguments will automatically build a `QuadraticModel` and choose the adequate solver.
 
 ```julia
   stats = minimize(c, H, c0 = c0, x0 = x0, name = name; kwargs...)
@@ -37,14 +37,14 @@ The function `solve` with the following sets of arguments will automatically bui
   ucon = [1.0]
 ```
 
-The quadratic model can then be solved using [`solve`](@ref).
+The quadratic model can then be solved using [`minimize`](@ref).
 
 ```@example ex1
 using JSOSuite
   stats = minimize(c, H, A, lcon, ucon, name = "eqconqp_QP")
 ```
 
-This is equivalent to building a `QuadraticModel` and then [`solve`](@ref).
+This is equivalent to building a `QuadraticModel` and then [`minimize`](@ref).
 
 ```@example ex1
 using QuadraticModels, JSOSuite

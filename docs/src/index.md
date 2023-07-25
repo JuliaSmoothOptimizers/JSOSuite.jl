@@ -13,13 +13,13 @@ All these solvers rely on the `NLPModel API` from [NLPModels.jl](https://github.
 \end{aligned}
 ```
 
-The package `JSOSuite` exports a function [`solve`](@ref): 
+The package `JSOSuite` exports a function [`minimize`](@ref): 
 ```
 output = minimize(args...; kwargs...)
 ```
 The arguments are used to define the problem, see [Tutorial](@ref tutorial-section).
 
-It is also possible to define an `NLPModel` or a `JuMP` model representing the problem, and then call `solve`:
+It is also possible to define an `NLPModel` or a `JuMP` model representing the problem, and then call `minimize`:
 ```
 output = minimize(nlpmodel; kwargs...)
 ```

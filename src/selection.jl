@@ -8,7 +8,7 @@ This function checks whether the model has:
   - unconstrained, bound constraints, equality constraints, inequality constraints;
   - nonlinear or quadratic objective.
 A linear or quadratic objective is detected if the type of `nlp` is a `QuadraticModel` or an `LLSModel`.
-The selection between a general optimization problem and a nonlinear least squares is done in [`solve`](@ref).
+The selection between a general optimization problem and a nonlinear least squares is done in [`minimize`](@ref).
 
 If no optimizers were selected, consider setting `verbose` to `true` to see what went wrong.
 
@@ -16,7 +16,7 @@ If no optimizers were selected, consider setting `verbose` to `true` to see what
 
 - `selected_optimizers::DataFrame`: A subset of [`optimizers`](@ref) adapted to the problem `nlp`.
 
-See also [`solve`](@ref).
+See also [`minimize`](@ref).
 
 ## Examples
 

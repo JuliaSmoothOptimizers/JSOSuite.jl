@@ -4,7 +4,7 @@ Benchmarking is very important when researching new algorithms or selecting the 
 
 The package [`SolverBenchmark`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl) exports the function [`bmark_solvers`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/src/bmark_solvers.jl) that runs a set of optimizers on a set of problems. `JSOSuite.jl` specialize this function, see `bmark_solvers`.
 
-The [JuliaSmoothOptimizers organization](https://juliasmoothoptimizers.github.io) contains several packages of test problems ready to use for benchmarking. The main ones are
+The [JuliaSmoothOptimizers organization](https://jso.dev) contains several packages of test problems ready to use for benchmarking. The main ones are
 - [`OptimizationProblems.jl`](https://github.com/JuliaSmoothOptimizers/OptimizationProblems.jl): This package provides a collection of optimization problems in JuMP and ADNLPModels syntax;
 - [`CUTEst.jl`](https://github.com/JuliaSmoothOptimizers/CUTEst.jl);
 - [`NLSProblems.jl`](https://github.com/JuliaSmoothOptimizers/NLSProblems.jl).
@@ -27,7 +27,7 @@ selected_meta = selected_meta[.!selected_meta.has_bounds .&& (selected_meta.ncon
 list = selected_meta[!, :name]
 ```
 
-Then, we generate the list of problems using [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S).
+Then, we generate the list of problems using [`ADNLPModel`](https://jso.dev/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S).
 
 ```@example op
 ad_problems = [
@@ -39,6 +39,7 @@ length(ad_problems) # return the number of problems
 We now want to select appropriate optimizers using the `JSOSuite.optimizers`.
 
 ```@example op
+using NLPModelsIpopt
 selected_optimizers = JSOSuite.optimizers
 # optimizers can solve general `nlp` as some are specific to variants (NLS, ...)
 selected_optimizers = selected_optimizers[selected_optimizers.can_solve_nlp, :]

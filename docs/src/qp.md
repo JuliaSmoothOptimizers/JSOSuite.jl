@@ -6,14 +6,14 @@ The quadratic model with linear constraints is another specific case where the o
 \begin{aligned}
 \min \quad &  x^TQx + c^Tx + c_0  \\
 & c_A \leq Ax \leq l_A, \\
-& \ell \leq x \leq u,
+& \ell \leq x \leq u.
 \end{aligned}
 ```
 
 This problem is convex whenever the matrix `Q` is positive semi-definite. A key aspect here is the modeling of the matrices `Q` and `A`. 
 The main data structure available in Julia are: `LinearAlgebra.Matrix`, `SparseArrays.sparse`, `SparseMatricesCOO.sparse`, `LinearOperators.LinearOperator`.
 
-In JuliaSmoothOptimizers, the package [`QuadraticModels.jl`](https://github.com/JuliaSmoothOptimizers/QuadraticModels.jl) can be used to access the NLPModel API for such instance.
+In JuliaSmoothOptimizers, the package [`QuadraticModels.jl`](https://github.com/JuliaSmoothOptimizers/QuadraticModels.jl) can be used to access the `NLPModel API` for such instance.
 
 The function `minimize` with the following sets of arguments will automatically build a `QuadraticModel` and choose the adequate solver.
 
@@ -24,7 +24,7 @@ The function `minimize` with the following sets of arguments will automatically 
   stats = minimize(c, H, lvar, uvar, A, lcon, ucon, c0 = c0, x0 = x0, name = name; kwargs...)
 ```
 
-## Example
+## Examples
 
 ```@example ex1
   using SparseArrays

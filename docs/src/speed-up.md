@@ -20,6 +20,8 @@ stats = minimize(f, x0, verbose = 0, highest_derivative_available = 1)
 stats
 ```
 
+This classification is straightforwardly extended to handling constraints with the Jacobian matrix explicitly of via matrix-vector products.
+
 ## Find a better initial guess
 
 The majority of derivative-based optimizers are local methods whose performance are dependent of the initial guess. 
@@ -41,13 +43,28 @@ Once a solver has been chosen it is also possible to play with the key parameter
 
 Note that all optimizers presented here have been carefully optimized. All have different strengths. Trying another solver on the same problem sometimes provide a different solution.
 
-### Unconstrained/Bound-constrained
+### Unconstrained
 
-##### LBFGS
+##### LBFGS (1st order)
 
 - `mem::Int = 5`: memory parameter of the `lbfgs` algorithm;
 - `τ₁::T = T(0.9999)`: slope factor in the Wolfe condition when performing the line search;
 - `bk_max:: Int = 25`: maximum number of backtracks when performing the line search.
+
+##### R2 (1st order)
+
+- `η1 = eps(T)^(1/4)`, `η2 = T(0.95)`: step acceptance parameters;
+- `γ1 = T(1/2)`, `γ2 = 1/γ1`: regularization update parameters;
+- `σmin = eps(T)`: step parameter for R2 algorithm;
+- `β = T(0) ∈ [0,1]` is the constant in the momentum term. If `β == 0`, R2 does not use momentum.
+
+##### TRUNK (matrix-free)
+
+- `bk_max::Int = 10`: algorithm parameter;
+- `monotone::Bool = true`: algorithm parameter;
+- `nm_itmax::Int = 25`: algorithm parameter.
+
+### Bound-constrained (matrix-free)
 
 ##### TRON
 
@@ -57,36 +74,29 @@ Note that all optimizers presented here have been carefully optimized. All have 
 - `max_cgiter::Int = 50`: subproblem's iteration limit;
 - `cgtol::T = T(0.1)`: subproblem tolerance.
 
-##### TRUNK
+### Constrained
+
+##### RipQP (quadratic with linear constraints)
 
 TODO
 
-##### R2
-
-- `η1 = eps(T)^(1/4)`, `η2 = T(0.95)`: step acceptance parameters;
-- `γ1 = T(1/2)`, `γ2 = 1/γ1`: regularization update parameters;
-- `σmin = eps(T)`: step parameter for R2 algorithm;
-- `β = T(0) ∈ [0,1]` is the constant in the momentum term. If `β == 0`, R2 does not use momentum.
-
-### Constrained
-
-##### Percival
-
-- `μ::Real = T(10.0)`: Starting value of the penalty parameter.
-
-##### CaNNOLeS
+##### CaNNOLeS (NLS with nonlinear equality constraints)
 
 - `linsolve::Symbol = :ma57`: solver to compute LDLt factorization. Available methods are: `:ma57`, `:ldlfactorizations`;
 - `method::Symbol = :Newton`: available methods `:Newton, :LM, :Newton_noFHess`, and `:Newton_vanishing`;
 
-See [CaNNOLeS.jl tutorial](https://juliasmoothoptimizers.github.io/CaNNOLeS.jl/dev/tutorial/).
+See [CaNNOLeS.jl tutorial](https://jso.dev/CaNNOLeS.jl/dev/tutorial/).
 
-##### DCISolver
+##### DCISolver (nonlinear equality constraints)
 
 - `linear_solver = :ldlfact`: Solver for the factorization. options: `:ma57` if `HSL.jl` available.
 
-See [`fine-tuneDCI`](https://juliasmoothoptimizers.github.io/DCISolver.jl/dev/fine-tuneDCI/).
+See the [`fine-tuneDCI tutorial`](https://jso.dev/DCISolver.jl/dev/fine-tuneDCI/).
 
-##### RipQP
+##### FletcherPenaltySolver (nonlinear equality constraints)
 
-TODO
+See the [`fine-tuneFPS tutorial`](https://jso.dev/FletcherPenaltySolver.jl/dev/fine-tuneFPS/).
+
+##### Percival
+
+- `μ::Real = T(10.0)`: Starting value of the penalty parameter.

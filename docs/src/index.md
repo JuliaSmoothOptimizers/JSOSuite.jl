@@ -9,7 +9,7 @@ All these solvers rely on the `NLPModel API` from [NLPModels.jl](https://github.
 \min \quad & f(x) \\
 & c_L \leq c(x) \leq c_U \\
 & c_A \leq Ax \leq l_A, \\
-& \ell \leq x \leq u,
+& \ell \leq x \leq u.
 \end{aligned}
 ```
 
@@ -17,37 +17,38 @@ The package `JSOSuite` exports a function [`minimize`](@ref):
 ```
 output = minimize(args...; kwargs...)
 ```
-The arguments are used to define the problem, see [Tutorial](@ref tutorial-section).
+where the arguments define the problem, see [Tutorial](@ref tutorial-section).
 
 It is also possible to define an `NLPModel` or a `JuMP` model representing the problem, and then call `minimize`:
 ```
 output = minimize(nlpmodel; kwargs...)
+output = minimize(jump; kwargs...)
 ```
 
-The `NLPModel API` is a general consistent API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions to evaluate their derivatives, and to provide essentially any information that a solver might request from a model. [JuliaSmoothOrganization's website](https://juliasmoothoptimizers.github.io) or [NLPModels.jl's documentation](https://juliasmoothoptimizers.github.io/NLPModels.jl/dev/) provide more tutorials on this topic.
+The `NLPModel API` is a general API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions to evaluate their derivatives, and to provide essentially any information that a solver might request from a model. [JuliaSmoothOrganization's website jso.dev](https://jso.dev) or [NLPModels.jl's documentation](https://jso.dev/NLPModels.jl/dev/) provide more tutorials on this topic.
 
 ### NLPModel
 
-JuliaSmoothOptimizers' compliant solvers accept any model compatible with the NLPModel API. See the [Tutorial](@ref tutorial-section) section for examples.
+JuliaSmoothOptimizers' compliant solvers accept any model compatible with the `NLPModel API`. See the [Tutorial](@ref tutorial-section) section for examples.
 
 Depending on the origin of the problem several modeling tools are available. The following generic modeling tools are accepted:
-- `JuMP` models are internally made compatible with NLPModel via [NLPModelsJuMP.jl](https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl).
-- `Ampl` models stored in a `.nl` file can `AmplModel("name_of_file.nl")` using [AmplNLReader.jl](https://github.com/JuliaSmoothOptimizers/AmplNLReader.jl).
-- [QPSReader.jl](https://github.com/JuliaSmoothOptimizers/QPSReader.jl) reads linear problems in MPS format and quadratic problems in QPS format.
-- Models using automatic differentiation can be generated using [ADNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl).
+- `JuMP` models are internally made compatible with NLPModel via [NLPModelsJuMP.jl](https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl);
+- `Ampl` models stored in a `.nl` file can be instantiated with `AmplModel("name_of_file.nl")` using [AmplNLReader.jl](https://github.com/JuliaSmoothOptimizers/AmplNLReader.jl);
+- [QPSReader.jl](https://github.com/JuliaSmoothOptimizers/QPSReader.jl) reads linear problems in MPS format and quadratic problems in QPS format;
+- Models using automatic differentiation can be generated using [ADNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl);
 - Models with manually input derivatives can be defined using [ManualNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ManualNLPModels.jl).
 
-It is also possible to define your NLPModel variant. Several examples are available within JuliaSmoothOptimizers' umbrella:
+It is also possible to define your `NLPModel` variant. Several examples are available within JuliaSmoothOptimizers' umbrella:
 - [KnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/KnetNLPModels.jl): An NLPModels Interface to Knet.
 - [PDENLPModels.jl](https://github.com/JuliaSmoothOptimizers/PDENLPModels.jl): A NLPModel API for optimization problems with PDE-constraints.
 
 A nonlinear least squares problem is a special case with the objective function defined as  ``f(x) = \tfrac{1}{2}\|F(x)\|^2_2``.
 Although the problem can be solved using only  ``f``, knowing  ``F`` independently allows the development of more efficient methods.
-See the [Nonlinear Least Squares](@ref nls-section) for special treatment of these problems.
+See the [Nonlinear Least Squares](@ref nls-section) for more on the special treatment of these problems.
 
 ### Output
 
-The value returned is a [`GenericExecutionStats`](https://juliasmoothoptimizers.github.io/SolverCore.jl/dev/reference/#SolverCore.GenericExecutionStats), which is a structure containing the available information at the end of the execution, such as a solver status, the objective function value, the norm of the residuals, the elapsed time, etc.
+The value returned is a [`GenericExecutionStats`](https://jso.dev/SolverCore.jl/dev/reference/#SolverCore.GenericExecutionStats), which is a structure containing the available information at the end of the execution, such as a solver status, the objective function value, the norm of the residuals, the elapsed time, etc.
 
 It contains the following fields:
 - `status`: Indicates the output of the solver. Use `show_statuses()` for the full list;

@@ -35,7 +35,12 @@ function minimize(solver_name::String, model::JuMP.Model, args...; kwargs...)
   return minimize(solver_name, nlp, args...; kwargs...)
 end
 
-function minimize(solver::Val{solver_name}, model::JuMP.Model, args...; kwargs...) where {solver_name}
+function minimize(
+  solver::Val{solver_name},
+  model::JuMP.Model,
+  args...;
+  kwargs...,
+) where {solver_name}
   nlp = MathOptNLPModel(model)
   return minimize(solver, nlp, args...; kwargs...)
 end

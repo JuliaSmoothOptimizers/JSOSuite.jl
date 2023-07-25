@@ -63,9 +63,12 @@ end
   @testset "Test $solver_name" for solver_name in JSOSuite.optimizers[!, :name_solver]
     solver_name == :DCIWorkspace && continue
     solver_name == :RipQPSolver && continue
-    is_available = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :is_available]
-    can_solve_nlp = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :can_solve_nlp]
-    spec_nls = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :specialized_nls]
+    is_available =
+      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :is_available]
+    can_solve_nlp =
+      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :can_solve_nlp]
+    spec_nls =
+      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :specialized_nls]
     if is_available[1] && can_solve_nlp[1]
       test_in_place_solve(nlp, solver_name)
       test_in_place_solve(model, solver_name)
@@ -111,7 +114,10 @@ end
     OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
     problem ∈ meta[(5 .<= meta.nvar .<= 10) .& (meta.ncon .== 0) .& (.!meta.has_bounds), :name]
   ]
-  select = JSOSuite.optimizers[JSOSuite.optimizers.can_solve_nlp .& JSOSuite.optimizers.is_available, :name]
+  select = JSOSuite.optimizers[
+    JSOSuite.optimizers.can_solve_nlp .& JSOSuite.optimizers.is_available,
+    :name,
+  ]
   stats = bmark_solvers(ad_problems, select, atol = 1e-3, max_time = 10.0, verbose = 0)
   @test true # just test that it runs
 end

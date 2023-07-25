@@ -160,5 +160,6 @@ end
 function generic end
 
 generic(::AbstractNLSModel, optimizers::DataFrame) = optimizers
-generic(::Union{QuadraticModel, LLSModel}, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]
+generic(::Union{QuadraticModel, LLSModel}, optimizers::DataFrame) =
+  optimizers[optimizers.can_solve_nlp, :]
 generic(::AbstractNLPModel, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]

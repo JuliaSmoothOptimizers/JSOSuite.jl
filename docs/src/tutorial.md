@@ -2,7 +2,7 @@
 
 In this tutorial, we provide examples of usage of the `minimize` function exported by `JSOSuite.jl`.
 
-There are two important challenges in solving an optimization problem: (i) model the problem, and (ii) solve the problem with an appropriate solver.
+There are two important challenges in solving an optimization problem: (i) model the problem, and (ii) solve the problem with an appropriate optimizer.
 
 ## Modeling
 
@@ -13,7 +13,7 @@ All these optimizers rely on the `NLPModel API` from [NLPModels.jl](https://gith
 \min \quad & f(x) \\
 & c_L \leq c(x) \leq c_U \\
 & c_A \leq Ax \leq l_A, \\
-& \ell \leq x \leq u,
+& \ell \leq x \leq u.
 \end{aligned}
 ```
 
@@ -24,7 +24,7 @@ output = minimize(nlpmodel::AbstractNLPModel; kwargs...)
 
 In the rest of this section, we focus on examples using generic modeling tools.
 
-It is generally of great interest if available to use a modeling that handles the structure of the problem, see [Nonlinear Least Squares](@ref nls-section) for an example with nonlinear least squares.
+It is generally of great interest if available to use a modeling that exploits the structure of the problem, see [Nonlinear Least Squares](@ref nls-section) for an example with nonlinear least squares.
 
 ### JuMP Model
 
@@ -38,11 +38,11 @@ model = Model()
 minimize(model)
 ```
 
-We refer to [`JuMP tutorial`](https://jump.dev/JuMP.jl/stable/).
+We refer to [`JuMP tutorial`](https://jump.dev/JuMP.jl/stable/) for more on modeling problems with JuMP.
 
 ### NLPModel with Automatic Differentiation
 
-We refer to [`ADNLPModel`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S) for the description of the different constructors.
+We refer to [`ADNLPModel`](https://jso.dev/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S) for the description of the different constructors.
 
 #### Unconstrained
 
@@ -125,9 +125,9 @@ l = ones(2)
 stats = minimize(f, x0, A, c, l, l, verbose = 0)
 ```
 
-## Solving
+## Optimizing
 
-Internally, the `minimize` function selects optimizers according to the problem's property and JSO-compliant optimizers available.
+Internally, the `minimize` function selects optimizers according to the problem's property and their availability.
 
 ### Available optimizers
 
@@ -157,13 +157,15 @@ JSOSuite.select_optimizers(nlp)
 ### Fine-tune solve call
 
 All the keyword arguments are passed to the solver.
-Keywords available for all the optimizers are given below:
+Keywords available for all the solvers are given below:
 
-- `atol`: absolute tolerance;
-- `rtol`: relative tolerance;
-- `max_time`: maximum number of seconds;
-- `max_eval`: maximum number of cons + obj evaluations;
-- `verbose::Int = 0`: if > 0, display iteration details every `verbose` iteration.
+- `atol::T = √eps(T)`: absolute tolerance;
+- `rtol::T = √eps(T)`: relative tolerance;
+- `max_time::Float64 = 300.0`: maximum number of seconds;
+- `max_iter::Int = typemax(Int)`: maximum number of iterations;
+- `max_eval::Int = 10 000`: maximum number of constraint and objective functions evaluations;
+- `callback = (args...) -> nothing`: callback called at each iteration;
+- `verbose::Int = 0`: if > 0, display iteration details for every `verbose` iteration.
 
 ```@example
 using ADNLPModels, JSOSuite

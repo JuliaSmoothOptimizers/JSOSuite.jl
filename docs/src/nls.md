@@ -7,7 +7,7 @@ The nonlinear least squares (NLS) optimization problem is a specific case where 
 \min \quad & f(x):=\tfrac{1}{2}\|F(x)\|^2_2 \\
 & c_L \leq c(x) \leq c_U \\
 & c_A \leq Ax \leq l_A, \\
-& \ell \leq x \leq u,
+& \ell \leq x \leq u.
 \end{aligned}
 ```
 
@@ -24,9 +24,7 @@ In this tutorial, we consider the following equality-constrained problem
 ```
 where ``1 \leq x[1] x[2] \leq 1`` implies that ``x[1] x[2] = 1``.
 
-There are two important challenges in solving an optimization problem: (i) model the problem, and (ii) solve the problem with an appropriate solve.
-
-Let's see two ways to model this problem exploiting the knowledge of the structure of the problem.
+In the rest of this tutorial, we will see two ways to model this problem exploiting the knowledge of the structure of the problem.
 
 ### NLS using automatic differentiation
 
@@ -53,7 +51,7 @@ stats = minimize(nls)
 stats = minimize(F, x0, nres, c, l, l)
 ```
 
-By default, `JSOSuite.solve` will use a solver tailored for nonlineat least squares problem.
+By default, `JSOSuite.minimize` will use a solver tailored for nonlineat least squares problem.
 Nevertheless, it is also possible to specify the solver to be used.
 
 ```@example ex1
@@ -61,11 +59,11 @@ using NLPModelsIpopt
 stats = minimize("IPOPT", F, x0, nres, c, l, l)
 ```
 
-We refer to the documentation of [`ADNLPModels.jl`](https://juliasmoothoptimizers.github.io/ADNLPModels.jl/dev/backend/) for more details on the AD system use and how to modify it.
+We refer to the documentation of [`ADNLPModels.jl`](https://jso.dev/ADNLPModels.jl/dev/backend/) for more details on the AD system use and how to modify it.
 
 ### NLS using JuMP
 
-The package [NLPModelsJuMP.jl](https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl) exports a constructor, [`MathOptNLSModel`](https://juliasmoothoptimizers.github.io/NLPModelsJuMP.jl/dev/tutorial/#NLPModelsJuMP.MathOptNLSModel), to build an `AbstractNLSModel` using `JuMP`.
+The package [NLPModelsJuMP.jl](https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl) exports a constructor, [`MathOptNLSModel`](https://jso.dev/NLPModelsJuMP.jl/dev/tutorial/#NLPModelsJuMP.MathOptNLSModel), to build an `AbstractNLSModel` using `JuMP`.
 
 ```@example
 using JuMP, JSOSuite, NLPModelsJuMP
@@ -89,12 +87,13 @@ We show here how to find the feasible point of a given model.
 \begin{aligned}
 \min \quad & \tfrac{1}{2}\|s\|^2_2 \\
 & 0 \leq s - c(x) \leq 0
-& \ell \leq x \leq u,
+& \ell \leq x \leq u.
 \end{aligned}
 ```
 
 This formulation can also be used to solve a set of nonlinear equations.
-Finding a feasible point of an optimization problem is useful to find the problem is feasible and it is a good practice to find an initial guess.
+Finding a feasible point of an optimization problem is useful to determine whether the problem is feasible or not.
+Moreover, it is a good practice to find an initial guess.
 
 ```@example feas
 using ADNLPModels, JSOSuite
@@ -107,7 +106,7 @@ nlp = ADNLPModel(f, x0, c, b, b)
 stats = feasible_point(nlp)
 ```
 
-Using the function `cons` from the NLPModel API, we can verify that the obtained solution is feasible.
+Using the function `cons` from the `NLPModel API`, we can verify that the obtained solution is feasible.
 
 ```@example feas
 using NLPModels

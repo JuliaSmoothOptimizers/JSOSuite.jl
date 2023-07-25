@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Nonlinear Least Squares · JSOSuite.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.png" alt="JSOSuite.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">JSOSuite.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../tutorial/">Tutorial</a></li><li class="is-active"><a class="tocitem" href>Nonlinear Least Squares</a><ul class="internal"><li><a class="tocitem" href="#Model-and-solve-NLS"><span>Model and solve NLS</span></a></li><li><a class="tocitem" href="#Find-a-feasible-point-of-an-optimization-problem-or-solve-a-nonlinear-system"><span>Find a feasible point of an optimization problem or solve a nonlinear system</span></a></li></ul></li><li><a class="tocitem" href="../qp/">Quadratic models with linear constraints</a></li><li><a class="tocitem" href="../benchmark/">Benchmarking</a></li><li><a class="tocitem" href="../speed-up/">Speed up Solvers Tips</a></li><li><a class="tocitem" href="../reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Nonlinear Least Squares</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Nonlinear Least Squares</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/blob/main/docs/src/nls.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="nls-section"><a class="docs-heading-anchor" href="#nls-section">Nonlinear Least Squares</a><a id="nls-section-1"></a><a class="docs-heading-anchor-permalink" href="#nls-section" title="Permalink"></a></h1><p>The nonlinear least squares (NLS) optimization problem is a specific case where the objective function is a sum of squares.</p><p class="math-container">\[\begin{aligned}
+\min \quad &amp; f(x):=\tfrac{1}{2}\|F(x)\|^2_2 \\
+&amp; c_L \leq c(x) \leq c_U \\
+&amp; c_A \leq Ax \leq l_A, \\
+&amp; \ell \leq x \leq u.
+\end{aligned}\]</p><p>Although the problem can be solved using only  <span>$f$</span>, knowing  <span>$F$</span> independently allows the development of more efficient methods.</p><h2 id="Model-and-solve-NLS"><a class="docs-heading-anchor" href="#Model-and-solve-NLS">Model and solve NLS</a><a id="Model-and-solve-NLS-1"></a><a class="docs-heading-anchor-permalink" href="#Model-and-solve-NLS" title="Permalink"></a></h2><p>In this tutorial, we consider the following equality-constrained problem</p><p class="math-container">\[\begin{aligned}
+\min \quad &amp; f(x):=\tfrac{1}{2}(10 * (x[2] - x[1]^2))^2 + \tfrac{1}{2}(x[1] - 1)^2 \\
+&amp; 1 \leq x[1] * x[2] \leq 1,
+\end{aligned}\]</p><p>where <span>$1 \leq x[1] x[2] \leq 1$</span> implies that <span>$x[1] x[2] = 1$</span>.</p><p>In the rest of this tutorial, we will see two ways to model this problem exploiting the knowledge of the structure of the problem.</p><h3 id="NLS-using-automatic-differentiation"><a class="docs-heading-anchor" href="#NLS-using-automatic-differentiation">NLS using automatic differentiation</a><a id="NLS-using-automatic-differentiation-1"></a><a class="docs-heading-anchor-permalink" href="#NLS-using-automatic-differentiation" title="Permalink"></a></h3><p>Using the package <a href="https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl]">ADNLPModels.jl</a>, the problem can be model as an <code>ADNLSModel</code> which will use automatic-differentiation to compute the derivatives.</p><pre><code class="language-julia hljs">using ADNLPModels, JSOSuite
+F = x -&gt; [10 * (x[2] - x[1]^2); x[1] - 1]
+nres = 2 # size of F(x)
+x0 = [-1.2; 1.0]
+c = x -&gt; [x[1] * x[2]]
+l = [1.]
+nls = ADNLSModel(F, x0, nres, c, l, l, name=&quot;AD-Rosenbrock&quot;)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">ADNLSModel - Nonlinear least-squares model with automatic differentiation backend ADModelBackend{
+  ForwardDiffADGradient,
+  ForwardDiffADHvprod,
+  ForwardDiffADJprod,
+  ForwardDiffADJtprod,
+  ForwardDiffADJacobian,
+  ForwardDiffADHessian,
+  ForwardDiffADGHjvprod,
+}
+  Problem name: AD-Rosenbrock
+   All variables: ████████████████████ 2      All constraints: ████████████████████ 1        All residuals: ████████████████████ 2     
+            free: ████████████████████ 2                 free: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0               linear: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+           lower: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                lower: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0            nonlinear: ████████████████████ 2     
+           upper: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                upper: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 nnzj: (  0.00% sparsity)   4     
+         low/upp: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0              low/upp: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 nnzh: (  0.00% sparsity)   3     
+           fixed: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                fixed: ████████████████████ 1     
+          infeas: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0               infeas: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+            nnzh: (  0.00% sparsity)   3               linear: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+                                                    nonlinear: ████████████████████ 1     
+                                                         nnzj: (  0.00% sparsity)   2     
+
+  Counters:
+             obj: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 grad: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 cons: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+        cons_lin: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0             cons_nln: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 jcon: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+           jgrad: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                  jac: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0              jac_lin: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+         jac_nln: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                jprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0            jprod_lin: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+       jprod_nln: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0               jtprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0           jtprod_lin: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+      jtprod_nln: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 hess: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                hprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+           jhess: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0               jhprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0             residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+    jac_residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0       jprod_residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0      jtprod_residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+   hess_residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0       jhess_residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0       hprod_residual: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
+</code></pre><p>Note that the length of the residual function is given explictly to avoid any superfluous evaluation of this (potentially very large) function.</p><pre><code class="language-julia hljs">stats = minimize(nls)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">&quot;Execution stats: first-order stationary&quot;</code></pre><p><code>JSOSuite.jl</code> uses by default automatic differentiation, so the following code would be equivalent:</p><pre><code class="language-julia hljs">stats = minimize(F, x0, nres, c, l, l)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">&quot;Execution stats: first-order stationary&quot;</code></pre><p>By default, <code>JSOSuite.minimize</code> will use a solver tailored for nonlineat least squares problem. Nevertheless, it is also possible to specify the solver to be used.</p><pre><code class="language-julia hljs">using NLPModelsIpopt
+stats = minimize(&quot;IPOPT&quot;, F, x0, nres, c, l, l)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">&quot;Execution stats: first-order stationary&quot;</code></pre><p>We refer to the documentation of <a href="https://jso.dev/ADNLPModels.jl/dev/backend/"><code>ADNLPModels.jl</code></a> for more details on the AD system use and how to modify it.</p><h3 id="NLS-using-JuMP"><a class="docs-heading-anchor" href="#NLS-using-JuMP">NLS using JuMP</a><a id="NLS-using-JuMP-1"></a><a class="docs-heading-anchor-permalink" href="#NLS-using-JuMP" title="Permalink"></a></h3><p>The package <a href="https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl">NLPModelsJuMP.jl</a> exports a constructor, <a href="https://jso.dev/NLPModelsJuMP.jl/dev/tutorial/#NLPModelsJuMP.MathOptNLSModel"><code>MathOptNLSModel</code></a>, to build an <code>AbstractNLSModel</code> using <code>JuMP</code>.</p><pre><code class="language-julia hljs">using JuMP, JSOSuite, NLPModelsJuMP
+
+model = Model()
+x0 = [-1.2; 1.0]
+@variable(model, x[i=1:2], start=x0[i])
+@NLexpression(model, F1, x[1] - 1)
+@NLexpression(model, F2, 10 * (x[2] - x[1]^2))
+@NLconstraint(model, x[1] * x[2] == 1)
+
+nls = MathOptNLSModel(model, [F1, F2], name=&quot;Ju-Rosenbrock&quot;)
+stats = minimize(nls)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">&quot;Execution stats: first-order stationary&quot;</code></pre><h2 id="Find-a-feasible-point-of-an-optimization-problem-or-solve-a-nonlinear-system"><a class="docs-heading-anchor" href="#Find-a-feasible-point-of-an-optimization-problem-or-solve-a-nonlinear-system">Find a feasible point of an optimization problem or solve a nonlinear system</a><a id="Find-a-feasible-point-of-an-optimization-problem-or-solve-a-nonlinear-system-1"></a><a class="docs-heading-anchor-permalink" href="#Find-a-feasible-point-of-an-optimization-problem-or-solve-a-nonlinear-system" title="Permalink"></a></h2><p>We show here how to find the feasible point of a given model. </p><p class="math-container">\[\begin{aligned}
+\min \quad &amp; \tfrac{1}{2}\|s\|^2_2 \\
+&amp; 0 \leq s - c(x) \leq 0
+&amp; \ell \leq x \leq u.
+\end{aligned}\]</p><p>This formulation can also be used to solve a set of nonlinear equations. Finding a feasible point of an optimization problem is useful to determine whether the problem is feasible or not. Moreover, it is a good practice to find an initial guess.</p><pre><code class="language-julia hljs">using ADNLPModels, JSOSuite
+
+f = x -&gt; sum(x.^2)
+x0 = ones(3)
+c = x -&gt; [x[1]]
+b = zeros(1)
+nlp = ADNLPModel(f, x0, c, b, b)
+stats = feasible_point(nlp)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">&quot;Execution stats: first-order stationary&quot;</code></pre><p>Using the function <code>cons</code> from the <code>NLPModel API</code>, we can verify that the obtained solution is feasible.</p><pre><code class="language-julia hljs">using NLPModels
+
+cons(nlp, stats.solution) # is close to zero.</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">1-element Vector{Float64}:
+ 6.664889273995129e-9</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../tutorial/">« Tutorial</a><a class="docs-footer-nextpage" href="../qp/">Quadratic models with linear constraints »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Tuesday 25 July 2023 02:15">Tuesday 25 July 2023</span>. Using Julia version 1.9.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

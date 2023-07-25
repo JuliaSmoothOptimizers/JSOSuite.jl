@@ -424,7 +424,6 @@ include("solve.jl")
     function minimize(::Val{:CaNNOLeS}, nlp; kwargs...)
       return CaNNOLeS.cannoles(nlp; linsolve = :ldlfactorizations, kwargs...)
     end
-
   end
 end
 
@@ -457,7 +456,8 @@ end
   @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
     @init begin
       @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
-        JSOSuite.optimizers[JSOSuite.optimizers.name .== "KNITRO", :is_available] .= KNITRO.has_knitro()
+        JSOSuite.optimizers[JSOSuite.optimizers.name .== "KNITRO", :is_available] .=
+          KNITRO.has_knitro()
       end
     end
     include("solvers/knitro_solve.jl")
@@ -561,7 +561,6 @@ function bmark_solvers end
 
 @init begin
   @require SolverBenchmark = "581a75fa-a23a-52d0-a590-d6201de2218a" begin
-
     function SolverBenchmark.bmark_solvers(
       problems,
       solver_names::Vector{String},
@@ -588,7 +587,6 @@ function bmark_solvers end
       end
       return SolverBenchmark.bmark_solvers(solvers, problems; kwargs...)
     end
-
   end
 end
 

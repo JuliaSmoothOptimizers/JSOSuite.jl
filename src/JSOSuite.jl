@@ -455,7 +455,7 @@ end
 @init begin
   @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
     @init begin
-      @require NLPModelsKnitro = "bec4dd0d-7755-52d5-9a02-22f0ffc7efcb" begin
+      @require KNITRO = "67920dd8-b58e-52a8-8622-53c4cffbe346" begin
         JSOSuite.optimizers[JSOSuite.optimizers.name .== "KNITRO", :is_available] .=
           KNITRO.has_knitro()
       end
@@ -583,6 +583,7 @@ function bmark_solvers end
             verbose = verbose,
             max_time = max_time,
             max_eval = max_eval,
+            max_iter = max_iter,
           )
       end
       return SolverBenchmark.bmark_solvers(solvers, problems; kwargs...)

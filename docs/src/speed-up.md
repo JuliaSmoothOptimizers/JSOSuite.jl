@@ -78,7 +78,7 @@ Note that all optimizers presented here have been carefully optimized. All have 
 
 ##### RipQP (quadratic with linear constraints)
 
-TODO
+See [RipQP.jl tutorial](https://jso.dev/tutorials/introduction-to-ripqp/) and [RipQP.jl API](https://jso.dev/RipQP.jl/stable/API/).
 
 ##### CaNNOLeS (NLS with nonlinear equality constraints)
 

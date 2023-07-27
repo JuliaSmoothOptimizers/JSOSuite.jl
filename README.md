@@ -33,14 +33,14 @@ using JSOSuite
 # Rosenbrock
 x0 = [-1.2; 1.0]
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
-stats = solve(f, x0)
+stats = minimize(f, x0)
+
+# Unconstrained problem in Float32
+stats = minimize(f, Float32.(x0))
 
 # Constrained problem
-c = x -> [x[1] * x[2] - 1]
-stats = solve(f, x0, c, [0.0], [0.0])
-
-# Constrained problem in Float32
-stats = solve(f, Float32.(x0), c, Float32[0.0], Float32[0.0])
+c = x -> [x[1] + x[2] - 1]
+stats = minimize(f, x0, c, [0.0], [0.0])
 ```
 
 # Bug reports and discussions

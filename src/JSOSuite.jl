@@ -1,5 +1,10 @@
 module JSOSuite
 
+using PackageExtensionCompat
+function __init__()
+    @require_extensions
+end
+
 # other dependencies
 using DataFrames, JuMP
 # stdlib
@@ -20,7 +25,6 @@ For each solver, the following are available:
 - `name_solver::Symbol`: name of the solver structure for in-place solve, `:not_implemented` if not implemented;
 - `name_pkg::String`: name of the package implementing this solver or its NLPModel wrapper;
 - `solve_function::Symbol`: name of the function;
-- `is_available::Bool`: `true` if the solver is available;
 - `bounds::Bool`: `true` if the solver can handle bound constraints;
 - `equalities::Bool`: `true` if the solver can handle equality constraints;
 - `inequalities::Bool`: `true` if the solver can handle inequality constraints;
@@ -36,7 +40,6 @@ optimizers = DataFrame(
   name_solver = Symbol[],
   name_pkg = String[],
   solve_function = Symbol[],
-  is_available = Bool[],
   bounds = Bool[],
   equalities = Bool[],
   inequalities = Bool[],
@@ -54,7 +57,6 @@ push!(
     :KnitroSolver,
     "NLPModelsKnitro.jl",
     :knitro,
-    false,
     true,
     true,
     true,
@@ -73,7 +75,6 @@ push!(
     :LBFGSSolver,
     "JSOSolvers.jl",
     :lbfgs,
-    true,
     false,
     false,
     false,
@@ -92,7 +93,6 @@ push!(
     :R2Solver,
     "JSOSolvers.jl",
     :R2,
-    true,
     false,
     false,
     false,
@@ -112,7 +112,6 @@ push!(
     "JSOSolvers.jl",
     :tron,
     true,
-    true,
     false,
     false,
     false,
@@ -130,7 +129,6 @@ push!(
     :TrunkSolver,
     "JSOSolvers.jl",
     :trunk,
-    true,
     false,
     false,
     false,
@@ -150,7 +148,6 @@ push!(
     "JSOSolvers.jl",
     :tron,
     true,
-    true,
     false,
     false,
     true,
@@ -168,7 +165,6 @@ push!(
     :TrunkSolverNLS,
     "JSOSolvers.jl",
     :trunk,
-    true,
     false,
     false,
     false,
@@ -188,7 +184,6 @@ push!(
     "CaNNOLeS.jl",
     :cannoles,
     false,
-    false,
     true,
     false,
     true,
@@ -206,7 +201,6 @@ push!(
     :IpoptSolver,
     "NLPModelsIpopt.jl",
     :ipopt,
-    false,
     true,
     true,
     true,
@@ -226,7 +220,6 @@ push!(
     "DCISolver.jl",
     :dci,
     false,
-    false,
     true,
     false,
     false,
@@ -244,7 +237,6 @@ push!(
     :FPSSSolver,
     "FletcherPenaltySolver.jl",
     :fps_solve,
-    false,
     false,
     true,
     false,
@@ -266,7 +258,6 @@ push!(
     true,
     true,
     true,
-    true,
     false,
     true,
     true,
@@ -282,7 +273,6 @@ push!(
     :RipQPSolver,
     "RipQP.jl",
     :ripqp,
-    false,
     true,
     true,
     true,
@@ -295,9 +285,34 @@ push!(
   ),
 ) # need to check linear constraints and quadratic constraints
 
+"""
+    is_available(name::String)
+    is_available(name::Symbol)
+    is_available(::Val{name})
+
+    is_available(df::DataFrame)
+
+Return `true` if the solver `name` is available.
+"""
+is_available(name::String) = is_available(Symbol(name))
+is_available(name::Symbol) = is_available(Val(name))
+
+is_available(::Val{name}) where {name} = true
+is_available(::Val{:CaNNOLeS}) = !isnothing(Base.get_extension(JSOSuite, :CaNNOLeSExt))
+is_available(::Val{:DCISolver}) = !isnothing(Base.get_extension(JSOSuite, :DCISolverExt))
+is_available(::Val{:FletcherPenaltySolver}) = !isnothing(Base.get_extension(JSOSuite, :FletcherPenaltySolverExt))
+is_available(::Val{:IPOPT}) = !isnothing(Base.get_extension(JSOSuite, :NLPModelsIpoptExt))
+is_available(::Val{:KNITRO}) = !isnothing(Base.get_extension(JSOSuite, :NLPModelsKnitroExt)) && KNITRO.has_knitro()
+is_available(::Val{:RipQP}) = !isnothing(Base.get_extension(JSOSuite, :RipQPExt))
+
+function is_available(df::DataFrame)
+  available = [is_available(name) for name in df[!,:name]]
+  return df[available, :]
+end
+
 include("selection.jl")
 
-export minimize, solve!, feasible_point
+export minimize, solve!, feasible_point, is_available
 
 """
     stats = minimize(nlp::Union{AbstractNLPModel, JuMP.Model}; kwargs...)

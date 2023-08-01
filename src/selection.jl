@@ -107,7 +107,7 @@ function select_optimizers(
   all_select = copy(select)
   nsolvers_total_before_derivative = nrow(all_select)
 
-  select = select[select.is_available, :]
+  select = is_available(select)
   nsolvers_before_derivative = nrow(select)
 
   if nsolvers_before_derivative == 0

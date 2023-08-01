@@ -63,19 +63,17 @@ end
   @testset "Test $solver_name" for solver_name in JSOSuite.optimizers[!, :name_solver]
     solver_name == :DCIWorkspace && continue
     solver_name == :RipQPSolver && continue
-    is_available =
-      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :is_available]
     can_solve_nlp =
       JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :can_solve_nlp]
     spec_nls =
       JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :specialized_nls]
-    if is_available[1] && can_solve_nlp[1]
+    if is_available(solver_name) && can_solve_nlp[1]
       test_in_place_solve(nlp, solver_name)
       test_in_place_solve(model, solver_name)
-    elseif is_available[1] && spec_nls[1] # NLS
+    elseif is_available(solver_name) && spec_nls[1] # NLS
       nls = OptimizationProblems.ADNLPProblems.arglina(use_nls = true)
       test_in_place_solve(nls, solver_name)
-    elseif is_available[1] # RipQP
+    elseif is_available(solver_name) # RipQP
       nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
       test_in_place_solve(nlp_qm, solver_name)
     end

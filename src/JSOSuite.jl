@@ -6,7 +6,7 @@ function __init__()
 end
 
 # other dependencies
-using DataFrames, JuMP
+using DataFrames, JuMP, KNITRO
 # stdlib
 using LinearAlgebra, Logging, SparseArrays
 # JSO

@@ -143,7 +143,7 @@ push!(
 push!(
   optimizers,
   (
-    "TRON-NLS",
+    "TRONNLS",
     :TronSolverNLS,
     "JSOSolvers.jl",
     :tron,
@@ -161,7 +161,7 @@ push!(
 push!(
   optimizers,
   (
-    "TRUNK-NLS",
+    "TRUNKNLS",
     :TrunkSolverNLS,
     "JSOSolvers.jl",
     :trunk,
@@ -297,7 +297,14 @@ Return `true` if the solver `name` is available.
 is_available(name::String) = is_available(Symbol(name))
 is_available(name::Symbol) = is_available(Val(name))
 
-is_available(::Val{name}) where {name} = true
+is_available(::Val{name}) where {name} = false
+is_available(::Val{:R2}) = true
+is_available(::Val{:LBFGS}) = true
+is_available(::Val{:TRON}) = true
+is_available(::Val{:TRUNK}) = true
+is_available(::Val{:TRONNLS}) = true
+is_available(::Val{:TRUNKNLS}) = true
+is_available(::Val{:Percival}) = true
 is_available(::Val{:CaNNOLeS}) = !isnothing(Base.get_extension(JSOSuite, :CaNNOLeSExt))
 is_available(::Val{:DCISolver}) = !isnothing(Base.get_extension(JSOSuite, :DCISolverExt))
 is_available(::Val{:FletcherPenaltySolver}) = !isnothing(Base.get_extension(JSOSuite, :FletcherPenaltySolverExt))

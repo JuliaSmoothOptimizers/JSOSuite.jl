@@ -1,3 +1,7 @@
+module NLPModelsKnitroExt
+
+using NLPModelsKnitro, JSOSuite
+
 # See https://www.artelys.com/docs/knitro/3_referenceManual/userOptions.html for the list of options accepted.
 function minimize(::Val{:KNITRO}, nlp; kwargs...)
   keywords = Dict(kwargs)
@@ -24,4 +28,6 @@ function minimize(::Val{:KNITRO}, nlp; kwargs...)
     delete!(keywords, :max_eval)
   end
   return NLPModelsKnitro.knitro(nlp; keywords...)
+end
+
 end

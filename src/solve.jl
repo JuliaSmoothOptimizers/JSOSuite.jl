@@ -54,11 +54,3 @@ function minimize(::Val{solver_name}, nlp; kwargs...) where {solver_name}
   end
   return eval(solver.solve_function[1])(nlp; kwargs...)
 end
-
-function is_available(solver::Symbol)
-  solver_isa = optimizers[optimizers.name .== string(solver), :is_available]
-  if solver_isa == []
-    return false
-  end
-  return solver_isa[1]
-end

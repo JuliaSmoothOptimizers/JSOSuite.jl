@@ -52,8 +52,8 @@ Algorithm selection:
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
 There are 7 optimizers available:
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"]
+["LBFGS", "R2", "TRON", "TRUNK", "TRONNLS", "TRUNKNLS", "Percival"].
+["LBFGS", "R2", "TRON", "TRUNK", "TRONNLS", "TRUNKNLS", "Percival"]
 ```
 """
 function select_optimizers(
@@ -107,7 +107,7 @@ function select_optimizers(
   all_select = copy(select)
   nsolvers_total_before_derivative = nrow(all_select)
 
-  select = select[select.is_available, :]
+  select = is_available(select)
   nsolvers_before_derivative = nrow(select)
 
   if nsolvers_before_derivative == 0

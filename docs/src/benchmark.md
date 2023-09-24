@@ -43,7 +43,7 @@ using NLPModelsIpopt
 selected_optimizers = JSOSuite.optimizers
 # optimizers can solve general `nlp` as some are specific to variants (NLS, ...)
 selected_optimizers = selected_optimizers[selected_optimizers.can_solve_nlp, :]
-selected_optimizers[selected_optimizers.is_available, :] # optimizers available
+is_available(selected_optimizers) # optimizers available
 ```
 
 For the purpose of this example, we will consider 3 optimizers.

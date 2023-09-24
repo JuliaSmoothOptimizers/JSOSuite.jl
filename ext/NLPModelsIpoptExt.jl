@@ -1,3 +1,6 @@
+module NLPModelsIpoptExt
+
+using NLPModelsIpopt, JSOSuite
 # Selection of possible [options](https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF).
 function minimize(::Val{:IPOPT}, nlp; kwargs...)
   keywords = Dict(kwargs)
@@ -33,4 +36,6 @@ function minimize(::Val{:IPOPT}, nlp; kwargs...)
     delete!(keywords, :callback)
   end
   return NLPModelsIpopt.ipopt(nlp; keywords...)
+end
+
 end

@@ -1,3 +1,7 @@
+module RipQPExt
+
+using RipQP, JSOSuite, LLSModels, QuadraticModels
+
 function minimize(
   ::Val{:RipQP},
   nlp::Union{QuadraticModel{T0}, LLSModel{T0}};
@@ -59,4 +63,6 @@ function minimize(
     delete!(keywords, :callback)
   end
   return RipQP.ripqp(nlp; itol = itol, keywords...)
+end
+
 end

@@ -102,27 +102,22 @@ stats
 """
 function minimize end
 
-"""
-    solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
-    solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}, stats; kwargs...)
+# """
+#     solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}; kwargs...)
+#     solve!(solver::AbstractOptimizationSolver, model::Union{AbstractNLPModel, JuMP.Model}, stats; kwargs...)
 
-`JSOSuite` extension of `SolverCore.solve!`.
-The first argument should be of type `SolverCore.AbstractOptimizationSolver`, see for instance `JSOSuite.optimizers[!, :name_solver]`.
-"""
-function SolverCore.solve!(solver, args...; kwargs...)
-  throw(
-    "solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.optimizers[!, :name_solver]`.",
-  )
-end
+# `JSOSuite` extension of `SolverCore.solve!`.
+# The first argument should be of type `SolverCore.AbstractOptimizationSolver`, see for instance `JSOSuite.optimizers[!, :name_solver]`.
+# """
+# function SolverCore.solve!(solver, args...; kwargs...)
+#   throw(
+#     "solve! not implemented first argument should be of type `SolverCore.AbstractOptimizationSolver` and not $(typeof(solver)), see for instance `JSOSuite.optimizers[!, :name_solver]`.",
+#   )
+# end
 
 function minimize(f::Function, x0::AbstractVector, args...; kwargs...)
   nlp = ADNLPModel(f, x0, args...)
   return minimize(nlp; kwargs...)
-end
-
-function minimize(solver_name::String, f::Function, x0::AbstractVector, args...; kwargs...)
-  nlp = ADNLPModel(f, x0, args...)
-  return minimize(solver_name, nlp; kwargs...)
 end
 
 function minimize(F::Function, x0::AbstractVector, nequ::Integer, args...; kwargs...)
@@ -130,121 +125,109 @@ function minimize(F::Function, x0::AbstractVector, nequ::Integer, args...; kwarg
   return minimize(nlp; kwargs...)
 end
 
-function minimize(
-  solver_name::String,
-  F::Function,
-  x0::AbstractVector,
-  nequ::Integer,
-  args...;
-  kwargs...,
-)
-  nlp = ADNLSModel(F, x0, nequ, args...)
-  return minimize(solver_name, nlp; kwargs...)
-end
+# function minimize(model::JuMP.Model, args...; kwargs...)
+#   nlp = MathOptNLPModel(model)
+#   return minimize(nlp, args...; kwargs...)
+# end
 
-function minimize(model::JuMP.Model, args...; kwargs...)
-  nlp = MathOptNLPModel(model)
-  return minimize(nlp, args...; kwargs...)
-end
+# function minimize(solver_name::String, model::JuMP.Model, args...; kwargs...)
+#   nlp = MathOptNLPModel(model)
+#   return minimize(solver_name, nlp, args...; kwargs...)
+# end
 
-function minimize(solver_name::String, model::JuMP.Model, args...; kwargs...)
-  nlp = MathOptNLPModel(model)
-  return minimize(solver_name, nlp, args...; kwargs...)
-end
-
-function minimize(
-  solver::Val{solver_name},
-  model::JuMP.Model,
-  args...;
-  kwargs...,
-) where {solver_name}
-  nlp = MathOptNLPModel(model)
-  return minimize(solver, nlp, args...; kwargs...)
-end
+# function minimize(
+#   solver::Val{solver_name},
+#   model::JuMP.Model,
+#   args...;
+#   kwargs...,
+# ) where {solver_name}
+#   nlp = MathOptNLPModel(model)
+#   return minimize(solver, nlp, args...; kwargs...)
+# end
 
 # TODO: Add AbstractOptimizationSolver constructors with JuMP model.
-function SolverCore.solve!(
-  solver::SolverCore.AbstractOptimizationSolver,
-  model::JuMP.Model,
-  args...;
-  kwargs...,
-)
-  nlp = MathOptNLPModel(model)
-  return SolverCore.solve!(solver, nlp, args...; kwargs...)
-end
+# function SolverCore.solve!(
+#   solver::SolverCore.AbstractOptimizationSolver,
+#   model::JuMP.Model,
+#   args...;
+#   kwargs...,
+# )
+#   nlp = MathOptNLPModel(model)
+#   return SolverCore.solve!(solver, nlp, args...; kwargs...)
+# end
 
-function QuadraticModel(
-  c::S,
-  H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
-  lvar::S,
-  uvar::S;
-  c0::T = zero(T),
-  x0 = fill!(S(undef, length(c)), zero(T)),
-  name::String = "Generic",
-) where {T, S <: AbstractVector{T}}
-  return QuadraticModel(c, H, lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name)
-end
+# function QuadraticModel(
+#   c::S,
+#   H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
+#   lvar::S,
+#   uvar::S;
+#   c0::T = zero(T),
+#   x0 = fill!(S(undef, length(c)), zero(T)),
+#   name::String = "Generic",
+# ) where {T, S <: AbstractVector{T}}
+#   return QuadraticModel(c, H, lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name)
+# end
 
-function QuadraticModel(
-  c::S,
-  H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
-  A::Union{AbstractMatrix, AbstractLinearOperator},
-  lcon::S,
-  ucon::S;
-  c0::T = zero(T),
-  x0 = fill!(S(undef, length(c)), zero(T)),
-  name::String = "Generic",
-) where {T, S <: AbstractVector{T}}
-  return QuadraticModel(c, H, A = A, lcon = lcon, ucon = ucon, c0 = c0, x0 = x0, name = name)
-end
+# function QuadraticModel(
+#   c::S,
+#   H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
+#   A::Union{AbstractMatrix, AbstractLinearOperator},
+#   lcon::S,
+#   ucon::S;
+#   c0::T = zero(T),
+#   x0 = fill!(S(undef, length(c)), zero(T)),
+#   name::String = "Generic",
+# ) where {T, S <: AbstractVector{T}}
+#   return QuadraticModel(c, H, A = A, lcon = lcon, ucon = ucon, c0 = c0, x0 = x0, name = name)
+# end
 
-function QuadraticModel(
-  c::S,
-  H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
-  lvar::S,
-  uvar::S,
-  A::Union{AbstractMatrix, AbstractLinearOperator},
-  lcon::S,
-  ucon::S;
-  c0::T = zero(T),
-  x0 = fill!(S(undef, length(c)), zero(T)),
-  name::String = "Generic",
-) where {T, S <: AbstractVector{T}}
-  return QuadraticModel(
-    c,
-    H,
-    A = A,
-    lcon = lcon,
-    ucon = ucon,
-    lvar = lvar,
-    uvar = uvar,
-    c0 = c0,
-    x0 = x0,
-    name = name,
-  )
-end
+# function QuadraticModel(
+#   c::S,
+#   H::Union{AbstractMatrix{T}, AbstractLinearOperator{T}},
+#   lvar::S,
+#   uvar::S,
+#   A::Union{AbstractMatrix, AbstractLinearOperator},
+#   lcon::S,
+#   ucon::S;
+#   c0::T = zero(T),
+#   x0 = fill!(S(undef, length(c)), zero(T)),
+#   name::String = "Generic",
+# ) where {T, S <: AbstractVector{T}}
+#   return QuadraticModel(
+#     c,
+#     H,
+#     A = A,
+#     lcon = lcon,
+#     ucon = ucon,
+#     lvar = lvar,
+#     uvar = uvar,
+#     c0 = c0,
+#     x0 = x0,
+#     name = name,
+#   )
+# end
 
-function minimize(
-  c::S,
-  args...;
-  c0::T = zero(T),
-  x0 = fill!(S(undef, length(c)), zero(T)),
-  name::String = "Generic",
-  kwargs...,
-) where {T, S <: AbstractVector{T}}
-  qp_model = QuadraticModel(c, args...; c0 = c0, x0 = x0, name = name)
-  return minimize(qp_model; kwargs...)
-end
+# function minimize(
+#   c::S,
+#   args...;
+#   c0::T = zero(T),
+#   x0 = fill!(S(undef, length(c)), zero(T)),
+#   name::String = "Generic",
+#   kwargs...,
+# ) where {T, S <: AbstractVector{T}}
+#   qp_model = QuadraticModel(c, args...; c0 = c0, x0 = x0, name = name)
+#   return minimize(qp_model; kwargs...)
+# end
 
-function minimize(
-  solver_name::String,
-  c::S,
-  args...;
-  c0::T = zero(T),
-  x0 = fill!(S(undef, length(c)), zero(T)),
-  name::String = "Generic",
-  kwargs...,
-) where {T, S <: AbstractVector{T}}
-  qp_model = QuadraticModel(c, args...; c0 = c0, x0 = x0, name = name)
-  return minimize(solver_name, qp_model; kwargs...)
-end
+# function minimize(
+#   solver_name::String,
+#   c::S,
+#   args...;
+#   c0::T = zero(T),
+#   x0 = fill!(S(undef, length(c)), zero(T)),
+#   name::String = "Generic",
+#   kwargs...,
+# ) where {T, S <: AbstractVector{T}}
+#   qp_model = QuadraticModel(c, args...; c0 = c0, x0 = x0, name = name)
+#   return minimize(solver_name, qp_model; kwargs...)
+# end

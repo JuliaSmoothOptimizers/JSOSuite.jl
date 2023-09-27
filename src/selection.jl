@@ -151,15 +151,14 @@ function select_optimizers(
   return select
 end
 
-function select_optimizers(model::JuMP.Model, args...; kwargs...)
-  nlp = MathOptNLPModel(model)
-  return select_optimizers(nlp, args...; kwargs...)
-end
+# function select_optimizers(model::JuMP.Model, args...; kwargs...)
+#   nlp = MathOptNLPModel(model)
+#   return select_optimizers(nlp, args...; kwargs...)
+# end
 
 """Checker whether optimizers are Generic only"""
 function generic end
 
 generic(::AbstractNLSModel, optimizers::DataFrame) = optimizers
-generic(::Union{QuadraticModel, LLSModel}, optimizers::DataFrame) =
-  optimizers[optimizers.can_solve_nlp, :]
+# generic(::Union{QuadraticModel, LLSModel}, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]
 generic(::AbstractNLPModel, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]

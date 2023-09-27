@@ -3,14 +3,13 @@ using Documenter, JSOSuite
 makedocs(
   modules = [JSOSuite],
   doctest = true,
-  # linkcheck = true,
-  strict = true,
+  linkcheck = true,
   format = Documenter.HTML(
     assets = ["assets/style.css"],
     prettyurls = get(ENV, "CI", nothing) == "true",
   ),
   sitename = "JSOSuite.jl",
-  pages = Any[
+  pages = [
     "Home" => "index.md",
     "Tutorial" => "tutorial.md",
     "Nonlinear Least Squares" => "nls.md",

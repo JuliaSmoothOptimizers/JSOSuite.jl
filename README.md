@@ -21,8 +21,8 @@ If you use JSOSuite.jl in your work, please cite using the format given in [CITA
 
 ## Installation
 
-```
-] add JSOSuite
+```julia
+pkg> add JSOSuite
 ```
 
 ## Examples
@@ -43,7 +43,7 @@ c = x -> [x[1] + x[2] - 1]
 stats = minimize(f, x0, c, [0.0], [0.0])
 ```
 
-# Bug reports and discussions
+## Bug reports and discussions
 
 If you think you found a bug, feel free to open an [issue](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/issues).
 Focused suggestions and requests can also be opened as issues. Before opening a pull request, start an issue or a discussion on the topic, please.

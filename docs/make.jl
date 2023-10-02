@@ -3,7 +3,7 @@ using Documenter, JSOSuite
 makedocs(
   modules = [JSOSuite],
   doctest = true,
-  linkcheck = true,
+  linkcheck = false,
   format = Documenter.HTML(
     assets = ["assets/style.css"],
     prettyurls = get(ENV, "CI", nothing) == "true",

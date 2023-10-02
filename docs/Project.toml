@@ -19,5 +19,5 @@ SolverBenchmark = "581a75fa-a23a-52d0-a590-d6201de2218a"
 SolverCore = "ff4d7338-4cf1-434d-91df-b86cb86fb843"
 
 [compat]
-Documenter = "~0.27"
+Documenter = "1.0"
 SolverCore = "0.3"

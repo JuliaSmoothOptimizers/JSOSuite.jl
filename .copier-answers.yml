@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier
+AddMacToCI: true
+AddWinToCI: true
+AuthorEmail: tangi.migot@gmail.com
+AuthorName: Tangi Migot
+JuliaMinVersion: '1.6'
+License: MPL-2.0
+PackageName: JSOSuite
+PackageOwner: JuliaSmoothOptimizers
+PackageUUID: ed6ae0be-a024-11e9-2788-05dbf8cd15d9
+RunJuliaNightlyOnCI: true
+UseCirrusCI: true
+_commit: v0.2.2
+_src_path: https://github.com/abelsiqueira/COPIERTemplate.jl

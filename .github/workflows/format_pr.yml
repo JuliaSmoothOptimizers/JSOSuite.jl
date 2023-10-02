@@ -22,7 +22,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: ":robot: Format .jl files"
-          title: '[AUTO] JuliaFormatter.jl run'
+          title: "[AUTO] JuliaFormatter.jl run"
           branch: auto-juliaformatter-pr
           delete-branch: true
           labels: formatting, automated pr, no changelog

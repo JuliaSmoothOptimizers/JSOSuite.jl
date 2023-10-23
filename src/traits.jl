@@ -1,13 +1,12 @@
-struct SolverShell{T} end
-
-JSOSolvers.LBFGSSolver() = SolverShell{LBFGSSolver}()
-JSOSolvers.TrunkSolver() = SolverShell{TrunkSolver}()
-JSOSolvers.TronSolver() = SolverShell{TronSolver}()
-Percival.PercivalSolver() = SolverShell{PercivalSolver}()
-
-function (::SolverShell{T})(nlp::AbstractNLPModel, args...; kwargs...) where {T}
-  return T(nlp, args...; kwargs...)
-end
+export get_objective_kind,
+  get_constraint_kind,
+  get_handle_bounds,
+  get_handle_equalities,
+  get_handle_inequalities,
+  get_derivative_level,
+  get_handle_non_double_precision,
+  get_uses_factorization,
+  get_uses_matrix_free_lin_alg
 
 abstract type ObjectiveKindTrait end
 struct LinearObjective <: ObjectiveKindTrait end
@@ -21,7 +20,6 @@ get_objective_kind(::Type{S}) where {S} = ObjectiveKindTrait(S)
 abstract type ConstraintKindTrait end
 struct NoConstraint <: ConstraintKindTrait end
 struct LinearConstraint <: ConstraintKindTrait end
-struct QuadraticConstraint <: ConstraintKindTrait end
 struct NonlinearConstraint <: ConstraintKindTrait end
 ConstraintKindTrait(::Type) = NoConstraint()
 get_constraint_kind(::Type{S}) where {S} = ConstraintKindTrait(S)
@@ -60,19 +58,18 @@ get_derivative_level(::Type{S}) where {S} = begin
   end
 end
 
-abstract type RequiresDoublePrecisionTrait end
-struct NoRequiresDouble <: RequiresDoublePrecisionTrait end
-struct YesRequiresDouble <: RequiresDoublePrecisionTrait end
-RequiresDoublePrecisionTrait(::Type) = YesRequiresDouble()
-get_requires_double_precision(::Type{S}) where {S} =
-  RequiresDoublePrecisionTrait(S) == YesRequiresDouble()
+abstract type HandleNonDoublePrecisionTrait end
+struct NoHandleNonDouble <: HandleNonDoublePrecisionTrait end
+struct YesHandleNonDouble <: HandleNonDoublePrecisionTrait end
+HandleNonDoublePrecisionTrait(::Type) = YesHandleNonDouble()
+get_handle_non_double_precision(::Type{S}) where {S} =
+  HandleNonDoublePrecisionTrait(S) == YesHandleNonDouble()
 
 abstract type UsesFactorizationTrait end
 struct NoUsesFactorization <: UsesFactorizationTrait end
 struct YesUsesFactorization <: UsesFactorizationTrait end
 UsesFactorizationTrait(::Type) = YesUsesFactorization()
-get_uses_factorization(::Type{S}) where {S} =
-  UsesFactorizationTrait(S) == YesUsesFactorization()
+get_uses_factorization(::Type{S}) where {S} = UsesFactorizationTrait(S) == YesUsesFactorization()
 
 abstract type UsesMatrixFreeLinAlgTrait end
 struct NoUsesMatrixFreeLinAlg <: UsesMatrixFreeLinAlgTrait end

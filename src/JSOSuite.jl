@@ -13,7 +13,10 @@ using JSOSolvers, Percival
 using LinearAlgebra, Logging, SparseArrays
 
 # traits
+include("solver-shell.jl")
 include("traits.jl")
+# optimizers
+include("optimizers.jl")
 # selection
 include("selection.jl")
 # user-friendly API

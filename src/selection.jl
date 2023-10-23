@@ -55,45 +55,54 @@ function select_optimizer(;
   handle_inequalities = true,
   derivative_level = 1,
   handle_non_double_precision = true,
-  uses_factorization = false,
-  uses_matrix_free = false,
+  avoid_factorization = false,
+  avoid_matrix_free = false,
 )
   for optimizer in JSOSuite._optimizers
     if !_satisfy_objective_kind(optimizer, objective_kind)
+      @debug "Skipping $optimizer due to objective kind"
       continue
     end
 
     if !_satisfy_constraint_kind(optimizer, constraint_kind)
+      @debug "Skipping $optimizer due to constraint kind"
       continue
     end
 
     if !get_handle_bounds(optimizer) && handle_bounds
+      @debug "Skipping $optimizer due to bounds"
       continue
     end
 
     if constraint_kind != :none
       if !get_handle_equalities(optimizer) && handle_equalities
+        @debug "Skipping $optimizer due to equality constraints"
         continue
       end
 
       if !get_handle_inequalities(optimizer) && handle_inequalities
+        @debug "Skipping $optimizer due to inequality constraints"
         continue
       end
     end
 
     if derivative_level < get_derivative_level(optimizer)
+      @debug "Skipping $optimizer due to derivative level"
       continue
     end
 
     if handle_non_double_precision && !get_handle_non_double_precision(optimizer)
+      @debug "Skipping $optimizer due to non double precision requirements"
       continue
     end
 
-    if uses_factorization != get_uses_factorization(optimizer)
+    if avoid_factorization && get_uses_factorization(optimizer)
+      @debug "Skipping $optimizer due to factorization"
       continue
     end
 
-    if uses_matrix_free != get_uses_matrix_free_lin_alg(optimizer)
+    if avoid_matrix_free && get_uses_matrix_free_lin_alg(optimizer)
+      @debug "Skipping $optimizer due to matrix-free"
       continue
     end
 

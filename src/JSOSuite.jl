@@ -1,6 +1,6 @@
 module JSOSuite
 
-# Core definitinos
+# Core definitions
 using SolverCore, NLPModels
 
 # User friendly packages
@@ -12,17 +12,14 @@ using JSOSolvers, Percival
 # stdlib
 using LinearAlgebra, Logging, SparseArrays
 
-# traits
 include("solver-shell.jl")
 include("traits.jl")
-# optimizers
 include("optimizers.jl")
-# selection
 include("selection.jl")
-# user-friendly API
 
-# include("optimizers.jl")
-# include("selection.jl")
+include("minimize-core.jl")
+include("minimize-friendly.jl")
+
 # include("solve-model.jl")
 # include("solve.jl")
 # include("load-solvers.jl")

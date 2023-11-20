@@ -1,165 +1,203 @@
-"""
-    select_optimizers(nlp::Union{AbstractNLPModel, JuMP.Model}, verbose = 1, highest_derivative_available::Integer = 2)
+export select_optimizer
 
-Narrow the list of optimizers to solve `nlp` problem using `highest_derivative_available`.
+_objective_kind_map = Dict(
+  :linear => LinearObjective(),
+  :quadratic => QuadraticObjective(),
+  :nonlinear => NonlinearObjective(),
+)
 
-This function checks whether the model has:
-  - linear or nonlinear constraints;
-  - unconstrained, bound constraints, equality constraints, inequality constraints;
-  - nonlinear or quadratic objective.
-A linear or quadratic objective is detected if the type of `nlp` is a `QuadraticModel` or an `LLSModel`.
-The selection between a general optimization problem and a nonlinear least squares is done in [`minimize`](@ref).
+_constraint_kind_map =
+  Dict(:none => NoConstraint(), :linear => LinearConstraint(), :nonlinear => NonlinearConstraint())
 
-If no optimizers were selected, consider setting `verbose` to `true` to see what went wrong.
-
-## Output
-
-- `selected_optimizers::DataFrame`: A subset of [`optimizers`](@ref) adapted to the problem `nlp`.
-
-See also [`minimize`](@ref).
-
-## Examples
-
-```jldoctest; output = false
-using ADNLPModels, JSOSuite
-nlp = ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0])
-selected_optimizers = JSOSuite.select_optimizers(nlp)
-print(selected_optimizers[!, :name])
-
-# output
-
-The problem has 2 variables and no constraints.
-Algorithm selection:
-- unconstrained: ✓;
-- nonlinear objective: ✓;
-- may use 2-th order derivative.
-There are 5 optimizers available:
-["LBFGS", "R2", "TRON", "TRUNK", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "Percival"]
-```
-
-```jldoctest; output = false
-using ADNLPModels, JSOSuite
-nlp = ADNLSModel(x -> [10 * (x[2] - x[1]^2), (x[1] - 1)], [-1.2; 1.0], 2)
-selected_optimizers = JSOSuite.select_optimizers(nlp)
-print(selected_optimizers[!, :name])
-
-# output
-
-The problem has 2 variables and no constraints.
-Algorithm selection:
-- unconstrained: ✓;
-- nonlinear objective: ✓;
-- may use 2-th order derivative.
-There are 7 optimizers available:
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"]
-```
-"""
-function select_optimizers(
-  nlp::AbstractNLPModel{T, S},
-  verbose = 1,
-  highest_derivative_available::Integer = 2,
-) where {T, S}
-  select = generic(nlp, optimizers)
-  if verbose ≥ 1
-    used_name = nlp.meta.name == "Generic" ? "The problem" : "The problem $(nlp.meta.name)"
-    s = "$(used_name) has $(nlp.meta.nvar) variables and $(nlp.meta.ncon) constraints."
-    s = replace(s, " 0" => " no")
-    s = replace(s, "1 variables" => "1 variable")
-    s = replace(s, "1 constraints" => "1 constraint")
-    println(s)
-  end
-  (verbose ≥ 1) && println("Algorithm selection:")
-  if T != Float64
-    (verbose ≥ 1) && println("- $T precision: ✓;")
-    select = select[.!select.double_precision_only, :]
-  end
-  if !unconstrained(nlp)
-    if has_equalities(nlp)
-      (verbose ≥ 1) && println("- equalities: ✓;")
-      select = select[select.equalities, :]
-    end
-    if has_inequalities(nlp)
-      (verbose ≥ 1) && println("- inequalities: ✓;")
-      select = select[select.inequalities, :]
-    end
-    if has_bounds(nlp)
-      (verbose ≥ 1) && println("- bounds: ✓;")
-      select = select[select.inequalities, :]
-    end
-    if !linearly_constrained(nlp)
-      (verbose ≥ 1) && println("- nonlinear constraints: ✓;")
-      select = select[select.nonlinear_con, :]
-    else
-      (verbose ≥ 1) && println("- linear constraints: ✓;")
-    end
-  else
-    (verbose ≥ 1) && println("- unconstrained: ✓;")
-  end
-  if !(typeof(nlp) <: QuadraticModel) || !(typeof(nlp) <: LLSModel)
-    (verbose ≥ 1) && println("- nonlinear objective: ✓;")
-    select = select[select.nonlinear_obj, :]
-  else
-    (verbose ≥ 1) && println("- quadratic objective: ✓;")
-  end
-
-  all_select = copy(select)
-  nsolvers_total_before_derivative = nrow(all_select)
-
-  select = select[select.is_available, :]
-  nsolvers_before_derivative = nrow(select)
-
-  if nsolvers_before_derivative == 0
-    if nsolvers_total_before_derivative == 0
-      (verbose ≥ 1) && println(
-        "No solvers are available for this type of problem. Consider open an issue to JSOSuite.jl",
-      )
-    else
-      (verbose ≥ 1) && println(
-        "No solvers are available for this type of problem. Consider loading more solvers $(all_select[!, :name_pkg])",
-      )
-    end
-  else
-    (verbose ≥ 1) && println("- may use $(highest_derivative_available)-th order derivative.")
-    all_select = all_select[all_select.highest_derivative .<= highest_derivative_available, :]
-    nsolvers_total_after_derivative = nrow(all_select)
-    select = select[select.highest_derivative .<= highest_derivative_available, :]
-    nsolvers_after_derivative = nrow(select)
-    if (nsolvers_after_derivative == 0) && (nsolvers_before_derivative > 0)
-      if (nsolvers_total_after_derivative == 0) && (nsolvers_before_derivative > 0)
-        (verbose ≥ 1) && println(
-          "No optimizers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
-        )
-      elseif (nsolvers_total_after_derivative > 0)
-        (verbose ≥ 1) && println(
-          "No optimizers are available for this type of problem. Consider loading more optimizers $(all_select[!, :name_pkg])",
-        )
-      else
-        (verbose ≥ 1) && println(
-          "No optimizers are available. Consider using higher derivatives, there are $(nsolvers_before_derivative) available.",
-        )
-      end
-    else
-      if verbose ≥ 1
-        s = "There are $(nrow(select)) optimizers available:"
-        println(replace(s, "are 1 optimizers" => "is 1 optimizer"))
-        println("$(select[!, :name]).")
-      end
-    end
-  end
-  return select
+function _satisfy_objective_kind(::Type{T}, desired_objective_kind) where {T}
+  return _objective_kind_map[desired_objective_kind] == get_objective_kind(T)
 end
 
-function select_optimizers(model::JuMP.Model, args...; kwargs...)
-  nlp = MathOptNLPModel(model)
-  return select_optimizers(nlp, args...; kwargs...)
+function _satisfy_constraint_kind(::Type{T}, desired_constraint_kind) where {T}
+  return _constraint_kind_map[desired_constraint_kind] == get_constraint_kind(T)
 end
 
-"""Checker whether optimizers are Generic only"""
-function generic end
+function _satisfy_handle_bounds(::Type{T}, handle_bounds) where {T}
+  return get_handle_bounds(T) == YesHandleBounds()
+end
 
-generic(::AbstractNLSModel, optimizers::DataFrame) = optimizers
-generic(::Union{QuadraticModel, LLSModel}, optimizers::DataFrame) =
-  optimizers[optimizers.can_solve_nlp, :]
-generic(::AbstractNLPModel, optimizers::DataFrame) = optimizers[optimizers.can_solve_nlp, :]
+"""
+    select_optimizer(; kwargs...)
+
+Select an optimizer based on what optimizers are loaded and the keywords arguments passed.
+See the loaded optimizers by calling [`show_loaded_optimizers`](@ref).
+
+!!! warning
+    The default arguments fail to return a solver.
+
+## Arguments
+
+- `objective_kind = :nonlinear`: What kind of objective function the solver needs to handle.
+  Options are `[:linear, :quadratic, :nonlinear]`.
+- `constraint_kind = :nonlinear`: What kind of constraint function the solver needs to handle.
+  Options are `[:none, :linear, :nonlinear]`.
+- `handle_bounds = true`: Whether the solver needs to be able to handle bounded variables.
+- `handle_equalities = true`: Whether the solver needs to be able to handle equality constraints.
+  This will be ignored if `constraint_kind` is `:none`.
+- `handle_inequalities = true`: Whether the solver needs to be able to handle inequality constraints.
+  This will be ignored if `constraint_kind` is `:none`.
+- `derivative_level = 1`: Highest level of derivatives that the solver can use.
+- `handle_non_double_precision = true`: Whether the solver needs to be able to handle non-double precision.
+- `uses_factorization = false`: Whether we want a solver that uses factorization.
+- `uses_matrix_free = false`: Whether we want a solver that uses matrix-free linear algebra.
+  Notice that `uses_factorization` and `uses_matrix_free` can BOTH BE FALSE (e.g. LBFGS).
+"""
+function select_optimizer(;
+  objective_kind = :nonlinear,
+  constraint_kind = :nonlinear,
+  handle_bounds = true,
+  handle_equalities = true,
+  handle_inequalities = true,
+  derivative_level = 1,
+  handle_non_double_precision = true,
+  avoid_factorization = false,
+  avoid_matrix_free = false,
+)
+  for optimizer in JSOSuite._optimizers
+    if !_satisfy_objective_kind(optimizer, objective_kind)
+      @debug "Skipping $optimizer due to objective kind"
+      continue
+    end
+
+    if !_satisfy_constraint_kind(optimizer, constraint_kind)
+      @debug "Skipping $optimizer due to constraint kind"
+      continue
+    end
+
+    if !get_handle_bounds(optimizer) && handle_bounds
+      @debug "Skipping $optimizer due to bounds"
+      continue
+    end
+
+    if constraint_kind != :none
+      if !get_handle_equalities(optimizer) && handle_equalities
+        @debug "Skipping $optimizer due to equality constraints"
+        continue
+      end
+
+      if !get_handle_inequalities(optimizer) && handle_inequalities
+        @debug "Skipping $optimizer due to inequality constraints"
+        continue
+      end
+    end
+
+    if derivative_level < get_derivative_level(optimizer)
+      @debug "Skipping $optimizer due to derivative level"
+      continue
+    end
+
+    if handle_non_double_precision && !get_handle_non_double_precision(optimizer)
+      @debug "Skipping $optimizer due to non double precision requirements"
+      continue
+    end
+
+    if avoid_factorization && get_uses_factorization(optimizer)
+      @debug "Skipping $optimizer due to factorization"
+      continue
+    end
+
+    if avoid_matrix_free && get_uses_matrix_free_lin_alg(optimizer)
+      @debug "Skipping $optimizer due to matrix-free"
+      continue
+    end
+
+    return optimizer
+  end
+
+  error("No optimizer can handle this problem type")
+end
+
+"""
+    _select_optimizer(...)
+
+Select an optimizer with the required attributes.
+This dispatches on the traits, so it should be type stable.
+
+## Arguments
+
+- ::ObjectiveKindTrait
+- ::ConstraintKindTrait
+- ::HandleBoundsTrait
+- ::HandleEqualitiesTrait
+- ::HandleInequalitiesTrait
+- ::DerivativeLevelTrait
+- ::HandleNonDoublePrecisionTrait
+- ::UsesFactorizationTrait
+- ::UsesMatrixFreeLinAlgTrait
+"""
+function _select_optimizer end
+
+function _get_traits_of_optimizer(::Type{T}) where {T}
+  return (
+    ObjectiveKindTrait(T),
+    ConstraintKindTrait(T),
+    HandleBoundsTrait(T),
+    HandleEqualitiesTrait(T),
+    HandleInequalitiesTrait(T),
+    DerivativeLevelTrait(T),
+    HandleNonDoublePrecisionTrait(T),
+    UsesFactorizationTrait(T),
+    UsesMatrixFreeLinAlgTrait(T),
+  )
+end
+
+function _select_optimizer(
+  ::ObjectiveKindTrait,
+  ::NoConstraint,
+  ::NoHandleBounds,
+  ::NoHandleEqualities,
+  ::NoHandleInequalities,
+  ::DerivativeLevel2,
+  ::HandleNonDoublePrecisionTrait,
+  ::NoUsesFactorization,
+  ::YesUsesMatrixFreeLinAlg,
+)
+  return TrunkSolver()
+end
+
+function _select_optimizer(
+  ::ObjectiveKindTrait,
+  ::NoConstraint,
+  ::NoHandleBounds,
+  ::NoHandleEqualities,
+  ::NoHandleInequalities,
+  ::DerivativeLevel1,
+  ::HandleNonDoublePrecisionTrait,
+  ::NoUsesFactorization,
+  ::NoUsesMatrixFreeLinAlg,
+)
+  return LBFGSSolver()
+end
+
+function _select_optimizer(
+  ::ObjectiveKindTrait,
+  ::NoConstraint,
+  ::YesHandleBounds,
+  ::NoHandleEqualities,
+  ::NoHandleInequalities,
+  ::DerivativeLevel2,
+  ::HandleNonDoublePrecisionTrait,
+  ::NoUsesFactorization,
+  ::YesUsesMatrixFreeLinAlg,
+)
+  return TronSolver()
+end
+
+function _select_optimizer(
+  ::ObjectiveKindTrait,
+  ::ConstraintKindTrait,
+  ::HandleBoundsTrait,
+  ::HandleEqualitiesTrait,
+  ::HandleInequalitiesTrait,
+  ::DerivativeLevel2,
+  ::HandleNonDoublePrecisionTrait,
+  ::NoUsesFactorization,
+  ::YesUsesMatrixFreeLinAlg,
+)
+  return PercivalSolver()
+end

@@ -1,21 +1,23 @@
 module JSOSuite
 
-# other dependencies
-using DataFrames, JuMP, Requires
-# stdlib
-using LinearAlgebra, Logging, SparseArrays
-# JSO
-using ADNLPModels, LLSModels, NLPModels, NLPModelsJuMP, QuadraticModels
-using LinearOperators, NLPModelsModifiers, SolverCore
-# JSO solvers
+# Core definitions
+using SolverCore, NLPModels
+
+# User friendly packages
+using ADNLPModels
+
+# Basic solvers
 using JSOSolvers, Percival
 
-include("optimizers.jl")
+# stdlib
+using LinearAlgebra, Logging, SparseArrays
+
+include("solver-shell.jl")
+include("traits.jl")
+include("optimizers-traits.jl")
 include("selection.jl")
-include("solve-model.jl")
-include("solve.jl")
-include("load-solvers.jl")
-include("bmark-solvers.jl")
-include("feasible-point.jl")
+
+include("minimize-core.jl")
+include("minimize-friendly.jl")
 
 end # module

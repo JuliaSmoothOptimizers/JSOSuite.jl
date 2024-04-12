@@ -20,7 +20,7 @@ Using L-BFGS, the problem is locally solved.
 Note that when passing Julia functions as input to `minimize`, the problem is modeled as an `ADNLPModel`.
 So, the following would be equivalent:
 ```@example ex2
-using JSOSuite
+using ADNLPModels, JSOSuite
 f(x) = x[2]^2 * exp(x[1]^2)
 x0 = ones(Float64, 2)
 nlp = ADNLPModel(f, x0)

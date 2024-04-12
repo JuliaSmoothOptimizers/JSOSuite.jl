@@ -5,7 +5,7 @@ It is very convenient to pre-allocate the memory used during the optimization of
 Let us consider the following 2-dimensional unconstrained problem
 ```math
 \begin{aligned}
-\min \quad & f(x):= x₂ exp(x₁) 
+\min \quad & f(x):= x₂² exp(x₁²) 
 \end{aligned}
 ```
 Using `JSOSuite` usual `minimize` function, the problem can be solved as follows
@@ -16,6 +16,16 @@ x0 = ones(Float64, 2)
 stats = minimize(f, x0)
 ```
 Using L-BFGS, the problem is locally solved.
+
+Note that when passing Julia functions as input to `minimize`, the problem is modeled as an `ADNLPModel`.
+So, the following would be equivalent:
+```@example ex2
+using JSOSuite
+f(x) = x[2]^2 * exp(x[1]^2)
+x0 = ones(Float64, 2)
+nlp = ADNLPModel(f, x0)
+stats = minimize(nlp)
+```
 
 ## In-place solve
 
@@ -39,7 +49,7 @@ In our example, the solver LBFGS is implemented in `JSOSolvers.jl` and the solve
 Now, it is possible to reuse the memory allocated for the first solve for another round.
 ```@example ex1
 # NLPModels.reset!(nlp) would also reset the evaluation counters of the model
-reset!(solver)
+SolverCore.reset!(solver)
 x02 = [1.4; 5.0] # another initial guess
 solve!(solver, nlp, stats, x = x02)
 ```
@@ -51,7 +61,7 @@ It is also possible to reuse the allocated memory to solve another problem with 
 f2(x) = x[2]^2 + exp(x[1]^2)
 x0 = ones(Float64, 2)
 nlp = ADNLPModel(f2, x0) # or use JuMP
-reset!(solver, nlp)
+SolverCore.reset!(solver, nlp)
 solve!(solver, nlp, stats)
 ```
 

@@ -1,4 +1,4 @@
-# [Resolve and in-place solve](@id resolve)
+# [Re-solve and in-place solve](@id resolve)
 
 It is very convenient to pre-allocate the memory used during the optimization of a given problem either from improved memory management or when re-solving the same or a similar problem.
 
@@ -8,7 +8,7 @@ Let us consider the following 2-dimensional unconstrained problem
 \min \quad & f(x):= x₂² exp(x₁²) 
 \end{aligned}
 ```
-Using `JSOSuite` usual `minimize` function, the problem can be solved as follows
+Using `JSOSuite`’s `minimize` function, the problem can be solved as follows
 ```@example ex1
 using JSOSuite
 f(x) = x[2]^2 * exp(x[1]^2)
@@ -29,7 +29,7 @@ stats = minimize(nlp)
 
 ## In-place solve
 
-If we want to solve the same problem several time, for instance, for several initial guess it is recommended to use in-place solve.
+If we want to solve the same problem several times, for instance, for several initial guesses, it is recommended to use an in-place solve.
 ```@example ex1
 using ADNLPModels, JSOSolvers, SolverCore
 f(x) = x[2]^2 * exp(x[1]^2)
@@ -39,24 +39,24 @@ solver = JSOSolvers.LBFGSSolver(nlp)
 stats = SolverCore.GenericExecutionStats(nlp)
 solve!(solver, nlp, stats, x = x0)
 ```
-This deserves more explanation.
+This deserves more explanations.
 The name of the solver structure and the corresponding package can be accessed via the DataFrame `JSOSuite.optimizers`.
 ```@example ex1
 JSOSuite.optimizers[!, [:name_solver, :name_pkg]]
 ```
 In our example, the solver LBFGS is implemented in `JSOSolvers.jl` and the solver structure is `LBFGSSolver`.
 
-Now, it is possible to reuse the memory allocated for the first solve for another round.
+Now, it is possible to reuse the memory allocated for the first solve for another round:
 ```@example ex1
 # NLPModels.reset!(nlp) would also reset the evaluation counters of the model
 SolverCore.reset!(solver)
-x02 = [1.4; 5.0] # another initial guess
-solve!(solver, nlp, stats, x = x02)
+new_x0 = [1.4; 5.0] # another initial guess
+solve!(solver, nlp, stats, x = new_x0)  # new solve with existing solver object
 ```
 
 ## In-place solve of a different problem
 
-It is also possible to reuse the allocated memory to solve another problem with the same characteristics.
+It is also possible to reuse the allocated memory to solve another problem with the same number of variables and constraints:
 ```@example ex1
 f2(x) = x[2]^2 + exp(x[1]^2)
 x0 = ones(Float64, 2)
@@ -76,4 +76,4 @@ stats = GenericExecutionStats(nlp)
 solve!(solver, nlp, stats)
 @allocated solve!(solver, nlp, stats)
 ```
-Several of the pure Julia implementation available in JSOSuite have this property.
+Several of the pure Julia solvers available in JSOSuite have this property.

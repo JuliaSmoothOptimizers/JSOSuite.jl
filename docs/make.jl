@@ -15,7 +15,7 @@ makedocs(
     "Tutorial" => "tutorial.md",
     "Nonlinear Least Squares" => "nls.md",
     "Quadratic models with linear constraints" => "qp.md",
-    "Resolve and in-place solve" => "resolve.md",
+    "Re-solve and in-place solve" => "resolve.md",
     "Benchmarking" => "benchmark.md",
     "Speed up Solvers Tips" => "speed-up.md",
     "Reference" => "reference.md",

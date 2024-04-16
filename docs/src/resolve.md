@@ -1,11 +1,11 @@
 # [Re-solve and in-place solve](@id resolve)
 
-It is very convenient to pre-allocate the memory used during the optimization of a given problem either from improved memory management or when re-solving the same or a similar problem.
+It is very convenient to pre-allocate the memory used during the optimization of a given problem either for improved memory management or re-solving the same or a similar problem.
 
 Let us consider the following 2-dimensional unconstrained problem
 ```math
 \begin{aligned}
-\min \quad & f(x):= x₂² exp(x₁²) 
+\min_x \quad & f(x):= x₂² exp(x₁²) 
 \end{aligned}
 ```
 Using `JSOSuite`’s `minimize` function, the problem can be solved as follows
@@ -17,7 +17,7 @@ stats = minimize(f, x0)
 ```
 Using L-BFGS, the problem is locally solved.
 
-Note that when passing Julia functions as input to `minimize`, the problem is modeled as an `ADNLPModel`.
+Note that when passing Julia functions as input to `minimize`, the problem is modeled as an [`ADNLPModel`](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl).
 So, the following would be equivalent:
 ```@example ex2
 using ADNLPModels, JSOSuite
@@ -25,6 +25,15 @@ f(x) = x[2]^2 * exp(x[1]^2)
 x0 = ones(Float64, 2)
 nlp = ADNLPModel(f, x0)
 stats = minimize(nlp)
+```
+
+As an additional note, previous example (and the following) works for a `JuMP` model.
+```@example 3
+using JuMP, JSOSuite
+model = Model()
+@variable(model, x[i=1:2], start = [1.0; 1.0][i])
+@objective(model, Min, x[2]^2 * exp(x[1]^2))
+stats = minimize(jump)
 ```
 
 ## In-place solve
@@ -44,7 +53,7 @@ The name of the solver structure and the corresponding package can be accessed v
 ```@example ex1
 JSOSuite.optimizers[!, [:name_solver, :name_pkg]]
 ```
-In our example, the solver LBFGS is implemented in `JSOSolvers.jl` and the solver structure is `LBFGSSolver`.
+In our example, the solver L-BFGS is implemented in [`JSOSolvers.jl`](https://github.com/JuliaSmoothOptimizers/JSOSolvers.jl) and the solver structure is `LBFGSSolver`.
 
 Now, it is possible to reuse the memory allocated for the first solve for another round:
 ```@example ex1
@@ -67,7 +76,7 @@ solve!(solver, nlp, stats)
 
 ## Allocation-free solvers
 
-In order to measure, the amount of allocations made by the solvers the package NLPModelsTest.jl defines a set of test problems that are allocation-free.
+In order to measure, the amount of allocations made by the solvers the package [`NLPModelsTest.jl`](https://github.com/JuliaSmoothOptimizers/NLPModelsTest.jl) defines a set of test problems that are allocation-free.
 ```@example ex1
 using NLPModelsTest, SolverCore, JSOSolvers
 nlp = BROWNDEN(Float64)

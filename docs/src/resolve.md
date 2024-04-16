@@ -33,7 +33,7 @@ using JuMP, JSOSuite
 model = Model()
 @variable(model, x[i=1:2], start = [1.0; 1.0][i])
 @objective(model, Min, x[2]^2 * exp(x[1]^2))
-stats = minimize(jump)
+stats = minimize(model)
 ```
 
 ## In-place solve

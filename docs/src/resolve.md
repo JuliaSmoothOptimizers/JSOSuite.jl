@@ -5,15 +5,14 @@ It is very convenient to pre-allocate the memory used during the optimization of
 Let us consider the following 2-dimensional unconstrained problem
 ```math
 \begin{aligned}
-\min_x \quad & f(x):= x₂² exp(x₁²) 
+\min_x \quad & f(x):= x_2^2 \exp(x_1^2) 
 \end{aligned}
 ```
 Using `JSOSuite`’s `minimize` function, the problem can be solved as follows
 ```@example ex1
 using JSOSuite
 f(x) = x[2]^2 * exp(x[1]^2)
-x0 = ones(Float64, 2)
-stats = minimize(f, x0)
+stats = minimize(f, ones(2))
 ```
 Using L-BFGS, the problem is locally solved.
 
@@ -22,12 +21,11 @@ So, the following would be equivalent:
 ```@example ex2
 using ADNLPModels, JSOSuite
 f(x) = x[2]^2 * exp(x[1]^2)
-x0 = ones(Float64, 2)
-nlp = ADNLPModel(f, x0)
+nlp = ADNLPModel(f, ones(2))
 stats = minimize(nlp)
 ```
 
-As an additional note, previous example (and the following) works for a `JuMP` model.
+The procedure is similar with `JuMP` models.
 ```@example 3
 using JuMP, JSOSuite
 model = Model()
@@ -42,8 +40,7 @@ If we want to solve the same problem several times, for instance, for several in
 ```@example ex1
 using ADNLPModels, JSOSolvers, SolverCore
 f(x) = x[2]^2 * exp(x[1]^2)
-x0 = ones(Float64, 2)
-nlp = ADNLPModel(f, x0) # or use JuMP
+nlp = ADNLPModel(f, ones(2)) # or use JuMP
 solver = JSOSolvers.LBFGSSolver(nlp)
 stats = SolverCore.GenericExecutionStats(nlp)
 solve!(solver, nlp, stats, x = x0)
@@ -57,7 +54,7 @@ In our example, the solver L-BFGS is implemented in [`JSOSolvers.jl`](https://gi
 
 Now, it is possible to reuse the memory allocated for the first solve for another round:
 ```@example ex1
-# NLPModels.reset!(nlp) would also reset the evaluation counters of the model
+# NLPModels.reset!(nlp) # would also reset the evaluation counters of the model
 SolverCore.reset!(solver)
 new_x0 = [1.4; 5.0] # another initial guess
 solve!(solver, nlp, stats, x = new_x0)  # new solve with existing solver object
@@ -68,15 +65,14 @@ solve!(solver, nlp, stats, x = new_x0)  # new solve with existing solver object
 It is also possible to reuse the allocated memory to solve another problem with the same number of variables and constraints:
 ```@example ex1
 f2(x) = x[2]^2 + exp(x[1]^2)
-x0 = ones(Float64, 2)
-nlp = ADNLPModel(f2, x0) # or use JuMP
+nlp = ADNLPModel(f2, ones(2)) # or use JuMP
 SolverCore.reset!(solver, nlp)
 solve!(solver, nlp, stats)
 ```
 
 ## Allocation-free solvers
 
-In order to measure, the amount of allocations made by the solvers the package [`NLPModelsTest.jl`](https://github.com/JuliaSmoothOptimizers/NLPModelsTest.jl) defines a set of test problems that are allocation-free.
+In order to measure, the amount of memory allocated by the solvers, the package [`NLPModelsTest.jl`](https://github.com/JuliaSmoothOptimizers/NLPModelsTest.jl) defines a set of test problems that are allocation free.
 ```@example ex1
 using NLPModelsTest, SolverCore, JSOSolvers
 nlp = BROWNDEN(Float64)

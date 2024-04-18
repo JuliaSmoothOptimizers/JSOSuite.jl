@@ -13,6 +13,7 @@ Using `JSOSuite`’s `minimize` function, the problem can be solved as follows
 using JSOSuite
 f(x) = x[2]^2 * exp(x[1]^2)
 stats = minimize(f, ones(2))
+;
 ```
 Using L-BFGS, the problem is locally solved.
 
@@ -43,7 +44,7 @@ f(x) = x[2]^2 * exp(x[1]^2)
 nlp = ADNLPModel(f, ones(2)) # or use JuMP
 solver = JSOSolvers.LBFGSSolver(nlp)
 stats = SolverCore.GenericExecutionStats(nlp)
-solve!(solver, nlp, stats, x = x0)
+solve!(solver, nlp, stats, x = ones(2))
 ```
 This deserves more explanations.
 The name of the solver structure and the corresponding package can be accessed via the DataFrame `JSOSuite.optimizers`.

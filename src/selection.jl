@@ -86,7 +86,7 @@ function select_optimizers(
     end
     if has_bounds(nlp)
       (verbose ≥ 1) && println("- bounds: ✓;")
-      select = select[select.inequalities, :]
+      select = select[select.bounds, :]
     end
     if !linearly_constrained(nlp)
       (verbose ≥ 1) && println("- nonlinear constraints: ✓;")

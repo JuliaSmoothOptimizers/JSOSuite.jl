@@ -28,23 +28,19 @@ All the remaining keyword arguments are passed to the function `SolverBenchmark.
 # Examples
 
 ```jldoctest; output = false
-using ADNLPModels, JSOSuite, SolverBenchmark
+using ADNLPModels, JSOSuite, Logging, SolverBenchmark
 nlps = (
   ADNLPModel(x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
   ADNLPModel(x -> 4 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2, [-1.2; 1.0]),
 )
 names = ["LBFGS", "TRON"] # see `JSOSuite.optimizers.name` for the complete list
-stats = bmark_solvers(nlps, names, atol = 1e-3, verbose = 0, colstats = [:name, :nvar, :ncon, :status])
+stats = with_logger(NullLogger()) do
+  bmark_solvers(nlps, names, atol = 1e-3, colstats = [:name, :nvar, :ncon, :status])
+end
 keys(stats)
 
 # output
 
-[ Info:            Name    nvar    ncon           status
-[ Info:         Generic       2       0      first_order
-[ Info:         Generic       2       0      first_order
-[ Info:            Name    nvar    ncon           status
-[ Info:         Generic       2       0      first_order
-[ Info:         Generic       2       0      first_order
 KeySet for a Dict{Symbol, DataFrames.DataFrame} with 2 entries. Keys:
   :TRON
   :LBFGS
@@ -63,20 +59,13 @@ names = ["LBFGS", "TRON"] # see `JSOSuite.optimizers.name` for the complete list
 other_solvers = Dict{Symbol, Function}(
   :test => nlp -> lbfgs(nlp; mem = 2, atol = 1e-3, verbose = 0),
 )
-stats = bmark_solvers(nlps, names, other_solvers, atol = 1e-3, verbose = 0, colstats = [:name, :nvar, :ncon, :status])
+stats = with_logger(NullLogger()) do
+  bmark_solvers(nlps, names, other_solvers, atol = 1e-3, colstats = [:name, :nvar, :ncon, :status])
+end
 keys(stats)
 
 # output
 
-[ Info:            Name    nvar    ncon           status
-[ Info:         Generic       2       0      first_order
-[ Info:         Generic       2       0      first_order
-[ Info:            Name    nvar    ncon           status
-[ Info:         Generic       2       0      first_order
-[ Info:         Generic       2       0      first_order
-[ Info:            Name    nvar    ncon           status
-[ Info:         Generic       2       0      first_order
-[ Info:         Generic       2       0      first_order
 KeySet for a Dict{Symbol, DataFrames.DataFrame} with 3 entries. Keys:
   :test
   :TRON

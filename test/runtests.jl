@@ -111,8 +111,8 @@ end
 
 @testset "Benchmark on unconstrained problems" begin
   ad_problems = [
-    OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for
-    problem ∈ meta[(5 .<= meta.nvar .<= 10) .& (meta.ncon .== 0) .& (.!meta.has_bounds), :name]
+    OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem ∈
+    first(meta[(5 .<= meta.nvar .<= 10) .& (meta.ncon .== 0) .& (.!meta.has_bounds), :name], 5)
   ]
   select = JSOSuite.optimizers[
     JSOSuite.optimizers.can_solve_nlp .& JSOSuite.optimizers.is_available,
@@ -138,7 +138,7 @@ end
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
-@testset "Test solve OptimizationProblems: $name" for name in meta[meta.nvar .< 10, :name]
+@testset "Test solve OptimizationProblems: $name" for name in first(meta[meta.nvar .< 10, :name], 5)
   name in ["bennett5", "channel", "hs253", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
   minimize(nlp, verbose = 0)

@@ -4,7 +4,11 @@ function minimize(
   highest_derivative_available::Integer = 2,
   kwargs...,
 )
-  select = select_optimizers(nlp, verbose, highest_derivative_available)
+  select = select_optimizers(
+    nlp;
+    verbose = verbose,
+    highest_derivative_available = highest_derivative_available,
+  )
   (verbose ≥ 1) && println("Solve using $(first(select).name):")
   solver = first(select)
   return minimize(Val(Symbol(solver.name)), nlp; verbose = verbose, kwargs...)
@@ -16,7 +20,11 @@ function minimize(
   highest_derivative_available::Integer = 2,
   kwargs...,
 )
-  select = select_optimizers(nlp, verbose, highest_derivative_available)
+  select = select_optimizers(
+    nlp;
+    verbose = verbose,
+    highest_derivative_available = highest_derivative_available,
+  )
   nls_select = select[select.specialized_nls, :]
   solver = if !isempty(nls_select)
     first(nls_select)

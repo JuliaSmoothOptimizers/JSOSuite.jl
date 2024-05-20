@@ -57,7 +57,7 @@ There are 7 optimizers available:
 ```
 """
 function select_optimizers(
-  nlp::AbstractNLPModel{T, S},
+  nlp::AbstractNLPModel{T, S};
   verbose = 1,
   highest_derivative_available::Integer = 2,
 ) where {T, S}

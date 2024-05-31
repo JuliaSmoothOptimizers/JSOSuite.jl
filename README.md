@@ -1,51 +1,36 @@
-# JSOSuite.jl
+# JSOSuite
 
-[![docs-stable][docs-stable-img]][docs-stable-url] [![docs-dev][docs-dev-img]][docs-dev-url] [![build-ci][build-ci-img]][build-ci-url] [![codecov][codecov-img]][codecov-url] [![release][release-img]][release-url]
-
-[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://JuliaSmoothOptimizers.github.io/JSOSuite.jl/stable
-[docs-dev-img]: https://img.shields.io/badge/docs-dev-purple.svg
-[docs-dev-url]: https://JuliaSmoothOptimizers.github.io/JSOSuite.jl/dev
-[build-ci-img]: https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/workflows/CI/badge.svg?branch=main
-[build-ci-url]: https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions
-[codecov-img]: https://codecov.io/gh/JuliaSmoothOptimizers/JSOSuite.jl/branch/main/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/JuliaSmoothOptimizers/JSOSuite.jl
-[release-img]: https://img.shields.io/github/v/release/JuliaSmoothOptimizers/JSOSuite.jl.svg?style=flat-square
-[release-url]: https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/releases
-
-One stop solutions for all things optimization.
+[![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaSmoothOptimizers.github.io/JSOSuite.jl/stable)
+[![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaSmoothOptimizers.github.io/JSOSuite.jl/dev)
+[![Build Status](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/workflows/Test/badge.svg)](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions)
+[![Test workflow status](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions/workflows/Test.yml/badge.svg?branch=main)](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions/workflows/Test.yml?query=branch%3Amain)
+[![Lint workflow Status](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions/workflows/Lint.yml/badge.svg?branch=main)](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions/workflows/Lint.yml?query=branch%3Amain)
+[![Docs workflow Status](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/actions/workflows/Docs.yml?query=branch%3Amain)
+[![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers/JSOSuite.jl.svg)](https://cirrus-ci.com/github/JuliaSmoothOptimizers/JSOSuite.jl)
+[![Coverage](https://codecov.io/gh/JuliaSmoothOptimizers/JSOSuite.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaSmoothOptimizers/JSOSuite.jl)
+[![DOI](https://zenodo.org/badge/DOI/FIXME)](https://doi.org/FIXME)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+[![All Contributors](https://img.shields.io/github/all-contributors/JuliaSmoothOptimizers/JSOSuite.jl?labelColor=5e1ec7&color=c0ffee&style=flat-square))](#contributors)
 
 ## How to Cite
 
-If you use JSOSuite.jl in your work, please cite using the format given in [CITATION.cff](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/blob/main/CITATION.cff).
+If you use JSOSuite.jl in your work, please cite using the reference given in [CITATION.cff](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/blob/main/CITATION.cff).
 
-## Installation
+## Contributing
 
-```
-] add JSOSuite
-```
+If you want to make contributions of any kind, please first that a look into our [contributing guide directly on GitHub](docs/src/90-contributing.md) or the [contributing page on the website](https://JuliaSmoothOptimizers.github.io/JSOSuite.jl/dev/contributing/).
 
-## Examples
+### Contributors
 
-```julia
-using JSOSuite
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-# Rosenbrock
-x0 = [-1.2; 1.0]
-f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
-stats = minimize(f, x0)
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-# Unconstrained problem in Float32
-stats = minimize(f, Float32.(x0))
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
-# Constrained problem
-c = x -> [x[1] + x[2] - 1]
-stats = minimize(f, x0, c, [0.0], [0.0])
-```
+---
 
-# Bug reports and discussions
-
-If you think you found a bug, feel free to open an [issue](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/issues).
-Focused suggestions and requests can also be opened as issues. Before opening a pull request, start an issue or a discussion on the topic, please.
-
-If you want to ask a question not suited for a bug report, feel free to start a discussion [here](https://github.com/JuliaSmoothOptimizers/Organization/discussions). This forum is for general discussion about this repository and the [JuliaSmoothOptimizers](https://github.com/JuliaSmoothOptimizers), so questions about any of our packages are welcome.
+This repo was created with the [COPIERTemplate.jl](https://github.com/abelsiqueira/COPIERTemplate.jl) package.

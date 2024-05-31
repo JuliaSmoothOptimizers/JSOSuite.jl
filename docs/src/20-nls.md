@@ -16,19 +16,21 @@ Although the problem can be solved using only  ``f``, knowing  ``F`` independent
 ## Model and solve NLS
 
 In this tutorial, we consider the following equality-constrained problem
+
 ```math
 \begin{aligned}
 \min \quad & f(x):=\tfrac{1}{2}(10 * (x[2] - x[1]^2))^2 + \tfrac{1}{2}(x[1] - 1)^2 \\
 & 1 \leq x[1] * x[2] \leq 1,
 \end{aligned}
 ```
+
 where ``1 \leq x[1] x[2] \leq 1`` implies that ``x[1] x[2] = 1``.
 
 In the rest of this tutorial, we will see two ways to model this problem exploiting the knowledge of the structure of the problem.
 
 ### NLS using automatic differentiation
 
-Using the package [ADNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl]), the problem can be model as an `ADNLSModel` which will use automatic-differentiation to compute the derivatives.
+Using the package [ADNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl), the problem can be model as an `ADNLSModel` which will use automatic-differentiation to compute the derivatives.
 
 ```@example ex1
 using ADNLPModels, JSOSuite
@@ -39,6 +41,7 @@ c = x -> [x[1] * x[2]]
 l = [1.]
 nls = ADNLSModel(F, x0, nres, c, l, l, name="AD-Rosenbrock")
 ```
+
 Note that the length of the residual function is given explictly to avoid any superfluous evaluation of this (potentially very large) function.
 
 ```@example ex1
@@ -81,7 +84,7 @@ stats = minimize(nls)
 
 ## Find a feasible point of an optimization problem or solve a nonlinear system
 
-We show here how to find the feasible point of a given model. 
+We show here how to find the feasible point of a given model.
 
 ```math
 \begin{aligned}

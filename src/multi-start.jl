@@ -38,7 +38,7 @@ function multi_start(
   best_x = get_x0(nlp)
   dom = Vector{RealInterval{Float64}}(undef, get_nvar(nlp))
   new_x0, best_x = S(undef, get_nvar(nlp)), S(undef, get_nvar(nlp))
-  for i = 1:get_nvar(nlp)
+  for i in 1:get_nvar(nlp)
     dom[i] = RealInterval(nlp.meta.lvar[i], nlp.meta.uvar[i])
   end
   new_x0 .= get_x0(nlp)
@@ -81,7 +81,7 @@ function multi_start(
     kwargs...,
   )
 
-  for i = 1:N
+  for i in 1:N
     get_next_x0!(Val(strategy), new_x0, i, dom, best_x)
     el_time = time() - start_time
     best_obj = run_solver!(
@@ -111,7 +111,7 @@ function run_solver!(
   kwargs...,
 )
   for solver_name in solvers
-    stats = minimize(solver_name, nlp, x = new_x0, verbose = solver_verbose; kwargs...)
+    stats = minimize(solver_name, nlp; x = new_x0, verbose = solver_verbose, kwargs...)
     if (stats.status == :first_order) && (stats.objective < best_obj)
       best_obj = stats.objective
       best_x .= stats.solution
@@ -132,7 +132,7 @@ function run_solver!(
   max_time;
   kwargs...,
 )
-  stats = minimize(solver_name, nlp, x = new_x0, verbose = solver_verbose; kwargs...)
+  stats = minimize(solver_name, nlp; x = new_x0, verbose = solver_verbose, kwargs...)
   if (stats.status == :first_order) && (stats.objective < best_obj)
     best_obj = stats.objective
     best_x .= stats.solution
@@ -147,7 +147,7 @@ function Random.rand!(
   dom::Vector{RealInterval{T}},
 ) where {T}
   # check that length(next_x0) == length(dom)
-  for i = 1:length(next_x0)
+  for i in 1:length(next_x0)
     next_x0[i] = rand(rng, dom[i])
   end
   return next_x0

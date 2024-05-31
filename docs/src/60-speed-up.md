@@ -5,6 +5,7 @@ The following contains a list of tips to speed up the solver selection and usage
 ## Derivatives
 
 The optimizers available in `JSOSuite.jl` are all using first and sometines second-order derivatives. There are mainly three categories:
+
 - 1st order methods use only gradient information;
 - 1st order quasi-Newton methods require only gradient information, and uses it to build an approximation of the Hessian;
 - 2nd order methods: Those are using gradients and Hessian information.
@@ -24,10 +25,10 @@ This classification is straightforwardly extended to handling constraints with t
 
 ## Find a better initial guess
 
-The majority of derivative-based optimizers are local methods whose performance are dependent of the initial guess. 
+The majority of derivative-based optimizers are local methods whose performance are dependent of the initial guess.
 This usually relies on specific knowledge of the problem.
 
-The function [`feasible_point`](@ref) computes a point satisfying the constraints of the problem that can be used as an initial guess. 
+The function [`feasible_point`](@ref) computes a point satisfying the constraints of the problem that can be used as an initial guess.
 An alternative is to solve a simpler version of the problem and reuse the solution as an initial guess for the more complex one.
 
 ## Use the structure of the problem
@@ -45,20 +46,20 @@ Note that all optimizers presented here have been carefully optimized. All have 
 
 ### Unconstrained
 
-##### LBFGS (1st order)
+#### LBFGS (1st order)
 
 - `mem::Int = 5`: memory parameter of the `lbfgs` algorithm;
 - `τ₁::T = T(0.9999)`: slope factor in the Wolfe condition when performing the line search;
 - `bk_max:: Int = 25`: maximum number of backtracks when performing the line search.
 
-##### R2 (1st order)
+#### R2 (1st order)
 
 - `η1 = eps(T)^(1/4)`, `η2 = T(0.95)`: step acceptance parameters;
 - `γ1 = T(1/2)`, `γ2 = 1/γ1`: regularization update parameters;
 - `σmin = eps(T)`: step parameter for R2 algorithm;
 - `β = T(0) ∈ [0,1]` is the constant in the momentum term. If `β == 0`, R2 does not use momentum.
 
-##### TRUNK (matrix-free)
+#### TRUNK (matrix-free)
 
 - `bk_max::Int = 10`: algorithm parameter;
 - `monotone::Bool = true`: algorithm parameter;
@@ -66,7 +67,7 @@ Note that all optimizers presented here have been carefully optimized. All have 
 
 ### Bound-constrained (matrix-free)
 
-##### TRON
+#### TRON
 
 - `μ₀::T = T(1e-2)`: algorithm parameter in (0, 0.5);
 - `μ₁::T = one(T)`: algorithm parameter in (0, +∞);
@@ -76,27 +77,27 @@ Note that all optimizers presented here have been carefully optimized. All have 
 
 ### Constrained
 
-##### RipQP (quadratic with linear constraints)
+#### RipQP (quadratic with linear constraints)
 
 See [RipQP.jl tutorial](https://jso.dev/tutorials/introduction-to-ripqp/) and [RipQP.jl API](https://jso.dev/RipQP.jl/stable/API/).
 
-##### CaNNOLeS (NLS with nonlinear equality constraints)
+#### CaNNOLeS (NLS with nonlinear equality constraints)
 
 - `linsolve::Symbol = :ma57`: solver to compute LDLt factorization. Available methods are: `:ma57`, `:ldlfactorizations`;
 - `method::Symbol = :Newton`: available methods `:Newton, :LM, :Newton_noFHess`, and `:Newton_vanishing`;
 
 See [CaNNOLeS.jl tutorial](https://jso.dev/CaNNOLeS.jl/dev/tutorial/).
 
-##### DCISolver (nonlinear equality constraints)
+#### DCISolver (nonlinear equality constraints)
 
 - `linear_solver = :ldlfact`: Solver for the factorization. options: `:ma57` if `HSL.jl` available.
 
 See the [`fine-tuneDCI tutorial`](https://jso.dev/DCISolver.jl/dev/fine-tuneDCI/).
 
-##### FletcherPenaltySolver (nonlinear equality constraints)
+#### FletcherPenaltySolver (nonlinear equality constraints)
 
 See the [`fine-tuneFPS tutorial`](https://jso.dev/FletcherPenaltySolver.jl/dev/fine-tuneFPS/).
 
-##### Percival
+#### Percival
 
 - `μ::Real = T(10.0)`: Starting value of the penalty parameter.

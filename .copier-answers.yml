@@ -1,0 +1,11 @@
+# Changes here will be overwritten by Copier
+AnswerStrategy: recommended
+AuthorEmail: tangi.migot@gmail.com
+AuthorName: Tangi Migot
+JuliaMinVersion: '1.6'
+License: MPL-2.0
+PackageName: JSOSuite
+PackageOwner: JuliaSmoothOptimizers
+PackageUUID: ed6ae0be-a024-11e9-2788-05dbf8cd15d9
+_commit: v0.5.3
+_src_path: https://github.com/abelsiqueira/COPIERTemplate.jl

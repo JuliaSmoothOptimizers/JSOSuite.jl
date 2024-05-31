@@ -33,7 +33,7 @@ using SolverBenchmark
 meta = OptimizationProblems.meta
 
 function test_in_place_solve(nlp, solver_name)
-  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]
+  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver.==solver_name, :name_pkg][1]
   pkg_name = replace(pkg_name, ".jl" => "")
   solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
   stats = solve!(solver, nlp)
@@ -46,7 +46,7 @@ end
 
 function test_in_place_solve(model::JuMP.Model, solver_name)
   nlp = MathOptNLPModel(model)
-  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]
+  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver.==solver_name, :name_pkg][1]
   pkg_name = replace(pkg_name, ".jl" => "")
   solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
   stats = solve!(solver, model)
@@ -64,16 +64,16 @@ end
     solver_name == :DCIWorkspace && continue
     solver_name == :RipQPSolver && continue
     is_available =
-      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :is_available]
+      JSOSuite.optimizers[JSOSuite.optimizers.name_solver.==solver_name, :is_available]
     can_solve_nlp =
-      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :can_solve_nlp]
+      JSOSuite.optimizers[JSOSuite.optimizers.name_solver.==solver_name, :can_solve_nlp]
     spec_nls =
-      JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :specialized_nls]
+      JSOSuite.optimizers[JSOSuite.optimizers.name_solver.==solver_name, :specialized_nls]
     if is_available[1] && can_solve_nlp[1]
       test_in_place_solve(nlp, solver_name)
       test_in_place_solve(model, solver_name)
     elseif is_available[1] && spec_nls[1] # NLS
-      nls = OptimizationProblems.ADNLPProblems.arglina(use_nls = true)
+      nls = OptimizationProblems.ADNLPProblems.arglina(; use_nls=true)
       test_in_place_solve(nls, solver_name)
     elseif is_available[1] # RipQP
       nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
@@ -85,15 +85,15 @@ end
 include("qp_tests.jl")
 
 @testset "Test `Float32`" begin
-  nlp = OptimizationProblems.ADNLPProblems.genrose(type = Float32)
+  nlp = OptimizationProblems.ADNLPProblems.genrose(; type=Float32)
   atol, rtol = √eps(Float32), √eps(Float32)
   for solver in eachrow(JSOSuite.select_optimizers(nlp))
     if solver.nonlinear_obj
-      minimize(solver.name, nlp, verbose = 0, atol = atol, rtol = rtol)
+      minimize(solver.name, nlp; verbose=0, atol=atol, rtol=rtol)
       @test true
     else
       nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
-      minimize(solver.name, nlp_qm, verbose = 0, atol = atol, rtol = rtol)
+      minimize(solver.name, nlp_qm; verbose=0, atol=atol, rtol=rtol)
       @test true
     end
   end
@@ -104,47 +104,47 @@ end
   jum = MathOptNLPModel(model)
   @test JSOSuite.select_optimizers(model) == JSOSuite.select_optimizers(jum)
   for solver in eachrow(JSOSuite.select_optimizers(model))
-    minimize(solver.name, model, verbose = 0)
+    minimize(solver.name, model; verbose=0)
     @test true
   end
 end
 
 @testset "Benchmark on unconstrained problems" begin
   ad_problems = [
-    OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem ∈
-    first(meta[(5 .<= meta.nvar .<= 10) .& (meta.ncon .== 0) .& (.!meta.has_bounds), :name], 5)
+    OptimizationProblems.ADNLPProblems.eval(Meta.parse(problem))() for problem in
+    first(meta[(5 .<= meta.nvar .<= 10).&(meta.ncon.==0).&(.!meta.has_bounds), :name], 5)
   ]
   select = JSOSuite.optimizers[
-    JSOSuite.optimizers.can_solve_nlp .& JSOSuite.optimizers.is_available,
+    JSOSuite.optimizers.can_solve_nlp.&JSOSuite.optimizers.is_available,
     :name,
   ]
-  stats = bmark_solvers(ad_problems, select, atol = 1e-3, max_time = 10.0, verbose = 0)
+  stats = bmark_solvers(ad_problems, select; atol=1e-3, max_time=10.0, verbose=0)
   @test true # just test that it runs
 end
 
 @testset "Basic solve tests" begin
   f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
-  stats = minimize(f, [-1.2; 1.0], verbose = 0)
+  stats = minimize(f, [-1.2; 1.0]; verbose=0)
   @test stats.status_reliable && (stats.status == :first_order)
 
-  stats = minimize("DCISolver", f, [-1.2; 1.0], verbose = 0)
+  stats = minimize("DCISolver", f, [-1.2; 1.0]; verbose=0)
   @test stats.status_reliable && (stats.status == :first_order)
 
   F = x -> [10 * (x[2] - x[1]^2); x[1] - 1]
-  stats = minimize(F, [-1.2; 1.0], 2, verbose = 0)
+  stats = minimize(F, [-1.2; 1.0], 2; verbose=0)
   @test stats.status_reliable && (stats.status == :first_order)
 
-  stats = minimize("DCISolver", F, [-1.2; 1.0], 2, verbose = 0)
+  stats = minimize("DCISolver", F, [-1.2; 1.0], 2; verbose=0)
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
-@testset "Test solve OptimizationProblems: $name" for name in first(meta[meta.nvar .< 10, :name], 5)
+@testset "Test solve OptimizationProblems: $name" for name in first(meta[meta.nvar.<10, :name], 5)
   name in ["bennett5", "channel", "hs253", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
-  minimize(nlp, verbose = 0)
+  minimize(nlp; verbose=0)
   @test true
   model = OptimizationProblems.PureJuMP.eval(Meta.parse(name))()
-  minimize(model, verbose = 0)
+  minimize(model; verbose=0)
   @test true
 end
 
@@ -164,24 +164,24 @@ for solver in eachrow(JSOSuite.optimizers)
       if solver.nonlinear_obj
         minimize(
           solver.name,
-          nlp,
-          atol = 1e-5,
-          rtol = 1e-5,
-          max_time = 12.0,
-          max_eval = 10,
-          verbose = 0,
+          nlp;
+          atol=1e-5,
+          rtol=1e-5,
+          max_time=12.0,
+          max_eval=10,
+          verbose=0,
         )
         @test true
       else
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
         minimize(
           solver.name,
-          nlp_qm,
-          atol = 1e-5,
-          rtol = 1e-5,
-          max_time = 12.0,
-          max_eval = 10,
-          verbose = 0,
+          nlp_qm;
+          atol=1e-5,
+          rtol=1e-5,
+          max_time=12.0,
+          max_eval=10,
+          verbose=0,
         )
         @test true
       end
@@ -191,7 +191,7 @@ end
 
 @testset "Test kwargs in optimizers on $model" for model in (:arglina, :hs6)
   nlp = OptimizationProblems.ADNLPProblems.eval(model)()
-  nls = OptimizationProblems.ADNLPProblems.eval(model)(use_nls = true)
+  nls = OptimizationProblems.ADNLPProblems.eval(model)(; use_nls=true)
   callback = (args...) -> nothing
   for solver in eachrow(JSOSuite.optimizers)
     @testset "Test options in $(solver.name)" begin
@@ -201,43 +201,43 @@ end
       if solver.can_solve_nlp
         minimize(
           solver.name,
-          nlp,
-          atol = 1e-5,
-          rtol = 1e-5,
-          max_time = 12.0,
-          max_iter = 100,
-          max_eval = 10,
-          callback = callback,
-          verbose = 0,
+          nlp;
+          atol=1e-5,
+          rtol=1e-5,
+          max_time=12.0,
+          max_iter=100,
+          max_eval=10,
+          callback=callback,
+          verbose=0,
         )
         @test true
       elseif solver.specialized_nls
         minimize(
           solver.name,
-          nls,
-          atol = 1e-5,
-          rtol = 1e-5,
-          Fatol = 1e-5,
-          Frtol = 1e-5,
-          max_time = 12.0,
-          max_iter = 100,
-          max_eval = 10,
-          callback = callback,
-          verbose = 0,
+          nls;
+          atol=1e-5,
+          rtol=1e-5,
+          Fatol=1e-5,
+          Frtol=1e-5,
+          max_time=12.0,
+          max_iter=100,
+          max_eval=10,
+          callback=callback,
+          verbose=0,
         )
         @test true
       else # RipQP
         nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
         minimize(
           solver.name,
-          nlp_qm,
-          atol = 1e-5,
-          rtol = 1e-5,
-          max_time = 12.0,
-          max_iter = 100,
-          max_eval = 10,
-          callback = callback,
-          verbose = 0,
+          nlp_qm;
+          atol=1e-5,
+          rtol=1e-5,
+          max_time=12.0,
+          max_iter=100,
+          max_eval=10,
+          callback=callback,
+          verbose=0,
         )
         @test true
       end

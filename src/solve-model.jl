@@ -182,7 +182,7 @@ function QuadraticModel(
   x0 = fill!(S(undef, length(c)), zero(T)),
   name::String = "Generic",
 ) where {T, S <: AbstractVector{T}}
-  return QuadraticModel(c, H, lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name)
+  return QuadraticModel(c, H; lvar = lvar, uvar = uvar, c0 = c0, x0 = x0, name = name)
 end
 
 function QuadraticModel(
@@ -195,7 +195,7 @@ function QuadraticModel(
   x0 = fill!(S(undef, length(c)), zero(T)),
   name::String = "Generic",
 ) where {T, S <: AbstractVector{T}}
-  return QuadraticModel(c, H, A = A, lcon = lcon, ucon = ucon, c0 = c0, x0 = x0, name = name)
+  return QuadraticModel(c, H; A = A, lcon = lcon, ucon = ucon, c0 = c0, x0 = x0, name = name)
 end
 
 function QuadraticModel(
@@ -212,7 +212,7 @@ function QuadraticModel(
 ) where {T, S <: AbstractVector{T}}
   return QuadraticModel(
     c,
-    H,
+    H;
     A = A,
     lcon = lcon,
     ucon = ucon,

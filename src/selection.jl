@@ -57,7 +57,7 @@ There are 7 optimizers available:
 ```
 """
 function select_optimizers(
-  nlp::AbstractNLPModel{T, S},
+  nlp::AbstractNLPModel{T, S};
   verbose = 1,
   highest_derivative_available::Integer = 2,
 ) where {T, S}
@@ -151,9 +151,9 @@ function select_optimizers(
   return select
 end
 
-function select_optimizers(model::JuMP.Model, args...; kwargs...)
+function select_optimizers(model::JuMP.Model; kwargs...)
   nlp = MathOptNLPModel(model)
-  return select_optimizers(nlp, args...; kwargs...)
+  return select_optimizers(nlp; kwargs...)
 end
 
 """Checker whether optimizers are Generic only"""

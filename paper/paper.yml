@@ -1,0 +1,24 @@
+title: "JSOSuite.jl: Solving continuous optimization problems with JuliaSmoothOptimizers"
+keywords:
+  - Julia
+  - Optimization
+  - Nonlinear optimization
+  - Nonlinear programming
+  - Automatic differentiation
+authors:
+  - name: Tangi Migot
+    orcid: 0000-0001-7729-2513
+    affiliation: 1
+  - name: Dominique Orban
+    orcid: 0000-0002-8017-7687
+    affiliation: 1
+  - name: Abel S. Siqueira
+    orcid: 0000-0003-4451-281X
+    affiliation: 2
+affiliations:
+  - name: GERAD and Department of Mathematics and Industrial Engineering, Polytechnique Montréal, Montr\'eal (Qc), Canada, H3T 2A7
+    index: 1
+  - name: Netherlands eScience Center, Amsterdam, Netherlands
+    index: 2
+date: 30 May 2024
+bibliography: ref.bib

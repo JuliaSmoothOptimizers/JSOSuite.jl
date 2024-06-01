@@ -1,0 +1,134 @@
+
+% JuliaCon proceedings template
+\documentclass{juliacon}
+\setcounter{page}{1}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\input{header}
+
+\maketitle
+
+\begin{abstract}
+
+\texttt{JSOSuite.jl} is a new Julia package offering a user-friendly interface for continuous nonlinear optimization.
+The solvers available cover unconstrained to generally-constrained, and least-squares problems.
+This new package caters to practitioners as it does not require an understanding of the inner mechanism of solvers, but instead performs a cursory analysis of the problem to match it with an appropriate solver.
+
+\end{abstract}
+
+\section{Introduction}
+
+\texttt{JSOSuite.jl} is a Julia \cite{bezanson2017julia} package to find a local solution of continuous nonlinear optimization problems of the form
+\begin{equation}\label{eq:nlp}
+    \underset{x \in \mathbb{R}^{n}}{\text{minimize}} \ f(x) \ \text{subject to} \ c_L \leq c(x)  \leq c_U, \ \ell \leq x \leq u,
+\end{equation}
+where \(f:\mathbb{R}^n\to\mathbb{R}\) and  \(c:\mathbb{R}^n\to\mathbb{R}^m\) are continuously differentiable, with \(c_L \in \left(\mathbb{R} \cup \{-\infty\} \right)^{m}\),  \(c_U \in \left(\mathbb{R} \cup \{+\infty\} \right)^{m}\),  \(\ell \in \left(\mathbb{R} \cup \{-\infty\} \right)^n\), and  \(u \in \left(\mathbb{R} \cup \{+\infty\} \right)^n\).
+Bounds on the variables appear separately from other types of constraints because numerical methods often treat them differently.
+%Equality constraints are modeled by setting components  \(-\infty < c_{L,i}=c_{U,i} < +\infty\) in~\eqref{eq:nlp}.
+
+\section{Optimization solvers and JuliaSmoothOptimizers}
+
+\texttt{JSOSuite.jl} is part of the JuliaSmoothOptimizers (JSO) ecosystem, % \cite{jso}.
+an academic organization that offers a collection of Julia packages for nonlinear optimization software development, testing, and benchmarking.
+
+
+JSO provides a general API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions, evaluate their derivatives, and provide essentially any information that a solver might request from a model.
+%
+\texttt{NLPModels.jl} \cite{orban-siqueira-nlpmodels-2020} is the core package that defines the abstract type \texttt{AbstractNLPModel} and introduces the API, including in-place and out-of-place evaluation of the objective gradient, sparse Jacobian and Hessian matrices as well as operators %\cite{orban-siqueira-linearoperators-2020}
+for matrix-free implementations.
+%
+The user can hand-code derivatives %\cite{Siqueira_ManualNLPModels_NLPModels_where_2022}
+, use automatic differentiation \cite{orban-siqueira-nlpmodels-2021}, or use JSO interfaces to optimization modeling languages such as AMPL \cite{fourer2003ampl}, CUTEst \cite{cutest}, or JuMP \cite{jump}.
+% \cite{orban-siqueira-amplnlreader-2020,orban-siqueira-cutest-2020,montoison-orban-siquiera-nlpmodelsjump-2020}
+%
+Hence, solvers can be designed to rely on the API's behavior independently of the problem's origin. 
+
+JSO defines a minimal set of rules for a solver to be compliant:
+(i) The input is an instance of \texttt{AbstractNLPModel};
+(ii) the output is a \texttt{GenericExecutionStats}, as implemented in \texttt{SolverCore.jl} \cite{orban-siqueira-solvercore-2021}, that contains the solution, optimal value, elapsed time, number of iterations, primal and dual feasibility, etc.
+%
+There are a growing number of JSO-compliant solvers accessible from registered Julia packages for unconstrained and bound-constrained problems \cite{Dussault_AdaptiveRegularization_jl_A_unified,orban-siqueira-jsosolvers-2021}, equality-constrained problems \cite{migot2022dcisolver,Migot_FletcherPenaltySolver_jl_2022,Orban_A_regularization_method_2020}, and problems of the form \eqref{eq:nlp} in \cite{percival-jl,shin2023accelerating}.
+Most of those solvers also have variants for nonlinear least squares.
+A solver for convex quadratic programs is in \texttt{RipQP.jl} \cite{orban-leconte-ripqp-2020}.
+The solvers mentioned are pure Julia implementations, but there also exist thin wrappers to well-established solvers such as \texttt{Artelys Knitro} \cite{byrd2006k} and \texttt{Ipopt} \cite{wachter2006implementation}.
+%  \texttt{Algencan} \cite{Andreani2008}
+% \cite{NLPModelsAlgencan,orban-siqueira-nlpmodelsknitro-2020,orban-siqueira-nlpmodelsipopt-2020}
+
+The aim of \texttt{JSOSuite.jl} is to provide a unique interface to navigate among the available solvers and select the best one without knowing all the JSO-compliant solvers.
+%
+There is a strong emphasis on justifying the choice of solvers, as we believe it helps the overall engineering process from an application to modeling and solving a problem.
+%
+Connecting modeling tools and solvers into a unique entry point simplify greatly prototyping and choosing the right solver.
+
+\section{Functionalities}
+
+The main function exported by \texttt{JSOSuite.jl} is \texttt{minimize}, which, given an instance of \texttt{AbstractNLPModel}, selects an appropriate solver and locally minimizes the problem, e.g. Code~\ref{code:minimze}.
+
+\begin{lstlisting}[
+    language = Julia, 
+    numbers=left,
+    caption = {\texttt{minimize} takes any NLPModels compatible input.},
+    label = {code:minimze}
+]
+using OptimizationProblems, JSOSuite
+nlp = OptimizationProblems.PureJuMP.kirby2()
+stats = minimize(nlp)
+
+\end{lstlisting}
+
+Internally, a \texttt{DataFrame}, \texttt{JSOSuite.optimizers}, contains all the useful information regarding each solver such as its name, package of origin, highest derivative used, type of problems handled, whether it accepts arbitrary arithmetic types, etc.
+%
+The function \texttt{JSOSuite.select\_optimizers} analyzes an instance of \texttt{AbstractNLPModel} and returns a \texttt{DataFrame} with the available solvers, along with the information that guided their selection.
+
+The solvers are then selected by identifying the arithmetic type, type of constraints (unconstrained, bound-constrained, equality-constrained, inequalities, linear/nonlinear), objective function (linear, quadratic, linear/nonlinear least squares, nonlinear), and highest accessible derivative (1st order, 2nd order, or 2nd order matrix-free).
+Finally, the user can either choose to call \texttt{minimize} with the appropriate solver or use the corresponding package directly.
+%
+The current strategy is to select the most specialized solver. Further heuristics are being researched to improve the selection process when multiple solvers are available for a given problem.
+
+An important feature common to most JSO-compliant solvers is the possibility to run in-place solve, i.e., it is possible to pre-allocate the output and the storage used during the iterations to run the optimizer allocation free; see Code~\ref{code:solve!}.
+This is of great interest as it shows memory efficiency and allows re-solving problems without storage overhead.
+\begin{lstlisting}[
+    language = Julia, 
+    numbers=left,
+    caption={\texttt{JSOSuite.solve!} can be used to re-solve without additional memory allocation.},
+    label={code:solve!}
+]
+using NLPModelsTest, Percival, SolverCore
+nlp = NLPModelsTest.HS6()
+solver = PercivalSolver(nlp)
+stats = GenericExecutionStats(nlp)
+solve!(solver, nlp, stats)
+SolverCore.reset!(solver)
+@allocated solve!(solver, nlp, stats) # = 0
+\end{lstlisting}
+
+A list of parameters common to all JSO-compliant solvers is maintained, and can be passed to \texttt{minimize}.
+%
+%\texttt{JSOSuite.jl} also tests that pure Julia implementation run with arbitrary arithmetic. 
+%
+Combined with \texttt{SolverBenchmark.jl} \cite{orban-siqueira-solverbenchmark-2020}, it can seamlessly compare algorithms and generate data and performance profiles on collection of test problems.
+Additionally, the package implements strategies that are classical for continuous optimization solvers such as methods to find a feasible initial guess or run a multi-start strategy.
+
+\section{Concluding Remarks}
+
+Julia’s JIT compiler is ideal for efficient scientific computing and optimization software, making it a natural choice for developing new solvers.
+%
+The JuliaSmoothOptimizers organization provides a comprehensive set of tools for large-scale continuous optimization, designed for ease of use by practitioners, researchers, and developers.
+%
+Actively maintained and constantly evolving, these tools include links to cutting-edge external solvers and implementations of promising new ones. 
+%
+\texttt{JSOSuite.jl} builds on these features to offer a user-friendly interface that simplifies solver selection and problem-solving in research-level continuous optimization.
+
+\section*{Acknowledgement}
+
+Tangi Migot is supported by an NSERC Alliance grant 544900-19 in collaboration with Huawei-Canada and NSERC PGS-D,
+and Dominique Orban is partially supported by an NSERC Discovery Grant.
+
+\input{bib.tex}
+
+\end{document}
+
+% Inspired by the International Journal of Computer Applications template

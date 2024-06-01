@@ -1,0 +1,7 @@
+[deps]
+JSOSuite = "ed6ae0be-a024-11e9-2788-05dbf8cd15d9"
+NLPModels = "a4795742-8479-5a88-8948-cc11e1c8c1a6"
+NLPModelsTest = "7998695d-6960-4d3a-85c4-e1bceb8cd856"
+OptimizationProblems = "5049e819-d29b-5fba-b941-0eee7e64c1c6"
+Percival = "01435c0c-c90d-11e9-3788-63660f8fbccc"
+SolverCore = "ff4d7338-4cf1-434d-91df-b86cb86fb843"

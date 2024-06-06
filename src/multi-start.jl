@@ -33,12 +33,12 @@ function multi_start(
   verbose::Integer = 0,
   solver_verbose::Integer = 0,
   strategy::Symbol = :random,
-  kwargs...
+  kwargs...,
 ) where {T, S}
   best_x = get_x0(nlp)
   dom = Vector{RealInterval{Float64}}(undef, get_nvar(nlp))
   new_x0, best_x = S(undef, get_nvar(nlp)), S(undef, get_nvar(nlp))
-  for i=1:get_nvar(nlp)
+  for i = 1:get_nvar(nlp)
     dom[i] = RealInterval(nlp.meta.lvar[i], nlp.meta.uvar[i])
   end
   new_x0 .= get_x0(nlp)
@@ -69,17 +69,47 @@ function multi_start(
     [Int, T, T, T, Symbol],
     hdr_override = Dict(:f => "f(x)", :normx => "‖x‖", :normx0 => "‖x₀‖"),
   )
-  best_obj = run_solver!(best_x, best_obj, solvers, nlp, new_x0, verbose, solver_verbose, max_time; kwargs...)
+  best_obj = run_solver!(
+    best_x,
+    best_obj,
+    solvers,
+    nlp,
+    new_x0,
+    verbose,
+    solver_verbose,
+    max_time;
+    kwargs...,
+  )
 
-  for i=1:N
+  for i = 1:N
     get_next_x0!(Val(strategy), new_x0, i, dom, best_x)
     el_time = time() - start_time
-    best_obj = run_solver!(best_x, best_obj, solvers, nlp, new_x0, verbose, solver_verbose, max_time - el_time; kwargs...)
+    best_obj = run_solver!(
+      best_x,
+      best_obj,
+      solvers,
+      nlp,
+      new_x0,
+      verbose,
+      solver_verbose,
+      max_time - el_time;
+      kwargs...,
+    )
   end
   return best_x
 end
 
-function run_solver!(best_x, best_obj, solvers::Vector{String}, nlp, new_x0, verbose, solver_verbose, max_time; kwargs...)
+function run_solver!(
+  best_x,
+  best_obj,
+  solvers::Vector{String},
+  nlp,
+  new_x0,
+  verbose,
+  solver_verbose,
+  max_time;
+  kwargs...,
+)
   for solver_name in solvers
     stats = minimize(solver_name, nlp, x = new_x0, verbose = solver_verbose; kwargs...)
     if (stats.status == :first_order) && (stats.objective < best_obj)
@@ -91,7 +121,17 @@ function run_solver!(best_x, best_obj, solvers::Vector{String}, nlp, new_x0, ver
   return best_obj
 end
 
-function run_solver!(best_x, best_obj, solver_name::String, nlp, new_x0, verbose, solver_verbose, max_time; kwargs...)
+function run_solver!(
+  best_x,
+  best_obj,
+  solver_name::String,
+  nlp,
+  new_x0,
+  verbose,
+  solver_verbose,
+  max_time;
+  kwargs...,
+)
   stats = minimize(solver_name, nlp, x = new_x0, verbose = solver_verbose; kwargs...)
   if (stats.status == :first_order) && (stats.objective < best_obj)
     best_obj = stats.objective
@@ -101,9 +141,13 @@ function run_solver!(best_x, best_obj, solver_name::String, nlp, new_x0, verbose
   return best_obj
 end
 
-function Random.rand!(rng::AbstractRNG, next_x0::AbstractArray{T}, dom::Vector{RealInterval{T}}) where {T}
+function Random.rand!(
+  rng::AbstractRNG,
+  next_x0::AbstractArray{T},
+  dom::Vector{RealInterval{T}},
+) where {T}
   # check that length(next_x0) == length(dom)
-  for i=1:length(next_x0)
+  for i = 1:length(next_x0)
     next_x0[i] = rand(rng, dom[i])
   end
   return next_x0

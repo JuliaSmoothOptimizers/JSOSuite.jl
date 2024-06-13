@@ -24,7 +24,7 @@ SolverParameters = "d076d87d-d1f9-4ea3-a44b-64b4cdd1e470"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
-ADNLPModels = "0.4, 0.5, 0.6, 0.7"
+ADNLPModels = "0.4, 0.5, 0.6, 0.7, 0.8"
 DataFrames = "1"
 JSOSolvers = "0.10, 0.11"
 JuMP = "1"

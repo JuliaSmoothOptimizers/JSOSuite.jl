@@ -85,7 +85,7 @@ end
 include("qp_tests.jl")
 
 @testset "Test `Float32`" begin
-  nlp = OptimizationProblems.ADNLPProblems.genrose(type = Val(Float32))
+  nlp = OptimizationProblems.ADNLPProblems.genrose(type = Float32)
   atol, rtol = √eps(Float32), √eps(Float32)
   for solver in eachrow(JSOSuite.select_optimizers(nlp))
     if solver.nonlinear_obj

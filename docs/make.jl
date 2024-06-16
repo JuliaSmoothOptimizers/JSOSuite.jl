@@ -3,13 +3,7 @@ using Documenter
 
 DocMeta.setdocmeta!(JSOSuite, :DocTestSetup, :(using JSOSuite); recursive = true)
 
-const page_rename = Dict(
-  "developer.md" => "Developer docs",
-  "nls.md" => "Nonlinear Least Squares",
-  "qp.md" => "Quadratic models with linear constraints",
-  "resolve.md" => "Re-solve and in-place solve",
-  "speed-up.md" => "Speed up Solvers Tips",
-) # Without the numbers
+const page_rename = Dict("developer.md" => "Developer docs") # Without the numbers
 
 function nice_name(file)
   file = replace(file, r"^[0-9]*-" => "")

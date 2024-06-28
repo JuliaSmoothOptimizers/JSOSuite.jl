@@ -8,11 +8,17 @@
     c0 = 1.0
     x0 = [-1.2; 1.0]
     qp_model = QuadraticModel(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
-    stats = minimize(qp_model)
+    stats = with_logger(NullLogger()) do
+      minimize(qp_model)
+    end
     @test true
-    minimize(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    with_logger(NullLogger()) do
+      minimize(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    end
     @test true
-    minimize("RipQP", c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    with_logger(NullLogger()) do
+      minimize("RipQP", c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    end
     @test true
   end
 
@@ -23,11 +29,17 @@
     lvar = [0.0; 0.0]
     x0 = [0.5; 0.5]
     qp_model = QuadraticModel(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
-    stats = minimize(qp_model)
+    stats = with_logger(NullLogger()) do
+      minimize(qp_model)
+    end
     @test true
-    minimize(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    with_logger(NullLogger()) do
+      minimize(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    end
     @test true
-    minimize("RipQP", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    with_logger(NullLogger()) do
+      minimize("RipQP", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    end
     @test true
   end
 
@@ -40,11 +52,17 @@
     lcon = [1.0]
     ucon = [1.0]
     qp_model = QuadraticModel(c, H, A, lcon, ucon, name = "eqconqp_QP")
-    stats = minimize(qp_model)
+    stats = with_logger(NullLogger()) do
+      minimize(qp_model)
+    end
     @test true
-    minimize(c, H, A, lcon, ucon, name = "eqconqp_QP")
+    with_logger(NullLogger()) do
+      minimize(c, H, A, lcon, ucon, name = "eqconqp_QP")
+    end
     @test true
-    minimize("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
+    with_logger(NullLogger()) do
+      minimize("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
+    end
     @test true
   end
 
@@ -63,11 +81,17 @@
     ucon = [Inf; 0.0; 1.0]
     x0 = ones(2)
     qp_model = QuadraticModel(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
-    stats = minimize(qp_model)
+    stats = with_logger(NullLogger()) do
+      minimize(qp_model)
+    end
     @test true
-    minimize(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    with_logger(NullLogger()) do
+      minimize(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    end
     @test true
-    minimize("RipQP", c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    with_logger(NullLogger()) do
+      minimize("RipQP", c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    end
     @test true
   end
 end

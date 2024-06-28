@@ -25,4 +25,3 @@ There is no related issue.
 - [ ] Tests are passing
 - [ ] Lint workflow is passing
 - [ ] Docs were updated and workflow is passing
-<!-- - [ ] [CHANGELOG.md](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/blob/main/CHANGELOG.md) was updated -->

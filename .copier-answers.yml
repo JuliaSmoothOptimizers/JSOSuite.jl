@@ -18,5 +18,5 @@ PackageUUID: ed6ae0be-a024-11e9-2788-05dbf8cd15d9
 RunJuliaNightlyOnCI: false
 SimplifiedPRTest: true
 UseCirrusCI: true
-_commit: v0.6.0
+_commit: v0.6.1
 _src_path: https://github.com/abelsiqueira/COPIERTemplate.jl

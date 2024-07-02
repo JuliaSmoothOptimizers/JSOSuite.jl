@@ -5,6 +5,7 @@ Benchmarking is very important when researching new algorithms or selecting the 
 The package [`SolverBenchmark`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl) exports the function [`bmark_solvers`](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/src/bmark_solvers.jl) that runs a set of optimizers on a set of problems. `JSOSuite.jl` specialize this function, see `bmark_solvers`.
 
 The [JuliaSmoothOptimizers organization](https://jso.dev) contains several packages of test problems ready to use for benchmarking. The main ones are
+
 - [`OptimizationProblems.jl`](https://github.com/JuliaSmoothOptimizers/OptimizationProblems.jl): This package provides a collection of optimization problems in JuMP and ADNLPModels syntax;
 - [`CUTEst.jl`](https://github.com/JuliaSmoothOptimizers/CUTEst.jl);
 - [`NLSProblems.jl`](https://github.com/JuliaSmoothOptimizers/NLSProblems.jl).
@@ -27,7 +28,7 @@ selected_meta = selected_meta[.!selected_meta.has_bounds .&& (selected_meta.ncon
 list = selected_meta[!, :name]
 ```
 
-Then, we generate the list of problems using [`ADNLPModel`](https://jso.dev/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S).
+Then, we generate the list of problems using [`ADNLPModel`](https://jso.dev/ADNLPModels.jl/dev/reference/).
 
 ```@example op
 ad_problems = [
@@ -47,11 +48,12 @@ selected_optimizers[selected_optimizers.is_available, :] # optimizers available
 ```
 
 For the purpose of this example, we will consider 3 optimizers.
+
 ```@example op
 select = ["IPOPT", "TRUNK", "LBFGS"]
 ```
 
-Once the problems and optimizers are chosen, the function `bmark_solvers` runs the benchmark. 
+Once the problems and optimizers are chosen, the function `bmark_solvers` runs the benchmark.
 
 ```@example op
 using SolverBenchmark

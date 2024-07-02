@@ -7,12 +7,12 @@
     H = sparse(Hrows, Hcols, Hvals)
     c0 = 1.0
     x0 = [-1.2; 1.0]
-    qp_model = QuadraticModel(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    qp_model = QuadraticModel(c, H; c0 = c0, x0 = x0, name = "uncqp_QP")
     stats = minimize(qp_model)
     @test true
-    minimize(c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    minimize(c, H; c0 = c0, x0 = x0, name = "uncqp_QP")
     @test true
-    minimize("RipQP", c, H, c0 = c0, x0 = x0, name = "uncqp_QP")
+    minimize("RipQP", c, H; c0 = c0, x0 = x0, name = "uncqp_QP")
     @test true
   end
 
@@ -22,12 +22,12 @@
     uvar = [1.0; 1.0]
     lvar = [0.0; 0.0]
     x0 = [0.5; 0.5]
-    qp_model = QuadraticModel(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    qp_model = QuadraticModel(c, H, lvar, uvar; x0 = x0, name = "bndqp_QP")
     stats = minimize(qp_model)
     @test true
-    minimize(c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    minimize(c, H, lvar, uvar; x0 = x0, name = "bndqp_QP")
     @test true
-    minimize("RipQP", c, H, lvar, uvar, x0 = x0, name = "bndqp_QP")
+    minimize("RipQP", c, H, lvar, uvar; x0 = x0, name = "bndqp_QP")
     @test true
   end
 
@@ -39,12 +39,12 @@
     A = ones(1, n)
     lcon = [1.0]
     ucon = [1.0]
-    qp_model = QuadraticModel(c, H, A, lcon, ucon, name = "eqconqp_QP")
+    qp_model = QuadraticModel(c, H, A, lcon, ucon; name = "eqconqp_QP")
     stats = minimize(qp_model)
     @test true
-    minimize(c, H, A, lcon, ucon, name = "eqconqp_QP")
+    minimize(c, H, A, lcon, ucon; name = "eqconqp_QP")
     @test true
-    minimize("RipQP", c, H, A, lcon, ucon, name = "eqconqp_QP")
+    minimize("RipQP", c, H, A, lcon, ucon; name = "eqconqp_QP")
     @test true
   end
 
@@ -62,12 +62,12 @@
     lcon = [0.0; -Inf; -1.0]
     ucon = [Inf; 0.0; 1.0]
     x0 = ones(2)
-    qp_model = QuadraticModel(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    qp_model = QuadraticModel(c, H, A, lcon, ucon; c0 = c0, x0 = x0, name = "ineqconqp_QP")
     stats = minimize(qp_model)
     @test true
-    minimize(c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    minimize(c, H, A, lcon, ucon; c0 = c0, x0 = x0, name = "ineqconqp_QP")
     @test true
-    minimize("RipQP", c, H, A, lcon, ucon, c0 = c0, x0 = x0, name = "ineqconqp_QP")
+    minimize("RipQP", c, H, A, lcon, ucon; c0 = c0, x0 = x0, name = "ineqconqp_QP")
     @test true
   end
 end

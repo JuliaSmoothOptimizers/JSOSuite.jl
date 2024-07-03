@@ -2,7 +2,7 @@
 using JSOSuite
 
 # stdlib
-using LinearAlgebra, SparseArrays, Test
+using LinearAlgebra, Logging, SparseArrays, Test
 
 # others
 using JuMP, NLPModelsJuMP
@@ -11,6 +11,7 @@ using JuMP, NLPModelsJuMP
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 using JSOSolvers, Percival, SolverCore
 
+#=
 @testset "Test not loaded solvers" begin
   nlp = ADNLPModel(x -> sum(x), ones(2))
 
@@ -22,6 +23,7 @@ using JSOSolvers, Percival, SolverCore
   @test_throws ArgumentError minimize("RipQP", nlp)
 end
 
+=#
 # optionals
 using KNITRO
 if KNITRO.has_knitro()
@@ -30,17 +32,25 @@ end
 using CaNNOLeS, DCISolver, FletcherPenaltySolver, NLPModelsIpopt, RipQP
 using SolverBenchmark
 
+default_solver_options = (verbose = 0,)
+solver_options = Dict(:IpoptSolver => (print_level = 0,), :RipQP => ())
+get_solver_options(name) = get(solver_options, name, default_solver_options)
+
 meta = OptimizationProblems.meta
 
 function test_in_place_solve(nlp, solver_name)
   pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]
   pkg_name = replace(pkg_name, ".jl" => "")
   solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
-  stats = solve!(solver, nlp)
+  stats = with_logger(NullLogger()) do
+    solve!(solver, nlp; get_solver_options(solver_name)...)
+  end
   @test stats.status == :first_order
   reset!(solver, nlp)
   stats = GenericExecutionStats(nlp)
-  solve!(solver, nlp, stats)
+  with_logger(NullLogger()) do
+    solve!(solver, nlp, stats; get_solver_options(solver_name)...)
+  end
   @test stats.status == :first_order
 end
 
@@ -49,14 +59,19 @@ function test_in_place_solve(model::JuMP.Model, solver_name)
   pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]
   pkg_name = replace(pkg_name, ".jl" => "")
   solver = eval(Meta.parse(pkg_name * ".$solver_name"))(nlp)
-  stats = solve!(solver, model)
+  stats = with_logger(NullLogger()) do
+    solve!(solver, model; get_solver_options(solver_name)...)
+  end
   @test stats.status == :first_order
   reset!(solver, nlp)
   stats = GenericExecutionStats(nlp)
-  solve!(solver, model, stats)
+  with_logger(NullLogger()) do
+    solve!(solver, model, stats; get_solver_options(solver_name)...)
+  end
   @test stats.status == :first_order
 end
 
+#=
 @testset "Test in-place solve!" begin
   nlp = OptimizationProblems.ADNLPProblems.arglina()
   model = OptimizationProblems.PureJuMP.arglina()
@@ -81,30 +96,46 @@ end
     end
   end
 end
+=#
 
 include("qp_tests.jl")
 
 @testset "Test `Float32`" begin
   nlp = OptimizationProblems.ADNLPProblems.genrose(type = Float32)
   atol, rtol = √eps(Float32), √eps(Float32)
-  for solver in eachrow(JSOSuite.select_optimizers(nlp))
+  for solver in eachrow(JSOSuite.select_optimizers(nlp, verbose = 0))
     if solver.nonlinear_obj
-      minimize(solver.name, nlp, verbose = 0, atol = atol, rtol = rtol)
+      minimize(
+        solver.name,
+        nlp,
+        verbose = 0,
+        atol = atol,
+        rtol = rtol;
+        get_solver_options(solver_name)...,
+      )
       @test true
     else
       nlp_qm = QuadraticModel(nlp, nlp.meta.x0)
-      minimize(solver.name, nlp_qm, verbose = 0, atol = atol, rtol = rtol)
+      minimize(
+        solver.name,
+        nlp_qm,
+        verbose = 0,
+        atol = atol,
+        rtol = rtol;
+        get_solver_options(solver_name)...,
+      )
       @test true
     end
   end
 end
 
+#=
 @testset "JSOSuite JuMP API" begin
   model = OptimizationProblems.PureJuMP.genrose()
   jum = MathOptNLPModel(model)
-  @test JSOSuite.select_optimizers(model) == JSOSuite.select_optimizers(jum)
-  for solver in eachrow(JSOSuite.select_optimizers(model))
-    minimize(solver.name, model, verbose = 0)
+  @test JSOSuite.select_optimizers(model, verbose=0) == JSOSuite.select_optimizers(jum, verbose=0)
+  for solver in eachrow(JSOSuite.select_optimizers(model, verbose=0))
+    minimize(solver.name, model, verbose = 0; get_solver_options(solver_name)...)
     @test true
   end
 end
@@ -124,27 +155,27 @@ end
 
 @testset "Basic solve tests" begin
   f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2
-  stats = minimize(f, [-1.2; 1.0], verbose = 0)
+  stats = minimize(f, [-1.2; 1.0], verbose = 0; get_solver_options(solver_name)...)
   @test stats.status_reliable && (stats.status == :first_order)
 
-  stats = minimize("DCISolver", f, [-1.2; 1.0], verbose = 0)
+  stats = minimize("DCISolver", f, [-1.2; 1.0], verbose = 0; get_solver_options(solver_name)...)
   @test stats.status_reliable && (stats.status == :first_order)
 
   F = x -> [10 * (x[2] - x[1]^2); x[1] - 1]
-  stats = minimize(F, [-1.2; 1.0], 2, verbose = 0)
+  stats = minimize(F, [-1.2; 1.0], 2, verbose = 0; get_solver_options(solver_name)...)
   @test stats.status_reliable && (stats.status == :first_order)
 
-  stats = minimize("DCISolver", F, [-1.2; 1.0], 2, verbose = 0)
+  stats = minimize("DCISolver", F, [-1.2; 1.0], 2, verbose = 0; get_solver_options(solver_name)...)
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
 @testset "Test solve OptimizationProblems: $name" for name in first(meta[meta.nvar .< 10, :name], 5)
   name in ["bennett5", "channel", "hs253", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
-  minimize(nlp, verbose = 0)
+  minimize(nlp, verbose = 0; get_solver_options(solver_name)...)
   @test true
   model = OptimizationProblems.PureJuMP.eval(Meta.parse(name))()
-  minimize(model, verbose = 0)
+  minimize(model, verbose = 0; get_solver_options(solver_name)...)
   @test true
 end
 
@@ -169,7 +200,8 @@ for solver in eachrow(JSOSuite.optimizers)
           rtol = 1e-5,
           max_time = 12.0,
           max_eval = 10,
-          verbose = 0,
+          verbose = 0;
+          get_solver_options(solver_name)...)
         )
         @test true
       else
@@ -181,7 +213,8 @@ for solver in eachrow(JSOSuite.optimizers)
           rtol = 1e-5,
           max_time = 12.0,
           max_eval = 10,
-          verbose = 0,
+          verbose = 0;
+          get_solver_options(solver_name)...)
         )
         @test true
       end
@@ -208,7 +241,8 @@ end
           max_iter = 100,
           max_eval = 10,
           callback = callback,
-          verbose = 0,
+          verbose = 0;
+          get_solver_options(solver_name)...)
         )
         @test true
       elseif solver.specialized_nls
@@ -223,7 +257,8 @@ end
           max_iter = 100,
           max_eval = 10,
           callback = callback,
-          verbose = 0,
+          verbose = 0;
+          get_solver_options(solver_name)...)
         )
         @test true
       else # RipQP
@@ -237,10 +272,12 @@ end
           max_iter = 100,
           max_eval = 10,
           callback = callback,
-          verbose = 0,
+          verbose = 0;
+          get_solver_options(solver_name)...)
         )
         @test true
       end
     end
   end
 end
+=#

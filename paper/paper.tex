@@ -34,26 +34,32 @@ Bounds on the variables appear separately from other types of constraints becaus
 
 JSO provides a general API for solvers to interact with models by providing flexible data types to represent the objective and constraint functions, evaluate their derivatives, and provide essentially any information that a solver might request from a model.
 %
-\texttt{NLPModels.jl} \cite{orban-siqueira-nlpmodels-2020} is the core package that defines the abstract type \texttt{AbstractNLPModel} and introduces the API, including in-place and out-of-place evaluation of the objective gradient, sparse Jacobian and Hessian matrices as well as operators for matrix-free implementations.
+\texttt{NLPModels.jl} \cite{orban-siqueira-nlpmodels-2020} is the core package that defines the type \texttt{AbstractNLPModel} and introduces the API, including in-place and out-of-place evaluation of the objective gradient, sparse Jacobian and Hessian matrices as well as operators for matrix-free implementations.
 %
-The user can hand-code derivatives, use automatic differentiation \cite{orban-siqueira-nlpmodels-2021}, or use JSO interfaces to optimization modeling languages such as AMPL \cite{fourer2003ampl}, CUTEst \cite{cutest}, or JuMP \cite{jump}.
+The user can hand-code derivatives, use automatic differentiation \cite{orban-siqueira-nlpmodels-2021}, or JSO interfaces to optimization modeling languages such as AMPL \cite{fourer2003ampl} or JuMP \cite{jump}.
 %
-Hence, solvers can be designed to rely on the API's behavior independently of the problem's origin. 
-
+Hence, solvers can be designed to rely on the API's independently of the problem's origin. 
+\\
 JSO defines a minimal set of rules for a solver to be compliant:
 (i) The input is an instance of \texttt{AbstractNLPModel};
-(ii) the output is a \texttt{GenericExecutionStats}, as implemented in \texttt{SolverCore.jl} \cite{orban-siqueira-solvercore-2021}, that contains the solution, optimal value, elapsed time, number of iterations, primal and dual feasibility, etc.
+(ii) the output is a \texttt{GenericExecutionStats}  \cite{orban-siqueira-solvercore-2021}, that contains the solution, optimal value, primal and dual feasibility, elapsed time, etc.
 %
 There are a growing number of JSO-compliant solvers accessible from registered Julia packages for unconstrained and bound-constrained problems \cite{Dussault_AdaptiveRegularization_jl_A_unified,orban-siqueira-jsosolvers-2021}, equality-constrained problems \cite{migot2022dcisolver,Migot_FletcherPenaltySolver_jl_2022,Orban_A_regularization_method_2020}, and problems of the form \eqref{eq:nlp} in \cite{percival-jl,shin2023accelerating}.
 Most of those solvers also have variants for nonlinear least squares.
 A solver for convex quadratic programs is in \texttt{RipQP.jl} \cite{orban-leconte-ripqp-2020}.
 The solvers mentioned are pure Julia implementations, but there also exist thin wrappers to well-established solvers such as \texttt{Artelys Knitro} \cite{byrd2006k} and \texttt{Ipopt} \cite{wachter2006implementation}.
 
-The aim of \texttt{JSOSuite.jl} is to provide a unique interface to navigate among the available solvers and select the best one without knowing all the JSO-compliant solvers.
+There exist other packages in Julia that bring together multiple solvers.
 %
-There is a strong emphasis on justifying the choice of solvers, as we believe it helps the overall engineering process from an application to modeling and solving a problem.
+If \eqref{eq:nlp} can be modeled using \texttt{JuMP}, the model may be passed to solvers compatible with \texttt{MathOptInterface.jl} \cite{legat2021mathoptinterface}.
 %
-Connecting modeling tools and solvers into a unique entry point simplify greatly prototyping and choosing the right solver.
+\texttt{Optimization.jl} aims to unify local and global optimization packages into a single interface. It adds high-level features, such as integration with automatic differentiation.
+%
+The aim of \texttt{JSOSuite.jl} is to provide an interface for navigating among the JSO-compliant solvers and selecting the best one without needing to know all of them.
+%
+There is a strong emphasis on justifying the choice of solvers, which helps the overall engineering process from application to modeling and solving a problem.
+%
+Connecting modeling tools and solvers into a unique entry point simplifies prototyping and choosing the right solver. Moreover, it helps connect up-to-date solvers to other optimization wrappers and applications.
 
 \section{Functionalities}
 
@@ -101,6 +107,7 @@ A list of parameters common to all JSO-compliant solvers is maintained, and can 
 %
 Combined with \texttt{SolverBenchmark.jl} \cite{orban-siqueira-solverbenchmark-2020}, it can seamlessly compare algorithms and generate data and performance profiles on collection of test problems.
 Additionally, the package implements strategies that are classical for continuous optimization solvers such as methods to find a feasible initial guess or run a multi-start strategy.
+The documentation of the package \url{https://jso.dev/JSOSuite.jl} contains further examples of these functionalities.
 
 \section{Concluding Remarks}
 
@@ -115,7 +122,7 @@ Actively maintained and constantly evolving, these tools include links to cuttin
 \section*{Acknowledgement}
 
 Tangi Migot is supported by an NSERC Alliance grant 544900-19 in collaboration with Huawei-Canada and NSERC PGS-D,
-and Dominique Orban is partially supported by an NSERC Discovery Grant.
+and Dominique Orban is partially supported by an NSERC Grant.
 
 \input{bib.tex}
 

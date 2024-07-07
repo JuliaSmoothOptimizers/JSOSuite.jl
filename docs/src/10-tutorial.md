@@ -18,6 +18,7 @@ All these optimizers rely on the `NLPModel API` from [NLPModels.jl](https://gith
 ```
 
 The function `minimize` accepts as an argument any model `nlp` subtype of `AbstractNLPModel`.
+
 ```julia
 output = minimize(nlpmodel::AbstractNLPModel; kwargs...)
 ```
@@ -42,7 +43,7 @@ We refer to [`JuMP tutorial`](https://jump.dev/JuMP.jl/stable/) for more on mode
 
 ### NLPModel with Automatic Differentiation
 
-We refer to [`ADNLPModel`](https://jso.dev/ADNLPModels.jl/dev/reference/#ADNLPModels.ADNLPModel-Union{Tuple{S},%20Tuple{Any,%20S}}%20where%20S) for the description of the different constructors.
+We refer to [`ADNLPModel`](https://jso.dev/ADNLPModels.jl/dev/reference/) for the description of the different constructors.
 
 #### Unconstrained
 
@@ -61,7 +62,7 @@ nlp = ADNLPModel(f, x0)
 stats = minimize(nlp)
 ```
 
-One of the main advantages of this constructor is the possibility to run computations in different arithmetics. 
+One of the main advantages of this constructor is the possibility to run computations in different arithmetics.
 
 ```@example
 using JSOSuite
@@ -139,6 +140,7 @@ JSOSuite.optimizers
 ```
 
 Required information can be extracted by simple `DataFrame` manipulations. For instance, the list of optimizers handled by this package
+
 ```@example ex1
 JSOSuite.optimizers.name
 ```
@@ -146,6 +148,7 @@ JSOSuite.optimizers.name
 ### Select optimizers
 
 The function [`JSOSuite.select_optimizers`](@ref) returns a list of compatible optimizers.
+
 ```@example
 using ADNLPModels, JSOSuite
 f = x -> 100 * (x[2] - x[1]^2)^2 + (x[1] - 1)^2

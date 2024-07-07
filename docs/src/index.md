@@ -1,4 +1,8 @@
-# JSOSuite.jl
+```@meta
+CurrentModule = JSOSuite
+```
+
+# JSOSuite
 
 `JSOSuite` is a unique solution to access all the solvers available in the [JuliaSmoothOptimizers](https://github.com/JuliaSmoothOptimizers) organization.
 
@@ -13,14 +17,26 @@ All these solvers rely on the `NLPModel API` from [NLPModels.jl](https://github.
 \end{aligned}
 ```
 
-The package `JSOSuite` exports a function [`minimize`](@ref): 
+## Installation
+
+```julia-repl
+julia> # Press ]
+pkg> add JSOSuite
 ```
+
+## Usage
+
+The package `JSOSuite` exports a function [`minimize`](@ref):
+
+```julia
 output = minimize(args...; kwargs...)
 ```
+
 where the arguments define the problem, see [Tutorial](@ref tutorial-section).
 
 It is also possible to define an `NLPModel` or a `JuMP` model representing the problem, and then call `minimize`:
-```
+
+```julia
 output = minimize(nlpmodel; kwargs...)
 output = minimize(jump; kwargs...)
 ```
@@ -32,6 +48,7 @@ The `NLPModel API` is a general API for solvers to interact with models by provi
 JuliaSmoothOptimizers' compliant solvers accept any model compatible with the `NLPModel API`. See the [Tutorial](@ref tutorial-section) section for examples.
 
 Depending on the origin of the problem several modeling tools are available. The following generic modeling tools are accepted:
+
 - `JuMP` models are internally made compatible with NLPModel via [NLPModelsJuMP.jl](https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl);
 - `Ampl` models stored in a `.nl` file can be instantiated with `AmplModel("name_of_file.nl")` using [AmplNLReader.jl](https://github.com/JuliaSmoothOptimizers/AmplNLReader.jl);
 - [QPSReader.jl](https://github.com/JuliaSmoothOptimizers/QPSReader.jl) reads linear problems in MPS format and quadratic problems in QPS format;
@@ -39,6 +56,7 @@ Depending on the origin of the problem several modeling tools are available. The
 - Models with manually input derivatives can be defined using [ManualNLPModels.jl](https://github.com/JuliaSmoothOptimizers/ManualNLPModels.jl).
 
 It is also possible to define your `NLPModel` variant. Several examples are available within JuliaSmoothOptimizers' umbrella:
+
 - [KnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/KnetNLPModels.jl): An NLPModels Interface to Knet.
 - [PDENLPModels.jl](https://github.com/JuliaSmoothOptimizers/PDENLPModels.jl): A NLPModel API for optimization problems with PDE-constraints.
 
@@ -51,6 +69,7 @@ See the [Nonlinear Least Squares](@ref nls-section) for more on the special trea
 The value returned is a [`GenericExecutionStats`](https://jso.dev/SolverCore.jl/dev/reference/#SolverCore.GenericExecutionStats), which is a structure containing the available information at the end of the execution, such as a solver status, the objective function value, the norm of the residuals, the elapsed time, etc.
 
 It contains the following fields:
+
 - `status`: Indicates the output of the solver. Use `show_statuses()` for the full list;
 - `solution`: The final approximation returned by the solver (default: an uninitialized vector like `nlp.meta.x0`);
 - `objective`: The objective value at `solution` (default: `Inf`);
@@ -64,6 +83,7 @@ It contains the following fields:
 - `solver_specific::Dict{Symbol,Any}`: A solver specific dictionary.
 
 The list of statuses is available via the function `SolverCore.show_statuses`:
+
 ```@example
 using SolverCore
 show_statuses()
@@ -94,20 +114,15 @@ The following are specific to nonlinear least squares:
 
 Further possible options are documented in each solver's documentation.
 
-## Installation
+## Contributors
 
+```@raw html
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 ```
-] add JSOSuite
-```
-
-## Table of Contents
-
-```@contents
-```
-
-# Bug reports and discussions
-
-If you think you found a bug, feel free to open an [issue](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/issues).
-Focused suggestions and requests can also be opened as issues. Before opening a pull request, start an issue or a discussion on the topic, please.
-
-If you want to ask a question not suited for a bug report, feel free to start a discussion [here](https://github.com/JuliaSmoothOptimizers/Organization/discussions). This forum is for general discussion about this repository and the [JuliaSmoothOptimizers](https://github.com/JuliaSmoothOptimizers), so questions about any of our packages are welcome.

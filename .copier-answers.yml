@@ -1,0 +1,22 @@
+# Changes here will be overwritten by Copier
+AddAllcontributors: true
+AddCodeOfConduct: true
+AddCopierCI: false
+AddGitHubTemplates: true
+AddMacToCI: true
+AddPrecommit: true
+AddWinToCI: true
+AnswerStrategy: ask
+AuthorEmail: tangi.migot@gmail.com
+AuthorName: Tangi Migot
+Indentation: 2
+JuliaMinVersion: '1.6'
+License: MPL-2.0
+PackageName: JSOSuite
+PackageOwner: JuliaSmoothOptimizers
+PackageUUID: ed6ae0be-a024-11e9-2788-05dbf8cd15d9
+RunJuliaNightlyOnCI: false
+SimplifiedPRTest: true
+UseCirrusCI: true
+_commit: v0.7.2
+_src_path: https://github.com/abelsiqueira/BestieTemplate.jl

@@ -16,7 +16,7 @@ function minimize(
     delete!(keywords, :atol)
     delete!(keywords, :rtol)
     RipQP.InputTol(
-      T0,
+      T0;
       ϵ_pdd = ϵ_pdd,
       ϵ_rb = ϵ_rb,
       ϵ_rc = ϵ_rc,
@@ -28,7 +28,7 @@ function minimize(
     ϵ_rb = ϵ_rc = T0(keywords[:atol])
     delete!(keywords, :atol)
     RipQP.InputTol(
-      T0,
+      T0;
       ϵ_pdd = ϵ_pdd,
       ϵ_rb = ϵ_rb,
       ϵ_rc = ϵ_rc,
@@ -40,7 +40,7 @@ function minimize(
     ϵ_rb = ϵ_rc = T0(keywords[:atol])
     delete!(keywords, :rtol)
     RipQP.InputTol(
-      T0,
+      T0;
       ϵ_pdd = ϵ_pdd,
       ϵ_rb = ϵ_rb,
       ϵ_rc = ϵ_rc,

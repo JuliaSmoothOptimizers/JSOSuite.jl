@@ -10,7 +10,7 @@ The quadratic model with linear constraints is another specific case where the o
 \end{aligned}
 ```
 
-This problem is convex whenever the matrix `Q` is positive semi-definite. A key aspect here is the modeling of the matrices `Q` and `A`. 
+This problem is convex whenever the matrix `Q` is positive semi-definite. A key aspect here is the modeling of the matrices `Q` and `A`.
 The main data structure available in Julia are: `LinearAlgebra.Matrix`, `SparseArrays.sparse`, `SparseMatricesCOO.sparse`, `LinearOperators.LinearOperator`.
 
 In JuliaSmoothOptimizers, the package [`QuadraticModels.jl`](https://github.com/JuliaSmoothOptimizers/QuadraticModels.jl) can be used to access the `NLPModel API` for such instance.

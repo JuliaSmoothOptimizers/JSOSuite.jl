@@ -19,7 +19,7 @@ For each solver, the following are available:
 - `double_precision_only::Bool`: `true` if the solver only handles double precision (`Float64`);
 - `highest_derivative::Int`: order of the highest derivative used by the algorithm.
 """
-optimizers = DataFrame(
+optimizers = DataFrame(;
   name = String[],
   name_solver = Symbol[],
   name_pkg = String[],

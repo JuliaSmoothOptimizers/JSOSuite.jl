@@ -11,6 +11,12 @@ using JuMP, NLPModelsJuMP
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
 using JSOSolvers, Percival, SolverCore
 
+meta = OptimizationProblems.meta
+
+using ExpressionTreeForge
+
+include("parse-function-test.jl")
+
 @testset "Test not loaded solvers" begin
   nlp = ADNLPModel(x -> sum(x), ones(2))
 
@@ -29,8 +35,6 @@ if KNITRO.has_knitro()
 end
 using CaNNOLeS, DCISolver, FletcherPenaltySolver, NLPModelsIpopt, RipQP
 using SolverBenchmark
-
-meta = OptimizationProblems.meta
 
 function test_in_place_solve(nlp, solver_name)
   pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_solver .== solver_name, :name_pkg][1]

@@ -10,6 +10,12 @@ using LinearOperators, NLPModelsModifiers, SolverCore, SolverParameters
 # JSO solvers
 using JSOSolvers, Percival
 
+@init begin
+  @require ExpressionTreeForge = "93090adf-0e31-445f-8c8f-44d91f61d7ad" begin
+    include("parse-functions.jl")
+  end
+end
+
 include("optimizers.jl")
 include("selection.jl")
 include("solve-model.jl")

@@ -1,11 +1,8 @@
-#using ExpressionTreeForge
-#using ..ExpressionTreeForge.M_power_operator
-
 """
-    isnlp(nlp::ADNLPModels.AbstractADNLPModel)
-    isnlp(nlp::MathOptInterface.Nonlinear.Model)
-    isnlp(nlp::JuMP.Model)
-    isnlp(nlp::MathOptNLPModel)
+    isnls(nlp::ADNLPModels.AbstractADNLPModel)
+    isnls(nlp::MathOptInterface.Nonlinear.Model)
+    isnls(nlp::JuMP.Model)
+    isnls(nlp::MathOptNLPModel)
 
 Check if the given model has a nonlinear least squares objective.
 

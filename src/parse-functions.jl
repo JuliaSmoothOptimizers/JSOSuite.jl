@@ -13,6 +13,6 @@ function isnls(nlp)
   expr_tree = ExpressionTreeForge.get_expression_tree(nlp)
   F_expr = ExpressionTreeForge.extract_element_functions(expr_tree)
   test_square(expr) = expr.field == ExpressionTreeForge.M_power_operator.Power_operator{Int}(2)
-  is_nls = mapreduce(test_square, &, F_expr) :: Bool
-  return is_nls 
-end 
+  is_nls = mapreduce(test_square, &, F_expr)::Bool
+  return is_nls
+end

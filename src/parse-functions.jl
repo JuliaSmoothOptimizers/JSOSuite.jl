@@ -14,7 +14,7 @@ then try to detect the least squares pattern. There is no guarantee that this fu
 """
 function isnls(nlp)
   expr_tree = ExpressionTreeForge.get_expression_tree(nlp)
-  F_expr = extract_element_functions(expr_tree)
+  F_expr = ExpressionTreeForge.extract_element_functions(expr_tree)
   test_square(expr) = expr.field == ExpressionTreeForge.M_power_operator.Power_operator{Int}(2)
   is_nls = mapreduce(test_square, &, F_expr) :: Bool
   return is_nls 

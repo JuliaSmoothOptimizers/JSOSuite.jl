@@ -94,7 +94,7 @@ nlp = ADNLPModel(f, x0)
 stats_nlp = minimize(nlp)
 ```
 
-The function [`isnls`](@ref) requires the package [ExpressionTreeForge.jl](https://github.com/JuliaSmoothOptimizers/ExpressionTreeForge.jl).
+The function `isnls` requires the package [ExpressionTreeForge.jl](https://github.com/JuliaSmoothOptimizers/ExpressionTreeForge.jl).
 In this example, it detects that the objective function is a nonlinear least squares.
 
 ```@example autodetection

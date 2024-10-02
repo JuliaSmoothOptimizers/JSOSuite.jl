@@ -1,5 +1,4 @@
 using JSOSuite
-using ExpressionTreeForge # added to include docstring of extra function
 using Documenter
 
 DocMeta.setdocmeta!(JSOSuite, :DocTestSetup, :(using JSOSuite); recursive = true)

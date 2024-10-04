@@ -82,6 +82,40 @@ nls = MathOptNLSModel(model, [F1, F2], name="Ju-Rosenbrock")
 stats = minimize(nls)
 ```
 
+### JSOSuite automatic detection
+
+The package can be used to try detecting NLS-pattern in a model.
+
+```@example autodetection
+using ADNLPModels, JSOSuite
+f(x) = (x[2] - x[1]^3)^2 + (x[1] - 1)^2
+x0 = [-1.2; 1.0]
+nlp = ADNLPModel(f, x0)
+stats_nlp = minimize(nlp)
+```
+
+The function `isnls` requires the package [ExpressionTreeForge.jl](https://github.com/JuliaSmoothOptimizers/ExpressionTreeForge.jl).
+In this example, it detects that the objective function is a nonlinear least squares.
+
+```@example autodetection
+using ExpressionTreeForge
+JSOSuite.isnls(nlp)
+```
+
+Therefore, defining an `ADNLSModel` might improve the solver's behavior.
+
+```@example autodetection
+F(x) = [x[2] - x[1]^3, x[1] - 1]
+x0 = [-1.2; 1.0]
+nls = ADNLSModel(F, x0, 2)
+stats_nls = minimize(nls)
+```
+
+```@example autodetection
+using NLPModels
+(neval_obj(nlp), neval_obj(nls))
+```
+
 ## Find a feasible point of an optimization problem or solve a nonlinear system
 
 We show here how to find the feasible point of a given model.

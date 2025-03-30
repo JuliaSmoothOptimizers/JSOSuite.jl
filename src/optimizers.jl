@@ -6,6 +6,7 @@ DataFrame with the JSO-compliant solvers and their properties.
 For each solver, the following are available:
 - `name::String`: name of the solver;
 - `name_solver::Symbol`: name of the solver structure for in-place solve, `:not_implemented` if not implemented;
+- `name_parameters::Symbol`: name of the parameter structure, `:not_implemented` if not implemented;
 - `name_pkg::String`: name of the package implementing this solver or its NLPModel wrapper;
 - `solve_function::Symbol`: name of the function;
 - `is_available::Bool`: `true` if the solver is available;
@@ -22,6 +23,7 @@ For each solver, the following are available:
 optimizers = DataFrame(;
   name = String[],
   name_solver = Symbol[],
+  name_parameters = Symbol[],
   name_pkg = String[],
   solve_function = Symbol[],
   is_available = Bool[],
@@ -41,6 +43,7 @@ push!(
   (
     "KNITRO",
     :KnitroSolver,
+    :not_implemented,
     "NLPModelsKnitro.jl",
     :knitro,
     false,
@@ -60,6 +63,7 @@ push!(
   (
     "LBFGS",
     :LBFGSSolver,
+    :LBFGSParameterSet,
     "JSOSolvers.jl",
     :lbfgs,
     true,
@@ -79,6 +83,7 @@ push!(
   (
     "R2",
     :R2Solver,
+    :FOMOParameterSet,
     "JSOSolvers.jl",
     :R2,
     true,
@@ -98,6 +103,7 @@ push!(
   (
     "TRON",
     :TronSolver,
+    :TRONParameterSet,
     "JSOSolvers.jl",
     :tron,
     true,
@@ -117,6 +123,7 @@ push!(
   (
     "TRUNK",
     :TrunkSolver,
+    :TRUNKParameterSet,
     "JSOSolvers.jl",
     :trunk,
     true,
@@ -136,6 +143,7 @@ push!(
   (
     "TRON-NLS",
     :TronSolverNLS,
+    :TRONLSParameterSet,
     "JSOSolvers.jl",
     :tron,
     true,
@@ -155,6 +163,7 @@ push!(
   (
     "TRUNK-NLS",
     :TrunkSolverNLS,
+    :TRUNKLSParameterSet,
     "JSOSolvers.jl",
     :trunk,
     true,
@@ -174,6 +183,7 @@ push!(
   (
     "CaNNOLeS",
     :CaNNOLeSSolver,
+    :not_implemented,
     "CaNNOLeS.jl",
     :cannoles,
     false,
@@ -193,6 +203,7 @@ push!(
   (
     "IPOPT",
     :IpoptSolver,
+    :not_implemented,
     "NLPModelsIpopt.jl",
     :ipopt,
     false,
@@ -212,6 +223,7 @@ push!(
   (
     "DCISolver",
     :DCIWorkspace,
+    :not_implemented,
     "DCISolver.jl",
     :dci,
     false,
@@ -231,6 +243,7 @@ push!(
   (
     "FletcherPenaltySolver",
     :FPSSSolver,
+    :not_implemented,
     "FletcherPenaltySolver.jl",
     :fps_solve,
     false,
@@ -250,6 +263,7 @@ push!(
   (
     "Percival",
     :PercivalSolver,
+    :not_implemented,
     "Percival.jl",
     :percival,
     true,
@@ -269,6 +283,7 @@ push!(
   (
     "RipQP",
     :RipQPSolver,
+    :not_implemented,
     "RipQP.jl",
     :ripqp,
     false,

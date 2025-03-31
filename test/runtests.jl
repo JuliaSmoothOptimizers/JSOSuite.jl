@@ -17,6 +17,14 @@ using ExpressionTreeForge
 
 include("parse-function-test.jl")
 
+@testset "Test loading parameter set" for paramset in JSOSuite.optimizers[!, :name_parameters]
+  pkg_name = JSOSuite.optimizers[JSOSuite.optimizers.name_parameters .== paramset, :name_pkg][1]
+  pkg_name = replace(pkg_name, ".jl" => "")
+  if paramset != :not_implemented
+    @test !isnothing(eval(Meta.parse(pkg_name * ".$paramset")))
+  end
+end
+
 @testset "Test not loaded solvers" begin
   nlp = ADNLPModel(x -> sum(x), ones(2))
 

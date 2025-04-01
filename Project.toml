@@ -26,7 +26,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 [compat]
 ADNLPModels = "0.4, 0.5, 0.6, 0.7, 0.8"
 DataFrames = "1"
-JSOSolvers = "0.10, 0.11, 0.12"
+JSOSolvers = "0.10, 0.11, 0.12, 0.13"
 JuMP = "1"
 LLSModels = "0.3.6"
 LinearOperators = "2"

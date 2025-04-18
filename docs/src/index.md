@@ -66,7 +66,7 @@ See the [Nonlinear Least Squares](@ref nls-section) for more on the special trea
 
 ### Output
 
-The value returned is a [`GenericExecutionStats`](https://jso.dev/SolverCore.jl/dev/reference/#SolverCore.GenericExecutionStats), which is a structure containing the available information at the end of the execution, such as a solver status, the objective function value, the norm of the residuals, the elapsed time, etc.
+The value returned is a [`GenericExecutionStats`](https://jso.dev/SolverCore.jl/dev/95-reference/#SolverCore.GenericExecutionStats), which is a structure containing the available information at the end of the execution, such as a solver status, the objective function value, the norm of the residuals, the elapsed time, etc.
 
 It contains the following fields:
 

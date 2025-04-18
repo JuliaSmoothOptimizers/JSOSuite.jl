@@ -74,9 +74,8 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
-
       # Breakage test
-      - name: 'Breakage of ${{ matrix.pkg }}, ${{ matrix.pkgversion }} version'
+      - name: "Breakage of ${{ matrix.pkg }}, ${{ matrix.pkgversion }} version"
         env:
           PKG: ${{ matrix.pkg }}
           VERSION: ${{ matrix.pkgversion }}
@@ -160,7 +159,7 @@ jobs:
           done >> summary.md
 
       - name: PR comment with file
-        uses: actions/github-script@v7
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

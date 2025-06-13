@@ -101,6 +101,25 @@ push!(
 push!(
   optimizers,
   (
+    "FOMO",
+    :FomoSolver,
+    "JSOSolvers.jl",
+    :fomo,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    1,
+  ),
+)
+push!(
+  optimizers,
+  (
     "TRON",
     :TronSolver,
     :TRONParameterSet,

@@ -7,7 +7,11 @@ problems_symbols =
   for (index, problem) in enumerate(problems_symbols)
     try
       detect_nls = JSOSuite.isnls(problem())
-      is_nls = OptimizationProblems.meta[OptimizationProblems.meta.name .== problems_names[index], :objtype][1] == :least_squares
+      is_nls =
+        OptimizationProblems.meta[
+          OptimizationProblems.meta.name .== problems_names[index],
+          :objtype,
+        ][1] == :least_squares
       push!(result_list_isnls, detect_nls)
       if detect_nls
         @test detect_nls == is_nls

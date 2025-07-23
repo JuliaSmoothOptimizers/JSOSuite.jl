@@ -130,7 +130,10 @@ end
   @test stats.status_reliable && (stats.status == :first_order)
 end
 
-@testset "Test solve OptimizationProblems: $name" for name in first(OptimizationProblems.meta[OptimizationProblems.meta.nvar .< 10, :name], 5)
+@testset "Test solve OptimizationProblems: $name" for name in first(
+  OptimizationProblems.meta[OptimizationProblems.meta.nvar .< 10, :name],
+  5,
+)
   name in ["bennett5", "channel", "hs253", "hs73", "misra1c"] && continue
   nlp = OptimizationProblems.ADNLPProblems.eval(Meta.parse(name))()
   minimize(nlp; verbose = 0)

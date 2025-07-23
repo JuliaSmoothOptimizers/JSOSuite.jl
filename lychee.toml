@@ -1,7 +1,0 @@
-exclude = [
-  "@ref"
-]
-
-exclude_path = [
-  "docs/build"
-]

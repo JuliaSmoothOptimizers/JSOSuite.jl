@@ -1,4 +1,4 @@
-problems_names = meta[!, :name][1:50] # we test only the 50 first problems
+problems_names = OptimizationProblems.meta[!, :name][1:50] # we test only the 50 first problems
 problems_symbols =
   map(name -> OptimizationProblems.ADNLPProblems.eval(Meta.parse(name)), problems_names)
 
@@ -7,7 +7,7 @@ problems_symbols =
   for (index, problem) in enumerate(problems_symbols)
     try
       detect_nls = JSOSuite.isnls(problem())
-      is_nls = meta[meta.name .== problems_names[index], :objtype][1] == :least_squares
+      is_nls = OptimizationProblems.meta[OptimizationProblems.meta.name .== problems_names[index], :objtype][1] == :least_squares
       push!(result_list_isnls, detect_nls)
       if detect_nls
         @test detect_nls == is_nls

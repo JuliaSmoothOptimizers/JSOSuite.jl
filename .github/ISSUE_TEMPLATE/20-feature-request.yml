@@ -11,7 +11,6 @@ body:
         - There is not an [existing issue](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/issues) with the same question
         - You have read the [contributing guide](https://JuliaSmoothOptimizers.github.io/JSOSuite.jl/dev/90-contributing/)
         - You are following the [code of conduct](https://github.com/JuliaSmoothOptimizers/JSOSuite.jl/blob/main/CODE_OF_CONDUCT.md)
-
         The form below should help you in filling out this issue.
   - type: textarea
     id: description

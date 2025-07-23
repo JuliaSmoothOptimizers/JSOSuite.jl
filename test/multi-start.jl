@@ -1,5 +1,4 @@
-using ADNLPModels, NLPModels, NLPModelsTest, JSOSuite, LinearAlgebra
-
+@testset "Test multi_start" begin
 @info "Test 1"
 nlp = BROWNDEN()
 JSOSuite.multi_start(nlp; verbose = 1)
@@ -29,3 +28,4 @@ ultimate_x = JSOSuite.multi_start(
 )
 
 norm(grad(nlp, ultimate_x)), obj(nlp, ultimate_x)
+end

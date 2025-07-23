@@ -2,11 +2,11 @@ using JSOSuite
 using Test
 
 # others
-using LinearAlgebra, JuMP, NLPModelsJuMP
+using JuMP, LinearAlgebra, SparseArrays
 
 # JSO
 using ADNLPModels, NLPModels, NLSProblems, QuadraticModels, OptimizationProblems, SparseMatricesCOO
-using JSOSolvers, Percival, SolverCore, ExpressionTreeForge, NLPModelsTest
+using JSOSolvers, Percival, SolverCore, ExpressionTreeForge, NLPModelsJuMP, NLPModelsTest
 
 #=
 Don't add your tests to runtests.jl. Instead, create files named

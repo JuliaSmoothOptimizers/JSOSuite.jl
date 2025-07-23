@@ -1,22 +1,42 @@
 # Changes here will be overwritten by Copier
 AddAllcontributors: true
+AddCitationCFF: true
 AddCodeOfConduct: true
-AddCopierCI: false
+AddCompatHelperCI: true
+AddContributionDocs: true
+AddCopierCI: true
+AddDependabot: true
+AddDocs: true
+AddDocsCI: true
+AddFormatterAndLinterConfigFiles: true
+AddGitHubPRTemplate: true
 AddGitHubTemplates: true
+AddLintCI: true
+AddLychee: true
 AddMacToCI: true
 AddPrecommit: true
+AddTagBotCI: true
+AddTestCI: true
 AddWinToCI: true
-AnswerStrategy: ask
-AuthorEmail: tangi.migot@gmail.com
-AuthorName: Tangi Migot
-Indentation: 2
-JuliaMinVersion: '1.6'
+Authors: Tangi Migot <tangi.migot@gmail.com>
+AutoIncludeTests: true
+CheckExplicitImports: true
+CodeOfConductContact: tangi.migot@gmail.com
+ConfigIndentation: 2
+ExplicitImportsChecklist: exclude_all_qualified_accesses_are_public
+JuliaIndentation: 2
+JuliaMinCIVersion: lts
+JuliaMinVersion: lts
 License: MPL-2.0
+LicenseCopyrightHolders: Tangi Migot
+MarkdownIndentation: 2
 PackageName: JSOSuite
 PackageOwner: JuliaSmoothOptimizers
 PackageUUID: ed6ae0be-a024-11e9-2788-05dbf8cd15d9
 RunJuliaNightlyOnCI: false
-SimplifiedPRTest: true
+StrategyConfirmIncluded: true
+StrategyLevel: 3
+StrategyReviewExcluded: false
 UseCirrusCI: true
-_commit: v0.7.2
+_commit: v0.16.2
 _src_path: https://github.com/JuliaBesties/BestieTemplate.jl

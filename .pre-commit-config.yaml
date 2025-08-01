@@ -48,6 +48,6 @@ repos:
         name: ExplicitImports checks
         args: [--print, --checklist, "exclude_all_qualified_accesses_are_public,exclude_no_implicit_imports"]
   - repo: https://github.com/domluna/JuliaFormatter.jl
-    rev: v2.1.2
+    rev: v2.1.5
     hooks:
       - id: julia-formatter

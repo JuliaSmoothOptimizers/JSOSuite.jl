@@ -33,9 +33,9 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 5 optimizers available:
-["LBFGS", "R2", "TRON", "TRUNK", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "Percival"]
+There are 6 optimizers available:
+["LBFGS", "R2", "FOMO", "TRON", "TRUNK", "Percival"].
+["LBFGS", "R2", "FOMO", "TRON", "TRUNK", "Percival"]
 ```
 
 ```jldoctest; output = false
@@ -51,9 +51,9 @@ Algorithm selection:
 - unconstrained: ✓;
 - nonlinear objective: ✓;
 - may use 2-th order derivative.
-There are 7 optimizers available:
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"].
-["LBFGS", "R2", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"]
+There are 8 optimizers available:
+["LBFGS", "R2", "FOMO", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"].
+["LBFGS", "R2", "FOMO", "TRON", "TRUNK", "TRON-NLS", "TRUNK-NLS", "Percival"]
 ```
 """
 function select_optimizers(

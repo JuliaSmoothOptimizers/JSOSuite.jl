@@ -1,7 +1,7 @@
 name = "JSOSuite"
 uuid = "ed6ae0be-a024-11e9-2788-05dbf8cd15d9"
-authors = ["Tangi Migot <tangi.migot@gmail.com>"]
 version = "0.3.0"
+authors = ["Tangi Migot <tangi.migot@gmail.com>"]
 
 [deps]
 ADNLPModels = "54578032-b7ea-4c30-94aa-7cbd1cce6c9a"
@@ -32,7 +32,7 @@ LLSModels = "0.5.0"
 LinearOperators = "2"
 NLPModels = "0.21"
 NLPModelsJuMP = "0.13"
-NLPModelsModifiers = "0.7"
+NLPModelsModifiers = "0.7, 0.8"
 Percival = "0.7.4"
 QuadraticModels = "0.9.13"
 Requires = "1"
